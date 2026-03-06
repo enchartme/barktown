@@ -147,11 +147,26 @@
     if (!audioEl || !duration) return;
     if (e.key === 'ArrowRight') { e.preventDefault(); audioEl.currentTime = Math.min(duration, currentTime + 5); }
     if (e.key === 'ArrowLeft' ) { e.preventDefault(); audioEl.currentTime = Math.max(0,        currentTime - 5); }
+    // Prevent browsers from firing a synthetic click on the SVG when space is
+    // pressed while the waveform has focus.  That synthetic click would call
+    // handleWaveformClick with clientX=0, seeking playback to position 0.
+    // The global keydown handler takes care of the actual play/pause toggle.
+    if (e.key === ' ')          { e.preventDefault(); }
   }
 
   // ── Close on Escape ───────────────────────────────────────────────────────
   function handleGlobalKeydown(e) {
-    if (e.key === 'Escape') handleClose();
+    if (e.key === 'Escape') { handleClose(); return; }
+    if (e.key === ' ') {
+      const tag = /** @type {HTMLElement} */ (e.target)?.tagName;
+      // Don't hijack space when the user is typing in a text field, or when
+      // a <button> has focus (the button handles space natively via onclick;
+      // firing togglePlay here too would double-toggle immediately).
+      if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT' && tag !== 'BUTTON') {
+        e.preventDefault(); // prevent page scroll
+        togglePlay();
+      }
+    }
   }
   onMount(() => {
     document.addEventListener('keydown', handleGlobalKeydown);
@@ -214,6 +229,13 @@
         onclick={handleWaveformClick}
         onkeydown={handleWaveformKeydown}
       >
+        <!-- Invisible hit-area rectangle covering the full viewbox.
+             SVG's default pointer-events is "painted" so clicks in the
+             gaps between bars are dead zones in Chrome.  A transparent rect
+             (fill="transparent" counts as painted, unlike fill="none")
+             ensures every pixel inside the SVG fires the seek handler. -->
+        <rect x="0" y="0" width={VW} height={VH} fill="transparent" />
+
         <!-- Bars: rendered in two passes to colour played vs unplayed -->
         {#each bars() as bar, i}
           <rect
@@ -232,6 +254,7 @@
             x2={playheadX} y2={VH}
             stroke="#1a1a1a"
             stroke-width="1.5"
+            pointer-events="none"
           />
           <!-- Playhead knob -->
           <circle
@@ -239,6 +262,7 @@
             cy={VH / 2}
             r="4"
             fill="#1a1a1a"
+            pointer-events="none"
           />
         {/if}
       </svg>

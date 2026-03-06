@@ -203,18 +203,10 @@
 
   /* ── Mobile ── */
   @media (max-width: 520px) {
-    .day-row     { flex-direction: column; }
-    .date-label  {
-      width: 100%;
-      flex-direction: row;
-      gap: 0.5rem;
-      align-items: baseline;
-      border-right: none;
-      border-bottom: 1px solid #e8e8e4;
-      padding: 4px 10px;
-    }
-    .date-weekday { padding-top: 0; }
-    /* On mobile the track is still 100% of the row width */
-    .track { width: 100%; }
+    /* Keep the horizontal row layout intact – only hide the grid labels. */
+    .tick-label { display: none; }
+    /* Shrink the date column a little to give more room to the track. */
+    .date-label { width: 72px; padding: 6px 4px 6px 8px; }
+    .date-rest  { display: none; }
   }
 </style>
