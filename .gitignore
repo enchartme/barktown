@@ -1,0 +1,15 @@
+node_modules/
+build/
+.svelte-kit/
+static/audio/
+static/waveforms/
+
+# Local binaries (ffmpeg/ffprobe downloads)
+.bin/
+
+# OS / editor
+.DS_Store
+*.swp
+*.swo
+.env
+.env.*
