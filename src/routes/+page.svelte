@@ -10,6 +10,7 @@
   // Group entries by date; re-derived if data ever changed (won't in static build,
   // but derived keeps the relationship explicit).
   const days = $derived(groupByDate(data.entries));
+  const sunByDate = $derived(data.sunByDate ?? {});
 
   /** @type {import('$lib/types').Entry | null} */
   let selectedEntry = $state(null);
@@ -96,6 +97,7 @@
       {pixelsPerHour}
       selectedId={selectedEntry?.id ?? null}
       onselect={selectEntry}
+      {sunByDate}
     />
   </main>
 </div>
