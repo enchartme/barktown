@@ -6,14 +6,13 @@
    * @type {{
    *   date: string;
    *   entries: import('$lib/types').Entry[];
-   *   pixelsPerHour: number;
+   *   startHour: number;
+   *   endHour: number;
    *   selectedId: string | null;
    *   onselect: (entry: import('$lib/types').Entry) => void;
    * }}
    */
-  // pixelsPerHour is accepted but not used for layout (track fills viewport).
-  // It is kept in the prop signature so the parent doesn't need to change.
-  let { date, entries, pixelsPerHour: _pph, selectedId, onselect, sunEntry = null } = $props();
+  let { date, entries, startHour, endHour, selectedId, onselect, sunEntry = null } = $props();
 
   // ── Layout constants ───────────────────────────────────────────────────────
   const RULER_HEIGHT     = 22;  // px – the hour-tick ruler row
@@ -22,50 +21,61 @@
   const FLAG_LANE_HEIGHT = 18;  // px – vertical step between colliding pin lanes
   // Slot display minimum (keeps pins clickable), separate from collision span.
   const MIN_SLOT_MINS    = 5;   // minutes
-  const MIN_WIDTH_PCT    = (MIN_SLOT_MINS / 1440) * 100;
   // Estimated visual width of a pin tag in pixels (time chip + typical label).
   const TAG_PX           = 80;
+  // Breathing room above the first lane and below the last.
+  const LANE_MARGIN      = 4;   // px
+
+  // ── Domain ────────────────────────────────────────────────────────────────
+  const domainStartMin  = $derived(startHour * 60);
+  const domainEndMin    = $derived(endHour   * 60);
+  const domainWidthMin  = $derived(domainEndMin - domainStartMin);
+
+  // Only show entries whose start time falls within the visible domain.
+  const visibleEntries  = $derived(
+    entries.filter(e => {
+      const t = parseTimeToMinutes(e.time);
+      return t >= domainStartMin && t < domainEndMin;
+    })
+  );
 
   // ── Track width measurement (for responsive collision span) ───────────────
   let trackWidth = $state(0);  // bound below with bind:clientWidth
 
-  // How many minutes does one TAG_PX span on the current screen?
-  // Falls back to 60 min until the track has been measured.
+  // How many minutes does one TAG_PX span across the visible domain?
   const labelSpanMins = $derived(
-    trackWidth > 0 ? Math.ceil((TAG_PX / trackWidth) * 1440) : 60
+    trackWidth > 0 ? Math.ceil((TAG_PX / trackWidth) * domainWidthMin) : 60
   );
 
   // ── Lane assignment ────────────────────────────────────────────────────────
-  // Uses labelSpanMins so that two pins whose tags would visually overlap
-  // are always pushed into separate lanes, regardless of viewport width.
-  const laned            = $derived(assignLanes(entries, labelSpanMins));
+  const laned            = $derived(assignLanes(visibleEntries, labelSpanMins));
   const entriesWithLanes = $derived(laned.entriesWithLanes);
   const laneCount        = $derived(laned.laneCount);
 
-  // Track height grows with lane count – use the pin step size since all
-  // entries are now pins.  Add a little padding at the bottom.
-  const trackHeight = $derived(RULER_HEIGHT + laneCount * FLAG_LANE_HEIGHT + 6);
+  // Track height grows with lane count.
+  const trackHeight = $derived(LANE_MARGIN + Math.max(2, laneCount) * FLAG_LANE_HEIGHT + LANE_MARGIN + 2);
 
   // ── Ruler ticks ────────────────────────────────────────────────────────────
-  // Every 2 hours – at viewport scale every 1 h would be too cramped on mobile.
-  const ticks = Array.from({ length: 13 }, (_, i) => i * 2); // 0,2,4…24
+  // Every 2 hours, filtered to the visible domain.
+  const ticks = $derived(
+    Array.from({ length: 13 }, (_, i) => i * 2).filter(h => h >= startHour && h <= endHour)
+  );
 
   // ── Position helpers (all in %) ──────────────────────────────────────────
 
   /**
-   * Left offset as a % of the 24-hour track (0–100).
-   * left = (minutesSinceMidnight / 1440) * 100
+   * Left offset as a % of the visible domain.
    */
   function entryLeftPct(entry) {
-    return (parseTimeToMinutes(entry.time) / 1440) * 100;
+    return ((parseTimeToMinutes(entry.time) - domainStartMin) / domainWidthMin) * 100;
   }
 
   /**
-   * Width as a % of the 24-hour track, min-clamped to MIN_WIDTH_PCT.
-   * width = (durationSec / 86400) * 100
+   * Width as a % of the visible domain, min-clamped to MIN_SLOT_MINS.
    */
   function entryWidthPct(entry) {
-    return Math.max(MIN_WIDTH_PCT, ((entry.durationSec ?? 0) / 86400) * 100);
+    const minPct = (MIN_SLOT_MINS / domainWidthMin) * 100;
+    return Math.max(minPct, ((entry.durationSec ?? 0) / 60 / domainWidthMin) * 100);
   }
 
   /**
@@ -73,7 +83,8 @@
    * All entries are now pins so we use the compact FLAG_LANE_HEIGHT step.
    */
   function entryTop(laneIndex) {
-    return RULER_HEIGHT + laneIndex * FLAG_LANE_HEIGHT;
+    const extra = laneCount === 1 ? FLAG_LANE_HEIGHT / 2 : 0;
+    return LANE_MARGIN + extra + laneIndex * FLAG_LANE_HEIGHT;
   }
 
   // Formatted date label
@@ -101,14 +112,16 @@
 
   /**
    * CSS linear-gradient string for the track background, or plain white if
-   * no sun data is available for this date.
+   * no sun data is available for this date. Sun times are clamped to the
+   * visible domain so the gradient always covers the full track width.
    */
   const trackBackground = $derived(() => {
     const sr = sunTimeToLocalMinutes(sunEntry?.sunrise);
     const ss = sunTimeToLocalMinutes(sunEntry?.sunset);
     if (sr === null || ss === null) return '#fff';
-    const srPct = ((sr / 1440) * 100).toFixed(3);
-    const ssPct = ((ss / 1440) * 100).toFixed(3);
+    const clamp = (v) => Math.max(0, Math.min(100, v));
+    const srPct = clamp(((sr - domainStartMin) / domainWidthMin) * 100).toFixed(3);
+    const ssPct = clamp(((ss - domainStartMin) / domainWidthMin) * 100).toFixed(3);
     return [
       `linear-gradient(to right,`,
       `  ${COL_NIGHT} 0%,`,
@@ -131,18 +144,18 @@
   <!-- Track: fills remaining row width, no horizontal scroll -->
   <div
     class="track"
-    style="height: {trackHeight}px; background: {trackBackground()};"
+    style="height: {trackHeight + 1}px; background: {trackBackground()};"
     bind:clientWidth={trackWidth}
   >
 
-    <!-- Hour tick lines (% positioned) -->
+    <!-- Hour tick lines (% positioned relative to domain) -->
     {#each ticks as hour (hour)}
       <div
         class="tick"
         class:tick-midnight={hour === 0}
-        style="left: {(hour / 24) * 100}%; height: {trackHeight}px;"
+        style="left: {((hour * 60 - domainStartMin) / domainWidthMin) * 100}%; height: {trackHeight}px;"
       >
-        {#if hour < 24}
+        {#if hour < 24 && hour !== endHour}
           <span class="tick-label">{String(hour).padStart(2, '0')}:00</span>
         {/if}
       </div>
@@ -175,7 +188,7 @@
   .day-row {
     display: flex;
     align-items: flex-start;
-    border-bottom: 1px solid #e8e8e4;
+    border-bottom: 1px solid #ccc;
     background: #fff;
   }
   .day-row:hover { background: #fafaf8; }
@@ -185,7 +198,7 @@
     flex-shrink: 0;
     width: 108px;
     padding: 6px 10px 6px 14px;
-    border-right: 1px solid #e8e8e4;
+    border-right: 1px solid #ccc;
     display: flex;
     flex-direction: column;
     gap: 1px;
@@ -214,7 +227,7 @@
     flex: 1;
     min-width: 0;
     position: relative;
-    overflow: visible;
+    overflow: hidden;
   }
 
   /* ── Hour tick lines ── */
@@ -222,7 +235,7 @@
     position: absolute;
     top: 0;
     width: 1px;
-    background: #e8e8e4;
+    background: #ccc;
     pointer-events: none;
     user-select: none;
   }

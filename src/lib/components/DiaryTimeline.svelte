@@ -4,13 +4,14 @@
   /**
    * @type {{
    *   days: { date: string, entries: import('$lib/types').Entry[] }[];
-   *   pixelsPerHour: number;
+   *   startHour: number;
+   *   endHour: number;
    *   selectedId: string | null;
    *   onselect: (entry: import('$lib/types').Entry) => void;
    *   sunByDate: Record<string, { date: string, sunrise: string|null, sunset: string|null }>;
    * }}
    */
-  let { days, pixelsPerHour, selectedId, onselect, sunByDate = {} } = $props();
+  let { days, startHour, endHour, selectedId, onselect, sunByDate = {} } = $props();
 </script>
 
 <div class="timeline">
@@ -18,7 +19,8 @@
     <DayRow
       date={day.date}
       entries={day.entries}
-      {pixelsPerHour}
+      {startHour}
+      {endHour}
       {selectedId}
       {onselect}
       sunEntry={sunByDate[day.date] ?? null}

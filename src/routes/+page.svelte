@@ -25,13 +25,13 @@
   let panelEntry = $state(null);
   let showPanel  = $state(false);
 
-  /** Horizontal pixels per hour – drives the zoom level. */
-  let pixelsPerHour = $state(80);
+  /** Visible time domain (hours). Controls which slice of the 24h track is shown. */
+  let domain = $state({ startHour: 8, endHour: 20 });
 
   const ZOOM_LEVELS = [
-    { label: '24h', pph: 80  },
-    { label: '12h', pph: 160 },
-    { label: '6h',  pph: 320 },
+    { label: '24h',       startHour: 0,  endHour: 24 },
+    { label: '6 to 22',  startHour: 6,  endHour: 22 },
+    { label: '9 to 20', startHour: 9,  endHour: 20 },
   ];
 
   /** Open the detail panel for a given entry and update the URL hash. */
@@ -78,12 +78,12 @@
     <p class="subtitle">{data.entries.length} recordings</p>
 
     <div class="zoom-controls" role="group" aria-label="Zoom level">
-      {#each ZOOM_LEVELS as level (level.pph)}
+      {#each ZOOM_LEVELS as level (level.label)}
         <button
           class="zoom-btn"
-          class:active={pixelsPerHour === level.pph}
-          onclick={() => (pixelsPerHour = level.pph)}
-          aria-pressed={pixelsPerHour === level.pph}
+          class:active={domain.startHour === level.startHour && domain.endHour === level.endHour}
+          onclick={() => (domain = { startHour: level.startHour, endHour: level.endHour })}
+          aria-pressed={domain.startHour === level.startHour && domain.endHour === level.endHour}
         >
           {level.label}
         </button>
@@ -94,7 +94,8 @@
   <main class="diary-main">
     <DiaryTimeline
       {days}
-      {pixelsPerHour}
+      startHour={domain.startHour}
+      endHour={domain.endHour}
       selectedId={selectedEntry?.id ?? null}
       onselect={selectEntry}
       {sunByDate}
