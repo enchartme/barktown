@@ -87,8 +87,10 @@
     return LANE_MARGIN + extra + laneIndex * FLAG_LANE_HEIGHT;
   }
 
-  // Formatted date label
-  const dateLabel = $derived(formatDate(date));
+  // Formatted date label (used in title attribute)
+  const dateLabel    = $derived(formatDate(date));
+  // Four-digit year (for mobile second row)
+  const dateYear = $derived(date.slice(0, 4));
 
   // ── Sunrise / sunset background gradient ────────────────────────────────
 
@@ -139,6 +141,7 @@
   <div class="date-label" title={date}>
     <span class="date-weekday">{dateLabel.split(',')[0]}</span>
     <span class="date-rest">{dateLabel.split(',').slice(1).join(',').trim()}</span>
+    <span class="date-year-mobile">{dateYear}</span>
   </div>
 
   <!-- Track: fills remaining row width, no horizontal scroll -->
@@ -156,7 +159,7 @@
         style="left: {((hour * 60 - domainStartMin) / domainWidthMin) * 100}%; height: {trackHeight}px;"
       >
         {#if hour < 24 && hour !== endHour}
-          <span class="tick-label">{String(hour).padStart(2, '0')}:00</span>
+          <span class="tick-label">{String(hour).padStart(2, '0')}</span>
         {/if}
       </div>
     {/each}
@@ -202,7 +205,6 @@
     display: flex;
     flex-direction: column;
     gap: 1px;
-    /* Keep it aligned to the top of the row */
     align-self: stretch;
     justify-content: flex-start;
   }
@@ -220,6 +222,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .date-year-mobile { display: none; }
 
   /* ── Track ── */
   .track {
@@ -257,10 +260,8 @@
 
   /* ── Mobile ── */
   @media (max-width: 520px) {
-    /* Keep the horizontal row layout intact – only hide the grid labels. */
-    .tick-label { display: none; }
-    /* Shrink the date column a little to give more room to the track. */
-    .date-label { width: 72px; padding: 6px 4px 6px 8px; }
+    .date-label { width: 56px; padding: 6px 4px 6px 6px; }
     .date-rest  { display: none; }
+    .date-year-mobile { display: block; font-size: 0.65rem; color: #999; }
   }
 </style>
