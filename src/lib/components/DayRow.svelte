@@ -89,7 +89,9 @@
 
   // Formatted date label (used in title attribute)
   const dateLabel    = $derived(formatDate(date));
-  // Four-digit year (for mobile second row)
+  // Month + day only, e.g. "Jan 7" (for mobile middle row)
+  const dateDayM     = $derived(dateLabel.split(',')[1]?.trim() ?? '');
+  // Four-digit year (for mobile third row)
   const dateYear = $derived(date.slice(0, 4));
 
   // ── Sunrise / sunset background gradient ────────────────────────────────
@@ -141,25 +143,30 @@
   <div class="date-label" title={date}>
     <span class="date-weekday">{dateLabel.split(',')[0]}</span>
     <span class="date-rest">{dateLabel.split(',').slice(1).join(',').trim()}</span>
+    <span class="date-daym">{dateDayM}</span>
     <span class="date-year-mobile">{dateYear}</span>
   </div>
 
   <!-- Track: fills remaining row width, no horizontal scroll -->
   <div
     class="track"
-    style="height: {trackHeight + 1}px; background: {trackBackground()};"
     bind:clientWidth={trackWidth}
   >
+    <!-- Day/night gradient background, fills actual rendered height -->
+    <div class="track-bg" style="background: {trackBackground()};"></div>
+
+    <!-- Content wrapper: establishes min-height for entry slots -->
+    <div class="track-inner" style="min-height: {trackHeight}px;">
 
     <!-- Hour tick lines (% positioned relative to domain) -->
     {#each ticks as hour (hour)}
       <div
         class="tick"
         class:tick-midnight={hour === 0}
-        style="left: {((hour * 60 - domainStartMin) / domainWidthMin) * 100}%; height: {trackHeight}px;"
+        style="left: {((hour * 60 - domainStartMin) / domainWidthMin) * 100}%; height: 100%;"
       >
         {#if hour < 24 && hour !== endHour}
-          <span class="tick-label">{String(hour).padStart(2, '0')}</span>
+          <span class="tick-label"><span class="tick-hh">{String(hour).padStart(2, '0')}</span><span class="tick-mm">:00</span></span>
         {/if}
       </div>
     {/each}
@@ -184,6 +191,7 @@
       </div>
     {/each}
 
+    </div>
   </div>
 </div>
 
@@ -213,7 +221,6 @@
     font-size: 0.8rem;
     font-weight: 700;
     color: #1a1a1a;
-    padding-top: 5px;
   }
   .date-rest {
     font-size: 0.7rem;
@@ -223,14 +230,30 @@
     text-overflow: ellipsis;
   }
   .date-year-mobile { display: none; }
+  .date-daym        { display: none; }
 
   /* ── Track ── */
   .track {
-    /* Fill all remaining row width */
+    /* Fill all remaining row width and full row height */
     flex: 1;
+    align-self: stretch;
     min-width: 0;
     position: relative;
     overflow: hidden;
+  }
+
+  /* Inner wrapper: sets min-height from JS; abs-positioned children anchor to this */
+  .track-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ── Day/night gradient background ── */
+  .track-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
   }
 
   /* ── Hour tick lines ── */
@@ -261,7 +284,9 @@
   /* ── Mobile ── */
   @media (max-width: 520px) {
     .date-label { width: 56px; padding: 6px 4px 6px 6px; }
-    .date-rest  { display: none; }
+    .date-rest        { display: none; }
+    .date-daym        { display: block; font-size: 0.7rem; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .date-year-mobile { display: block; font-size: 0.65rem; color: #999; }
+    .tick-mm          { display: none; }
   }
 </style>

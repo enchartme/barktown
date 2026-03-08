@@ -26,7 +26,7 @@
   let showPanel  = $state(false);
 
   /** Visible time domain (hours). Controls which slice of the 24h track is shown. */
-  let domain = $state({ startHour: 8, endHour: 20 });
+  let domain = $state({ startHour: 9, endHour: 20 });
 
   const ZOOM_LEVELS = [
     { label: '24h',       startHour: 0,  endHour: 24 },
