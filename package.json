@@ -7,7 +7,7 @@
     "build": "vite build",
     "preview": "npm run build && wrangler dev",
     "preprocess": "node scripts/build-audio-index.mjs",
-    "fetch-sun":  "node scripts/fetch-sun-data.mjs",
+    "fetch-sun": "node scripts/fetch-sun-data.mjs",
     "deploy": "npm run build && wrangler deploy"
   },
   "devDependencies": {
@@ -18,5 +18,8 @@
     "vite": "^6.0.0",
     "wrangler": "^4.63.0"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "d3": "^7.9.0"
+  }
 }

@@ -1,7 +1,8 @@
 <script>
   import { onMount } from 'svelte';
-  import DiaryTimeline   from '$lib/components/DiaryTimeline.svelte';
+  import DiaryTimeline    from '$lib/components/DiaryTimeline.svelte';
   import AudioPlayerPanel from '$lib/components/AudioPlayerPanel.svelte';
+  import OverviewPanel    from '$lib/components/OverviewPanel.svelte';
   import { groupByDate }  from '$lib/utils.js';
 
   // Svelte 5 runes
@@ -24,6 +25,9 @@
   /** @type {import('$lib/types').Entry | null} */
   let panelEntry = $state(null);
   let showPanel  = $state(false);
+
+  /** Toggle the overview bar-chart panel. */
+  let showOverview = $state(false);
 
   /** Visible time domain (hours). Controls which slice of the 24h track is shown. */
   let domain = $state({ startHour: 9, endHour: 20 });
@@ -75,7 +79,13 @@
 <div class="app">
   <header class="site-header">
     <h1>🐕 Barktown</h1>
-    <p class="subtitle">{data.entries.length} recordings</p>
+    <button
+      class="subtitle recordings-toggle"
+      class:active={showOverview}
+      onclick={() => (showOverview = !showOverview)}
+      aria-pressed={showOverview}
+      title="Toggle overview chart"
+    >{data.entries.length} recordings</button>
 
     <div class="zoom-controls" role="group" aria-label="Zoom level">
       {#each ZOOM_LEVELS as level (level.label)}
@@ -92,6 +102,9 @@
   </header>
 
   <main class="diary-main">
+    {#if showOverview}
+      <OverviewPanel entries={data.entries} />
+    {/if}
     <DiaryTimeline
       {days}
       startHour={domain.startHour}
@@ -154,6 +167,18 @@
     color: #888;
     white-space: nowrap;
   }
+
+  .recordings-toggle {
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 0.15rem 0.4rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.1s, color 0.1s, border-color 0.1s;
+  }
+  .recordings-toggle:hover { background: #f0f0ec; border-color: #d0d0cc; color: #555; }
+  .recordings-toggle.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
 
   .zoom-controls {
     display: flex;
