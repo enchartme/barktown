@@ -3,14 +3,19 @@
   import DiaryTimeline    from '$lib/components/DiaryTimeline.svelte';
   import AudioPlayerPanel from '$lib/components/AudioPlayerPanel.svelte';
   import OverviewPanel    from '$lib/components/OverviewPanel.svelte';
-  import { groupByDate }  from '$lib/utils.js';
+  import { groupByDate, ASSET_BASE } from '$lib/utils.js';
 
   // Svelte 5 runes
   let { data } = $props();
 
-  // Group entries by date; re-derived if data ever changed (won't in static build,
-  // but derived keeps the relationship explicit).
-  const days = $derived(groupByDate(data.entries));
+  /** Entries fetched live from S3 on every page load. */
+  /** @type {import('$lib/types').Entry[]} */
+  let entries   = $state([]);
+  let loading   = $state(true);
+  /** @type {string | null} */
+  let loadError = $state(null);
+
+  const days      = $derived(groupByDate(entries));
   const sunByDate = $derived(data.sunByDate ?? {});
 
   /** @type {import('$lib/types').Entry | null} */
@@ -62,13 +67,23 @@
     panelEntry = null;  // now safe to clear – component is gone from DOM
   }
 
-  // On mount: read URL hash and pre-select the matching entry for deep links.
-  onMount(() => {
+  // On mount: fetch index.json live from S3, then handle deep-link hash.
+  onMount(async () => {
+    try {
+      const res = await fetch(`${ASSET_BASE}/index.json`);
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      entries = await res.json();
+    } catch (e) {
+      loadError = e.message;
+    } finally {
+      loading = false;
+    }
+
     const hash = window.location.hash.slice(1);
     if (hash) {
-        const entry = data.entries.find((e) => e.id === hash);
-        if (entry) { selectedEntry = entry; panelEntry = entry; showPanel = true; }
-      }
+      const entry = entries.find((e) => e.id === hash);
+      if (entry) { selectedEntry = entry; panelEntry = entry; showPanel = true; }
+    }
   });
 </script>
 
@@ -85,7 +100,7 @@
       onclick={() => (showOverview = !showOverview)}
       aria-pressed={showOverview}
       title="Toggle overview chart"
-    >{data.entries.length} recordings</button>
+    >{#if loading}Loading…{:else if loadError}Error{:else}{entries.length} recordings{/if}</button>
 
     <div class="zoom-controls" role="group" aria-label="Zoom level">
       {#each ZOOM_LEVELS as level (level.label)}
@@ -103,8 +118,13 @@
 
   <main class="diary-main">
     {#if showOverview}
-      <OverviewPanel entries={data.entries} />
+      <OverviewPanel {entries} />
     {/if}
+    {#if loading}
+      <p class="status-msg">Loading recordings…</p>
+    {:else if loadError}
+      <p class="status-msg error">Could not load index.json: {loadError}</p>
+    {:else}
     <DiaryTimeline
       {days}
       startHour={domain.startHour}
@@ -113,6 +133,7 @@
       onselect={selectEntry}
       {sunByDate}
     />
+    {/if}
   </main>
 </div>
 
@@ -203,4 +224,12 @@
   .diary-main {
     padding: 0.5rem 0;
   }
+
+  .status-msg {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: #999;
+    font-size: 0.9rem;
+  }
+  .status-msg.error { color: #c0392b; }
 </style>
