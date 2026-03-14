@@ -5,6 +5,14 @@
  * used both in page load functions (SSR/prerender) and in component logic.
  */
 
+// ─── Asset base URL ───────────────────────────────────────────────────────────
+
+/**
+ * Root URL for all remotely-hosted assets (audio, waveforms, index, sun).
+ * Change this one constant to move the data layer to a different host.
+ */
+export const ASSET_BASE = 'https://s3.angiehjort.com/barktown';
+
 // ─── Time helpers ─────────────────────────────────────────────────────────────
 
 /**

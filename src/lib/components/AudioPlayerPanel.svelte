@@ -1,6 +1,6 @@
 <script>
   import { onMount }       from 'svelte';
-  import { formatDuration, formatDate, downsampleWaveform, waveformNorm } from '$lib/utils.js';
+  import { formatDuration, formatDate, downsampleWaveform, waveformNorm, ASSET_BASE } from '$lib/utils.js';
   import { fly }           from 'svelte/transition';
 
   /**
@@ -79,7 +79,7 @@
     if (cached === 'error') return;
 
     wfLoading = true;
-    fetch('/' + path)
+    fetch(`${ASSET_BASE}/${path}`)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
@@ -178,7 +178,7 @@
   const formattedDur   = $derived(formatDuration(entry.durationSec));
   const formattedCur   = $derived(formatDuration(currentTime));
   const displayLabel   = $derived(entry.label || entry.time);
-  const audioSrc       = $derived('/' + entry.audioPath);
+  const audioSrc       = $derived(`${ASSET_BASE}/${entry.audioPath}`);
 </script>
 
 <!-- Slide up from bottom -->

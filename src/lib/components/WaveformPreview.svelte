@@ -1,5 +1,5 @@
 <script>
-  import { downsampleWaveform, waveformNorm } from '$lib/utils.js';
+  import { downsampleWaveform, waveformNorm, ASSET_BASE } from '$lib/utils.js';
 
   /**
    * @type {{
@@ -35,7 +35,7 @@
     if (cached === 'error') return;
 
     loading = true;
-    fetch('/' + path)
+    fetch(`${ASSET_BASE}/${path}`)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
