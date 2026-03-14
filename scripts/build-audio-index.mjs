@@ -4,16 +4,26 @@
  *
  * Preprocessing script for the barktown audio-diary project.
  *
- * Reads a folder of .m4a files whose filenames encode a timestamp and optional
+ * Reads a folder of .m4a / .aac files whose filenames encode a timestamp and optional
  * free-text note, then produces:
  *   1. index.json   – metadata array for every file, sorted chronologically
  *   2. waveform JSON files (one per audio file with duration >= 5 seconds)
  *
- * External tools required:
+ * Files must live in a YYYY/MM/ folder hierarchy and follow the naming pattern:
+ *   YYYY-MM-DD HH-MM-SS optional free text.m4a
+ *   YYYY-MM-DD HH-MM-SS optional free text.aac
+ *
+ * Example tree:
+ *   audio/
+ *     2026/
+ *       01/
+ *         2026-01-17 15-42-00 bark bark bark shot.m4a
+ *       02/
+ *         2026-02-07 17-25-00 barks.m4a
  *   - ffprobe   (part of FFmpeg)   https://ffmpeg.org/download.html
  *   - audiowaveform                https://github.com/bbc/audiowaveform
  *
- * The tools can be on your PATH, or you can point the script at a local
+ * External tools required: at a local
  * binary with --ffprobe-bin and --audiowaveform-bin.  Downloading a static
  * build avoids a full brew/apt install:
  *
@@ -48,27 +58,27 @@ import { spawnSync } from "node:child_process";
 // Edit these or override them via CLI flags (--input, --audio-out, etc.)
 
 const CONFIG = {
-  /** Folder that contains the raw .m4a files to process. */
-  inputDir: "./static/audio",
+  /** Folder that contains the raw audio files to process (scanned recursively by default). */
+  inputDir: "./audio",
 
   /**
    * Folder where processed audio files should live (web-accessible).
    * The script does NOT copy files unless --copy is passed.
-   * This is used only to construct the `audioPath` in index.json.
+   * Used to construct the `audioPath` in index.json.
    */
-  audioOutDir: "./static/audio",
+  audioOutDir: "./audio",
 
-  /** Folder where waveform JSON files will be written. */
-  waveformOutDir: "./static/waveforms",
+  /** Folder where waveform JSON files will be written (YYYY/MM sub-dirs are created automatically). */
+  waveformOutDir: "./waveforms",
 
   /** Output path for the generated index.json. */
-  indexOutPath: "./static/index.json",
+  indexOutPath: "./index.json",
 
   /**
    * Set to true to also scan sub-folders recursively.
-   * false = only the top-level inputDir is scanned (default).
+   * true = default (files live in YYYY/MM/ subfolders).
    */
-  recursive: false,
+  recursive: true,
 
   /**
    * Set to true to copy .m4a files from inputDir into audioOutDir.
@@ -109,18 +119,19 @@ const CONFIG = {
 
 // ─── Filename pattern ─────────────────────────────────────────────────────────
 //
-// Expected:  YYYY-MM-DD at HH-MM optional free text.m4a
+// Expected:  YYYY-MM-DD HH-MM-SS optional free text.(m4a|aac)
 // Examples:
-//   2026-02-07 at 17-25 barks.m4a
-//   2025-12-11 at 05-32.m4a
+//   2026-01-17 15-42-00 bark bark bark shot.m4a
+//   2025-12-11 05-32-00.aac
 //
 // Group 1: YYYY-MM-DD
 // Group 2: HH
 // Group 3: MM
-// Group 4: optional label (may be undefined)
+// Group 4: SS
+// Group 5: optional label (may be undefined)
 
 const FILENAME_RE =
-  /^(\d{4}-\d{2}-\d{2}) at (\d{2})-(\d{2})(?:\s+(.+?))?\.m4a$/i;
+  /^(\d{4}-\d{2}-\d{2}) (\d{2})-(\d{2})-(\d{2})(?:\s+(.+?))?\.(?:m4a|aac)$/i;
 
 // ─── CLI argument parsing ─────────────────────────────────────────────────────
 
@@ -133,14 +144,14 @@ Usage:
   node scripts/build-audio-index.mjs [options]
 
 Options:
-  --input             <dir>   Folder containing .m4a source files  (default: ${CONFIG.inputDir})
-  --audio-out         <dir>   Web-accessible audio folder          (default: ${CONFIG.audioOutDir})
-  --waveform-out      <dir>   Folder for generated waveform JSON   (default: ${CONFIG.waveformOutDir})
-  --index-out         <file>  Output path for index.json           (default: ${CONFIG.indexOutPath})
+  --input             <dir>   Folder containing audio source files  (default: ${CONFIG.inputDir})
+  --audio-out         <dir>   Web-accessible audio folder           (default: ${CONFIG.audioOutDir})
+  --waveform-out      <dir>   Folder for generated waveform JSON    (default: ${CONFIG.waveformOutDir})
+  --index-out         <file>  Output path for index.json            (default: ${CONFIG.indexOutPath})
   --ffprobe-bin       <path>  Path to ffprobe binary               (default: "ffprobe" on PATH)
   --ffmpeg-bin        <path>  Path to ffmpeg binary                (default: "ffmpeg" on PATH)
   --audiowaveform-bin <path>  Path to audiowaveform binary         (default: "audiowaveform" on PATH)
-  --recursive                 Scan inputDir recursively            (default: false)
+  --recursive                 Scan inputDir recursively            (default: true)
   --copy                      Copy .m4a files into audio-out       (default: false)
   --help                      Show this message
 
@@ -260,7 +271,7 @@ function checkRequiredTools(cfg) {
 // ─── File system helpers ──────────────────────────────────────────────────────
 
 /**
- * Collect .m4a file paths from `dir`.
+ * Collect .m4a and .aac file paths from `dir`.
  * @param {string} dir      Absolute or relative directory path.
  * @param {boolean} recursive  Recurse into sub-directories?
  * @returns {string[]}  Array of absolute file paths.
@@ -287,7 +298,7 @@ function collectM4aFiles(dir, recursive) {
       const fullPath = path.join(currentDir, entry.name);
       if (entry.isDirectory()) {
         if (recursive) walk(fullPath);
-      } else if (entry.isFile() && entry.name.toLowerCase().endsWith(".m4a")) {
+      } else if (entry.isFile() && /\.(m4a|aac)$/i.test(entry.name)) {
         results.push(fullPath);
       }
     }
@@ -305,9 +316,9 @@ function ensureDir(dirPath) {
 // ─── Filename parsing ─────────────────────────────────────────────────────────
 
 /**
- * Parse a .m4a filename into structured metadata.
+ * Parse a .m4a / .aac filename into structured metadata.
  *
- * @param {string} filename  Bare filename (no directory), e.g. "2026-02-07 at 17-25 barks.m4a"
+ * @param {string} filename  Bare filename (no directory), e.g. "2026-01-17 15-42-00 bark bark bark shot.m4a"
  * @returns {{ date, time, datetimeLocal, label, id } | null}
  *   Returns null if the filename does not match the expected pattern.
  */
@@ -315,24 +326,24 @@ function parseFilename(filename) {
   const match = FILENAME_RE.exec(filename);
   if (!match) return null;
 
-  const [, datePart, hh, mm, rawLabel] = match;
+  const [, datePart, hh, mm, ss, rawLabel] = match;
 
   // Trim any accidental extra whitespace from the free-text label.
   const label = rawLabel ? rawLabel.trim() : "";
 
-  const date = datePart;             // "2026-02-07"
-  const time = `${hh}:${mm}`;       // "17:25"
-  const datetimeLocal = `${date}T${time}:00`;
+  const date = datePart;                        // "2026-01-17"
+  const time = `${hh}:${mm}`;                  // "15:42"  (seconds not shown in UI)
+  const datetimeLocal = `${date}T${hh}:${mm}:${ss}`; // "2026-01-17T15:42:00"
 
   // Build a stable, filesystem-safe slug from the filename stem:
-  //   "2026-02-07 at 17-25 barks" → "2026-02-07_17-25_barks"
-  const stem = filename.replace(/\.m4a$/i, "");  // drop extension
+  //   "2026-01-17 15-42-00 bark bark bark shot" → "2026-01-17_15-42-00_bark_bark_bark_shot"
+  const ext  = filename.match(/\.(m4a|aac)$/i)?.[0] ?? '';
+  const stem = filename.slice(0, filename.length - ext.length);
   const id = stem
-    .replace(/ at /g, "_")            // " at " → "_"
-    .replace(/\s+/g, "_")             // remaining spaces → "_"
-    .replace(/[^a-zA-Z0-9_\-]/g, "_") // anything non-safe → "_"
-    .replace(/_+/g, "_")              // collapse repeated "_"
-    .replace(/^_|_$/g, "");           // trim leading/trailing "_"
+    .replace(/\s+/g, "_")                 // spaces → "_"
+    .replace(/[^a-zA-Z0-9_\-]/g, "_")    // anything non-safe → "_"
+    .replace(/_+/g, "_")                  // collapse repeated "_"
+    .replace(/^_|_$/g, "");               // trim leading/trailing "_"
 
   return { date, time, datetimeLocal, label, id };
 }
@@ -508,8 +519,8 @@ function classifyKind(durationSec, threshold) {
 /**
  * Build a web-relative path string.
  *
- * The static site serves everything under `static/`, so we strip that prefix
- * (if present) to produce paths like "audio/foo.m4a" or "waveforms/foo.json".
+ * Returns a forward-slash relative path from cwd to the given file,
+ * e.g. "audio/2026/01/2026-01-17 15-42-00 barks.m4a".
  *
  * @param {string} absOrRelPath
  * @param {string} cwd  Process working directory (default: process.cwd())
@@ -518,9 +529,7 @@ function classifyKind(durationSec, threshold) {
 function toWebPath(absOrRelPath, cwd = process.cwd()) {
   let rel = path.relative(cwd, path.resolve(absOrRelPath));
   // Normalise to forward slashes on Windows.
-  rel = rel.replace(/\\/g, "/");
-  // Strip a leading "static/" prefix if present – adjust if your site root differs.
-  return rel.replace(/^static\//, "");
+  return rel.replace(/\\/g, "/");
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
@@ -550,7 +559,7 @@ async function main() {
 
   // Collect source files.
   const files = collectM4aFiles(cfg.inputDir, cfg.recursive);
-  log(`Found ${files.length} .m4a file(s) in ${cfg.inputDir}`);
+  log(`Found ${files.length} audio file(s) in ${cfg.inputDir}`);
 
   if (files.length === 0) {
     log("Nothing to process. Exiting.");
@@ -586,10 +595,13 @@ async function main() {
     stats.parsed++;
 
     const { date, time, datetimeLocal, label, id } = parsed;
+    const [yyyy, mm] = date.split('-');
 
     // ── Optionally copy audio file ──
     if (cfg.copyAudio) {
-      copyAudioFile(filePath, path.resolve(cfg.audioOutDir));
+      const audioCopyDir = path.resolve(cfg.audioOutDir, yyyy, mm);
+      ensureDir(audioCopyDir);
+      copyAudioFile(filePath, audioCopyDir);
     }
 
     // ── Detect duration ──
@@ -608,9 +620,9 @@ async function main() {
     if (kind === "audio") {
       const waveformFilename = `${id}.json`;
       const waveformAbsOut = path.resolve(
-        cfg.waveformOutDir,
-        waveformFilename
+        cfg.waveformOutDir, yyyy, mm, waveformFilename
       );
+      ensureDir(path.dirname(waveformAbsOut));
       const ok = generateWaveform(filePath, waveformAbsOut, cfg);
       if (ok) {
         stats.waveformsGenerated++;
@@ -623,8 +635,10 @@ async function main() {
 
     // ── Build index entry ──
     const audioAbsPath = cfg.copyAudio
-      ? path.join(path.resolve(cfg.audioOutDir), filename)
+      ? path.join(path.resolve(cfg.audioOutDir), yyyy, mm, filename)
       : filePath;
+
+    // (ensureDir already called in the copy block above)
 
     const entry = {
       id,

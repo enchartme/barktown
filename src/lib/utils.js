@@ -85,7 +85,7 @@ export function groupByDate(entries) {
     });
   }
 
-  groups.sort((a, b) => a.date.localeCompare(b.date));
+  groups.sort((a, b) => b.date.localeCompare(a.date));
   return groups;
 }
 
