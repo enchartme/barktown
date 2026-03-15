@@ -1,11 +1,16 @@
 <script>
-  import { rollup, max } from 'd3-array';
+  import { max } from 'd3-array';
 
   /** @type {{ entries: import('$lib/types').Entry[] }} */
   let { entries } = $props();
 
-  // ── Colour classification (mirrors DiaryEntry.svelte labelBase) ────────────
-  // Priority order: first match wins (most severe first).
+  // ── Controls ──────────────────────────────────────────────────────────────
+  /** @type {'day' | 'week' | 'month'} */
+  let binning   = $state('day');
+  /** @type {'severe' | 'prevalent'} */
+  let colorMode = $state('severe');
+
+  // ── Colour rules (mirrors DiaryEntry.svelte labelBase) ────────────────────
   const COLOR_RULES = [
     { test: (l) => l.includes('shot') || l.includes('shooting'), color: '#51211d' },
     { test: (l) => l.includes('barkattack') || l.includes('bark bark bark'), color: '#ff4c4c' },
@@ -15,31 +20,94 @@
     { test: (l) => l.includes('bark'),       color: '#b0766e' },
     { test: (l) => l.includes('yap'),        color: '#726389' },
   ];
-
   const DEFAULT_COLOR = '#888888';
 
-  function eventColor(label) {
-    const l = (label ?? '').toLowerCase();
+  /** First rule that any entry in the bin matches (most severe). */
+  function severestColor(binEntries) {
     for (const rule of COLOR_RULES) {
-      if (rule.test(l)) return rule.color;
+      if (binEntries.some(e => rule.test((e.label ?? '').toLowerCase()))) return rule.color;
     }
     return DEFAULT_COLOR;
   }
 
-  /** Pick the most severe colour among a set of labels for one day. */
-  function dayColor(dayEntries) {
+  /** Rule with the highest match count across entries in the bin (most prevalent). */
+  function prevalentColor(binEntries) {
+    let bestColor = DEFAULT_COLOR;
+    let bestCount = 0;
     for (const rule of COLOR_RULES) {
-      if (dayEntries.some(e => rule.test((e.label ?? '').toLowerCase()))) return rule.color;
+      const n = binEntries.filter(e => rule.test((e.label ?? '').toLowerCase())).length;
+      if (n > bestCount) { bestCount = n; bestColor = rule.color; }
     }
-    return DEFAULT_COLOR;
+    return bestColor;
   }
 
-  // ── SVG dimensions (viewBox units) ────────────────────────────────────────
-  const CHART_H = 100; // viewBox height units
+  function binColor(binEntries) {
+    return colorMode === 'severe' ? severestColor(binEntries) : prevalentColor(binEntries);
+  }
+
+  // ── SVG dimensions ────────────────────────────────────────────────────────
+  const CHART_H = 100;
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+
+  /** 0-based day-of-year for a Date. */
+  function doy(d) {
+    const start = new Date(d.getFullYear(), 0, 0);
+    return Math.floor((d - start) / 86_400_000) - 1; // 0-indexed
+  }
+
+  /** Group entries from one year into bins; returns { bars, nBins }. */
+  function buildBars(year, yEntries) {
+    const isLeap     = new Date(+year, 1, 29).getDate() === 29;
+    const daysInYear = isLeap ? 366 : 365;
+
+    /** @type {Map<number, import('$lib/types').Entry[]>} */
+    const bins = new Map();
+
+    function binIndex(e) {
+      const d = new Date(e.date + 'T12:00:00');
+      if (binning === 'month') return d.getMonth();               // 0..11
+      if (binning === 'week')  return Math.floor(doy(d) / 7);    // 0..52
+      return doy(d);                                              // 0..364/365
+    }
+
+    for (const e of yEntries) {
+      const i = binIndex(e);
+      if (!bins.has(i)) bins.set(i, []);
+      bins.get(i).push(e);
+    }
+
+    const nBins =
+      binning === 'month' ? 12 :
+      binning === 'week'  ? Math.ceil(daysInYear / 7) :
+      daysInYear;
+
+    const bars = [];
+    for (let i = 0; i < nBins; i++) {
+      const binEntries = bins.get(i) ?? [];
+      const count      = binEntries.length;
+      const color      = count > 0 ? binColor(binEntries) : null;
+
+      // Human-readable tooltip label
+      let label;
+      if (binning === 'month') {
+        label = new Date(+year, i, 1).toLocaleString(undefined, { month: 'long' });
+      } else if (binning === 'week') {
+        const startD = new Date(+year, 0, i * 7 + 1);
+        label = `Week of ${startD.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
+      } else {
+        const d = new Date(+year, 0, i + 1);
+        label = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+      }
+
+      bars.push({ i, count, color, label });
+    }
+
+    return { bars, nBins };
+  }
 
   // ── Data derivation ───────────────────────────────────────────────────────
   const yearRows = $derived(() => {
-    // Group entries by year string
     const byYear = new Map();
     for (const e of entries) {
       const y = e.date.slice(0, 4);
@@ -48,31 +116,19 @@
     }
 
     const rows = [];
-    for (const [year, yEntries] of [...byYear.entries()].sort()) {
-      // Count and group entries per date
-      const countMap    = rollup(yEntries, v => v.length, d => d.date);
-      const entriesByDay = rollup(yEntries, v => v, d => d.date);
-
-      const isLeap      = new Date(+year, 1, 29).getDate() === 29;
-      const daysInYear  = isLeap ? 366 : 365;
-
-      const bars = [];
-      for (let doy = 0; doy < daysInYear; doy++) {
-        const d       = new Date(+year, 0, doy + 1);
-        const mm      = String(d.getMonth() + 1).padStart(2, '0');
-        const dd      = String(d.getDate()).padStart(2, '0');
-        const dateStr = `${year}-${mm}-${dd}`;
-        const count   = countMap.get(dateStr) ?? 0;
-        const color   = count > 0 ? dayColor(entriesByDay.get(dateStr) ?? []) : null;
-        bars.push({ doy, dateStr, count, color });
-      }
-
-      const maxCount = max(bars, b => b.count) ?? 1;
-      rows.push({ year, bars, daysInYear, maxCount });
+    for (const [year, yEntries] of [...byYear.entries()].sort((a, b) => b[0].localeCompare(a[0]))) {
+      const { bars, nBins } = buildBars(year, yEntries);
+      rows.push({ year, bars, nBins });
     }
+
+    // Shared Y domain across all years so bars are proportional.
+    const globalMax = max(rows.flatMap(r => r.bars), b => b.count) ?? 1;
+    for (const row of rows) row.maxCount = globalMax;
 
     return rows;
   });
+
+  const BAR_GAP = 0.1; // viewBox units gap on each side of a bar
 </script>
 
 <div class="overview">
@@ -82,21 +138,21 @@
       <div class="year-chart-wrap">
         <svg
           class="year-chart"
-          viewBox="0 0 {row.daysInYear} {CHART_H}"
+          viewBox="0 0 {row.nBins} {CHART_H}"
           preserveAspectRatio="none"
           role="img"
           aria-label="Event counts for {row.year}"
         >
-          {#each row.bars as bar (bar.doy)}
+          {#each row.bars as bar (bar.i)}
             {#if bar.count > 0}
               <rect
-                x={bar.doy + 0.1}
+                x={bar.i + BAR_GAP}
                 y={CHART_H - (bar.count / row.maxCount) * CHART_H}
-                width={0.8}
+                width={1 - BAR_GAP * 2}
                 height={(bar.count / row.maxCount) * CHART_H}
                 fill={bar.color}
               >
-                <title>{bar.dateStr}: {bar.count} event{bar.count !== 1 ? 's' : ''}</title>
+                <title>{bar.label}: {bar.count} event{bar.count !== 1 ? 's' : ''}</title>
               </rect>
             {/if}
           {/each}
@@ -104,7 +160,20 @@
       </div>
     </div>
   {/each}
-  <p class="overview-caption">Number of events per day, colored by most severe</p>
+  <p class="overview-caption">
+    Number of events per
+    <span class="btn-group">
+      {#each ['day', 'week', 'month'] as b (b)}
+        <button class="ctrl-btn" class:active={binning === b} onclick={() => binning = b}>{b}</button>
+      {/each}
+    </span>,
+    colored by
+    <span class="btn-group">
+      {#each [['severe', 'most severe'], ['prevalent', 'most prevalent']] as [val, lbl] (val)}
+        <button class="ctrl-btn" class:active={colorMode === val} onclick={() => colorMode = val}>{lbl}</button>
+      {/each}
+    </span>
+  </p>
 </div>
 
 <style>
@@ -112,6 +181,19 @@
     border-bottom: 2px solid #d0d0cc;
     background: #fafaf8;
     padding: 0.5rem 0;
+  }
+
+  /* ── Controls ── */
+  .overview-controls {
+    display: flex;
+    gap: 0.75rem;
+    padding: 4px 14px 6px;
+    flex-wrap: wrap;
+  }
+
+  .ctrl-group {
+    display: flex;
+    gap: 0.2rem;
   }
 
   /* ── Year row ── */
@@ -122,7 +204,6 @@
   }
   .year-row:last-child { border-bottom: none; }
 
-  /* Fixed-width year label column – matches DayRow date column */
   .year-label {
     flex-shrink: 0;
     width: 108px;
@@ -135,7 +216,6 @@
     align-items: center;
   }
 
-  /* Chart area fills remaining width */
   .year-chart-wrap {
     flex: 1;
     min-width: 0;
@@ -148,14 +228,42 @@
     height: 60px;
   }
 
+  /* ── Caption ── */
+  .overview-caption {
+    margin: 0;
+    padding: 4px 14px 6px;
+    font-size: 0.75rem;
+    color: #999;
+    line-height: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .btn-group {
+    display: inline-flex;
+    gap: 0.25rem;
+    align-items: center;
+  }
+
+  .ctrl-btn {
+    background: none;
+    border: 1px solid #d0d0cc;
+    border-radius: 4px;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.72rem;
+    cursor: pointer;
+    color: #666;
+    font-family: inherit;
+    vertical-align: baseline;
+    transition: background 0.1s, color 0.1s;
+  }
+  .ctrl-btn:hover  { background: #f0f0ec; }
+  .ctrl-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
   /* ── Mobile ── */
   @media (max-width: 520px) {
     .year-label { width: 56px; padding: 6px 4px 6px 8px; font-size: 0.75rem; }
-  }
-  .overview-caption {
-    margin: 0;
-    padding: 3px 14px 5px;
-    font-size: 0.75rem;
-    color: #bbb;
   }
 </style>
