@@ -97,9 +97,8 @@
   /* Vertical stem */
   .flag-stem {
     position: absolute;
-    left: 50%;
+    left: 0;
     top: 0;
-    transform: translateX(-50%);
     width: 2px;
     height: 100%;
     background: var(--c-base);
@@ -110,7 +109,7 @@
   /* Circle knob – only rendered for audio (SVG play icon) */
   .flag-knob {
     position: absolute;
-    left: 50%;
+    left: 0;
     top: 0px;
     transform: translateX(-50%);
     pointer-events: none;
@@ -122,7 +121,7 @@
   /* Label tag hanging to the right of the stem */
   .flag-tag {
     position: absolute;
-    left: 50%;
+    left: 0;
     top: 3px;
     display: flex;
     align-items: baseline;

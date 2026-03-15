@@ -1,0 +1,956 @@
+folders
+level 0
+  154 513 930 295 B in     883 files
+
+level 1
+    4 761 419 322 B in     441 files -- /!STUDENT WORKS
+      140 873 412 B in      10 files -- /AQAL
+        1 249 138 B in      11 files -- /DIS EVALUATIONS
+        3 357 568 B in       8 files -- /Data
+           86 285 B in      10 files -- /GRADES
+       43 128 463 B in      26 files -- /MEMES and BS charts
+        6 787 700 B in       8 files -- /Recommendation letters
+       41 183 348 B in      16 files -- /Selected photos
+    1 953 168 900 B in     233 files -- /books
+       56 740 472 B in      18 files -- /medals
+            4 998 B in       1 files -- /rPI
+        5 135 464 B in       7 files -- /receipts
+  147 201 077 850 B in      56 files -- /recordings
+       48 488 330 B in      27 files -- /software
+
+level 2
+      210 357 107 B in      62 files -- /!STUDENT WORKS/Escaping flatland
+        8 219 570 B in      77 files -- /!STUDENT WORKS/Field study GPX tracks
+        1 824 153 B in      18 files -- /!STUDENT WORKS/Generative art tests
+    2 169 702 225 B in      76 files -- /!STUDENT WORKS/Group projects
+    2 025 855 698 B in      34 files -- /!STUDENT WORKS/Holiday souvenir
+      187 050 493 B in      88 files -- /!STUDENT WORKS/OCD 1day
+      148 469 997 B in      81 files -- /!STUDENT WORKS/OCD 1week
+        3 382 653 B in       3 files -- /!STUDENT WORKS/River trails
+        6 557 426 B in       2 files -- /!STUDENT WORKS/troll
+        5 136 701 B in       3 files -- /MEMES and BS charts/remove to improve
+      320 042 981 B in       5 files -- /books/EN - Factfulness (Roslings)
+    1 165 820 112 B in     206 files -- /books/OCD
+       15 351 610 B in       4 files -- /books/hoe_math
+        3 658 747 B in       3 files -- /books/philisophy
+        4 555 322 B in       9 files -- /medals/2025 FA
+            4 998 B in       1 files -- /rPI/mixtour
+   29 850 200 144 B in       8 files -- /recordings/2024 color without screen rec
+    5 680 042 618 B in      13 files -- /recordings/2024-03-18 AXIDRAW
+   10 197 002 665 B in       3 files -- /recordings/2024-04-11 sorytelling without screen rec
+   17 431 882 378 B in       5 files -- /recordings/2025-03-10 The Eye
+   25 850 196 356 B in       7 files -- /recordings/2025-03-13 v cognition
+   14 993 542 219 B in       5 files -- /recordings/2025-03-17 TIPS
+   10 497 734 306 B in       3 files -- /recordings/2025-03-20 maps
+   24 104 333 428 B in       7 files -- /recordings/2025-04-07 BS charts
+       20 059 515 B in      26 files -- /software/Axidraw-Examples-1.4
+
+level 3
+        1 301 301 B in      18 files -- /!STUDENT WORKS/Field study GPX tracks/2023-05
+          814 459 B in      18 files -- /!STUDENT WORKS/Field study GPX tracks/2023-12
+        1 332 376 B in       9 files -- /!STUDENT WORKS/Field study GPX tracks/2024-12
+        2 102 584 B in      14 files -- /!STUDENT WORKS/Field study GPX tracks/2025-02 - DV DEV
+        1 018 867 B in       7 files -- /!STUDENT WORKS/Field study GPX tracks/2025-03 - DV DESIGN
+          825 366 B in       6 files -- /!STUDENT WORKS/Field study GPX tracks/2025-08 - DV DEV
+          824 617 B in       5 files -- /!STUDENT WORKS/Field study GPX tracks/2025-11 - DV DESIGN
+        1 824 153 B in      18 files -- /!STUDENT WORKS/Generative art tests/2025-05
+    1 969 563 840 B in      23 files -- /!STUDENT WORKS/Group projects/VIDEOS
+       42 797 783 B in      20 files -- /!STUDENT WORKS/OCD 1day/2023-05
+       88 982 773 B in      32 files -- /!STUDENT WORKS/OCD 1day/2023-12
+       55 269 937 B in      36 files -- /!STUDENT WORKS/OCD 1day/2024-05
+       75 498 742 B in      30 files -- /!STUDENT WORKS/OCD 1week/2023-05
+       33 959 803 B in      25 files -- /!STUDENT WORKS/OCD 1week/2023-12
+       39 011 452 B in      26 files -- /!STUDENT WORKS/OCD 1week/2024-05
+      189 242 359 B in      78 files -- /books/OCD/edited
+       81 853 049 B in      78 files -- /books/OCD/scans
+      138 144 598 B in      45 files -- /books/OCD/selection
+        1 888 574 B in       7 files -- /software/Axidraw-Examples-1.4/basic demos
+        8 814 173 B in       8 files -- /software/Axidraw-Examples-1.4/from launch video
+        8 723 953 B in       3 files -- /software/Axidraw-Examples-1.4/less basic demos
+          592 509 B in       6 files -- /software/Axidraw-Examples-1.4/test and cal
+
+files
+      1 593 566 B -- cdate 2023-08-28T16:37+00 -- mdate 2023-08-28T16:37+00 -- /!STUDENT WORKS/Escaping flatland/2022-12 - Diana Xu - my music collection.JPG
+        929 907 B -- cdate 2023-03-20T10:46+00 -- mdate 2023-03-20T10:46+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - CVL 1.jpeg
+        586 162 B -- cdate 2023-03-20T10:46+00 -- mdate 2023-03-20T10:46+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - CVL 2.jpeg
+        615 744 B -- cdate 2023-03-20T10:46+00 -- mdate 2023-03-20T10:46+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - CVL 3.jpeg
+      1 387 531 B -- cdate 2023-08-28T14:04+00 -- mdate 2026-03-12T08:55+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - barrettmiles_30456_1269493_1679258572.024643.jpg
+        899 032 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - beaveramelia_29939_1269571_1679293996.303893.jpg
+      1 073 155 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - beaveramelia_29939_1277587_1680500111.941105.jpg
+        553 538 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - dandawatearohi_30626_1269511_OCD Crafting visual languages #1.pdf
+        534 988 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - dandawatearohi_30626_1277494_mood-spending.pdf
+      2 191 124 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - fiorijulianna_30465_1263341_1677857070.7903728.jpg
+      9 867 022 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - fiorijulianna_30465_1270362_IMG_0953.pdf
+        239 906 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - fruehgabby_31019_1269550_Relationship Tree.png
+        441 835 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - fruehgabby_LATE_31019_1290167_DataVisOCD#2.pdf
+         40 162 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - hohnelizabeth_31052_1269518_mail-5.jpeg
+      1 386 618 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - hohnelizabeth_31052_1277451_OCD2_1.jpeg
+        890 123 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - hohnelizabeth_31052_1277452_OCD2_2.jpeg
+        438 746 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - hohnelizabeth_31052_1277453_OCD2_3.jpeg
+      2 258 258 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - jearannalise_31131_1269582_1679300394.9978251.jpg
+      2 413 955 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - jearannalise_31131_1277617_1680507006.793498.jpg
+        993 365 B -- cdate 2023-10-18T17:43+00 -- mdate 2023-10-18T17:43+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - kingdexter_30561_1271801_1679558372.0427861.jpg
+      2 362 300 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - kingdexter_30561_1271802_1679558365.538559.jpg
+        176 116 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - kingdexter_LATE_30561_1297741_chart2.png
+        207 279 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - kingdexter_LATE_30561_1297742_chart.png
+      1 274 184 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - lonerganfiona_30887_1269572_Note Feb 27, 2023 (3).pdf
+      4 209 869 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - lonerganfiona_LATE_30887_1279003_Note Apr 4, 2023.pdf
+      1 185 906 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - luccioliviviana_01.jpg
+      1 227 700 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - luccioliviviana_02.jpg
+      1 094 413 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - luccioliviviana_03.jpg
+      1 496 503 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - luccioliviviana_04.jpg
+      1 921 524 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - luccioliviviana_05.jpg
+      1 969 914 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - luccioliviviana_06.jpg
+      2 088 526 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - luccioliviviana_07.jpg
+      1 433 363 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - luccioliviviana_08.jpg
+      2 509 118 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - luccioliviviana_30953_1277560_spotify playlists .jpeg
+      2 609 352 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - luccioliviviana_30953_1277561_spotify playlists with key.jpeg
+      3 795 606 B -- cdate 2023-08-28T16:10+00 -- mdate 2023-08-28T16:10+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - mikayla_OCD v1.gif
+      1 258 771 B -- cdate 2023-08-28T16:10+00 -- mdate 2023-08-28T16:10+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - mikayla_OCD v2.jpg
+      3 391 162 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - mikayla_OCD v3.png
+        208 071 B -- cdate 2023-08-28T16:12+00 -- mdate 2023-08-28T16:12+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - mikayla_chat.png
+      1 139 312 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - randolphreid_29296_1277573_Reid Randolph - To-Do List.jpg
+      2 615 644 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - shievelyn_28677_1269358_IMG_7271.jpeg
+        691 271 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - shievelyn_28677_1277371_Evelyn Shi OCD.jpg
+        160 203 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - terminirosemary_29275_1269543_draft.jpg
+        229 043 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - terminirosemary_29275_1269544_legend.jpg
+        253 260 B -- cdate 2023-08-28T14:04+00 -- mdate 2023-08-28T14:04+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - terminirosemary_29275_1269545_viz.jpg
+        983 037 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - terminirosemary_LATE_29275_1277899_visual-language-2-2.html
+        268 382 B -- cdate 2023-08-28T14:05+00 -- mdate 2023-08-28T14:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-05 - terminirosemary_LATE_29275_1277900_Screen Shot 2023-04-03 at 4.58.12 PM.png
+     75 882 232 B -- cdate 2023-12-29T12:49+00 -- mdate 2023-12-29T12:49+00 -- /!STUDENT WORKS/Escaping flatland/2023-12 - Daisy RPReplay_Final1703414625.MOV
+      9 876 211 B -- cdate 2023-12-29T12:28+00 -- mdate 2023-12-29T12:28+00 -- /!STUDENT WORKS/Escaping flatland/2023-12 - Noah's Family Animation.mp4
+      2 946 318 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-12 - dietschebrogan_32189_1420620_IMG_9356.jpg
+        979 266 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-12 - ghosharushi_33165_1420709_Escaping Flatland #1 (Arushi).pdf
+      3 346 151 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-12 - hendelmannoah_32139_1421211_IMG_4263.pdf
+      2 560 787 B -- cdate 2023-10-26T09:08+00 -- mdate 2023-10-26T09:08+00 -- /!STUDENT WORKS/Escaping flatland/2023-12 - hollifielddaisy_Escaping Flatland.pdf
+        906 313 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-12 - hollifielddaisy_LATE_21715_1422791_Escaping Flatland-1.pdf
+        680 357 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-12 - makazhubob_LATE_33831_1421304_DataVisActivityRoutine.pdf
+      1 987 158 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-12 - sachmannick_LATE_33603_1422499_Note Oct 24, 2023.pdf
+        302 926 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/Escaping flatland/2023-12 - salazarmorongabe_33616_1421162_1698019818.022491.jpg
+      2 270 322 B -- cdate 2023-10-26T07:05+00 -- mdate 2026-03-12T08:56+00 -- /!STUDENT WORKS/Escaping flatland/2023-12 - smithgabrielle_34028_1420781_1698007541.8646.jpg
+        573 519 B -- cdate 2025-03-13T08:40+00 -- mdate 2025-03-13T08:40+00 -- /!STUDENT WORKS/Escaping flatland/2023-12 - vivian johnson Distractions - 1.png
+        511 094 B -- cdate 2025-03-13T08:41+00 -- mdate 2025-03-13T08:41+00 -- /!STUDENT WORKS/Escaping flatland/2023-12 - vivian johnson Distractions - 2.png
+        553 004 B -- cdate 2025-03-13T08:41+00 -- mdate 2025-03-13T08:41+00 -- /!STUDENT WORKS/Escaping flatland/2023-12 - vivian johnson Distractions - 3.png
+     36 886 883 B -- cdate 2024-12-11T20:38+00 -- mdate 2024-12-11T20:38+00 -- /!STUDENT WORKS/Escaping flatland/2024-12 - Annika day of conversations.mov
+          6 148 B -- cdate 2023-02-19T23:25+00 -- mdate 2023-02-19T23:25+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/.DS_Store
+        325 334 B -- cdate 2023-02-19T23:24+00 -- mdate 2023-02-19T23:24+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/all.gpx
+        127 279 B -- cdate 2023-02-19T22:55+00 -- mdate 2023-02-19T22:55+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/amelia.gpx
+          3 671 B -- cdate 2023-02-19T22:55+00 -- mdate 2023-02-19T22:55+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/annalise.gpx
+         63 248 B -- cdate 2023-02-19T22:55+00 -- mdate 2023-02-19T22:55+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/arohi.gpx
+         28 341 B -- cdate 2023-02-19T22:55+00 -- mdate 2023-02-19T22:55+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/dexter.gpx
+          4 240 B -- cdate 2023-02-19T22:55+00 -- mdate 2023-02-19T22:55+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/elizabeth.gpx
+         19 386 B -- cdate 2023-02-19T22:54+00 -- mdate 2023-02-19T22:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/evelyn.gpx
+          3 892 B -- cdate 2023-02-19T22:54+00 -- mdate 2023-02-19T22:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/fiona.gpx
+         47 840 B -- cdate 2023-02-19T22:54+00 -- mdate 2023-02-19T22:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/gabby.gpx
+         35 006 B -- cdate 2023-02-19T22:54+00 -- mdate 2023-02-19T22:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/julianna.gpx
+        122 015 B -- cdate 2023-02-19T22:54+00 -- mdate 2023-02-19T22:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/mikayla.gpx
+        125 392 B -- cdate 2023-02-19T22:54+00 -- mdate 2023-02-19T22:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/miles.gpx
+        137 321 B -- cdate 2023-02-20T13:16+00 -- mdate 2023-02-20T13:16+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/reid.gpx
+         74 473 B -- cdate 2023-02-19T22:54+00 -- mdate 2023-02-19T22:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/rosemary.gpx
+        124 750 B -- cdate 2023-02-24T12:43+00 -- mdate 2023-02-24T12:43+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/track_points.geojson
+         13 205 B -- cdate 2023-02-24T12:43+00 -- mdate 2023-02-24T12:43+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/tracks.geojson
+         39 760 B -- cdate 2023-02-19T22:54+00 -- mdate 2023-02-19T22:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-05/viviana.gpx
+         65 695 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/arushi.gpx
+         24 595 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/bob.gpx
+         60 208 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/brogan.gpx
+         35 305 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/daisy.gpx
+         37 748 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/diego.gpx
+         71 148 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/gabe.gpx
+         28 230 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/gabrielle.gpx
+         55 942 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/izaac.gpx
+         11 128 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/jahnavi.gpx
+         41 124 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/jeanie.gpx
+         32 268 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/morgan.gpx
+         72 064 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/nick.gpx
+         69 536 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/noah.gpx
+         42 468 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/reed.gpx
+         35 260 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/sumeyya.gpx
+         66 584 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/thomas.gpx
+         33 364 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/valerie.gpx
+         31 792 B -- cdate 2023-09-20T17:42+00 -- mdate 2023-09-20T17:42+00 -- /!STUDENT WORKS/Field study GPX tracks/2023-12/vivian.gpx
+        159 563 B -- cdate 2024-08-29T05:54+00 -- mdate 2024-08-29T05:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2024-12/amelia.gpx
+        159 640 B -- cdate 2024-08-29T05:54+00 -- mdate 2024-08-29T05:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2024-12/annika.gpx
+        161 192 B -- cdate 2024-08-29T05:54+00 -- mdate 2024-08-29T05:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2024-12/eric.gpx
+         51 930 B -- cdate 2024-08-29T05:54+00 -- mdate 2024-08-29T05:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2024-12/grace.gpx
+        193 102 B -- cdate 2024-08-29T05:54+00 -- mdate 2024-08-29T05:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2024-12/liliana.gpx
+        176 857 B -- cdate 2024-08-29T05:54+00 -- mdate 2024-08-29T05:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2024-12/maddy.gpx
+        117 255 B -- cdate 2024-08-29T05:54+00 -- mdate 2024-08-29T05:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2024-12/matt.gpx
+         71 312 B -- cdate 2024-08-29T05:54+00 -- mdate 2024-08-29T05:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2024-12/quintin.gpx
+        241 525 B -- cdate 2024-08-29T05:54+00 -- mdate 2024-08-29T05:54+00 -- /!STUDENT WORKS/Field study GPX tracks/2024-12/tyler.gpx
+        230 183 B -- cdate 2025-01-23T08:39+00 -- mdate 2025-01-23T08:39+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-02 - DV DEV/aedan.gpx
+        335 141 B -- cdate 2025-01-23T08:44+00 -- mdate 2025-01-23T08:44+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-02 - DV DEV/angie.gpx
+         85 101 B -- cdate 2025-01-23T08:41+00 -- mdate 2025-01-23T08:41+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-02 - DV DEV/anna.gpx
+         87 786 B -- cdate 2025-01-23T08:41+00 -- mdate 2025-01-23T08:41+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-02 - DV DEV/charlene.gpx
+         86 971 B -- cdate 2025-01-23T08:41+00 -- mdate 2025-01-23T08:41+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-02 - DV DEV/eliana.gpx
+        175 191 B -- cdate 2025-01-23T08:41+00 -- mdate 2025-01-23T08:41+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-02 - DV DEV/grace.gpx
+        126 775 B -- cdate 2025-01-23T08:41+00 -- mdate 2025-01-23T08:41+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-02 - DV DEV/ivan.gpx
+        180 091 B -- cdate 2025-01-23T08:40+00 -- mdate 2025-01-23T08:40+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-02 - DV DEV/mattea.gpx
+        116 095 B -- cdate 2025-01-23T08:40+00 -- mdate 2025-01-23T08:40+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-02 - DV DEV/matthew1.gpx
+         46 113 B -- cdate 2025-01-23T08:40+00 -- mdate 2025-01-23T08:40+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-02 - DV DEV/matthew2.gpx
+         80 873 B -- cdate 2025-01-23T08:40+00 -- mdate 2025-01-23T08:40+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-02 - DV DEV/mayuka.gpx
+        251 010 B -- cdate 2025-01-23T08:40+00 -- mdate 2025-01-23T08:40+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-02 - DV DEV/meghan.gpx
+         98 022 B -- cdate 2025-01-23T08:40+00 -- mdate 2025-01-23T08:40+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-02 - DV DEV/rosie.gpx
+        203 232 B -- cdate 2025-01-23T08:40+00 -- mdate 2025-01-23T08:40+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-02 - DV DEV/xavier.gpx
+        186 650 B -- cdate 2025-03-20T08:58+00 -- mdate 2025-03-20T08:58+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-03 - DV DESIGN/amelia.gpx
+        292 834 B -- cdate 2025-03-20T08:58+00 -- mdate 2025-03-20T08:58+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-03 - DV DESIGN/iker.gpx
+        189 045 B -- cdate 2025-03-20T08:58+00 -- mdate 2025-03-20T08:58+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-03 - DV DESIGN/kyla.gpx
+        184 898 B -- cdate 2025-03-20T08:58+00 -- mdate 2025-03-20T08:58+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-03 - DV DESIGN/matthew.gpx
+        129 068 B -- cdate 2025-03-20T08:58+00 -- mdate 2025-03-20T08:58+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-03 - DV DESIGN/orthy.gpx
+         35 606 B -- cdate 2025-03-20T08:58+00 -- mdate 2025-03-20T08:58+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-03 - DV DESIGN/ryan.gpx
+            766 B -- cdate 2025-03-20T08:58+00 -- mdate 2025-03-20T08:58+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-03 - DV DESIGN/tommy.gpx
+         47 007 B -- cdate 2025-08-28T09:11+00 -- mdate 2025-08-28T09:11+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-08 - DV DEV/bertha.gpx
+        306 376 B -- cdate 2025-08-28T09:11+00 -- mdate 2025-08-28T09:11+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-08 - DV DEV/chelsea.gpx
+         69 962 B -- cdate 2025-08-28T09:10+00 -- mdate 2025-08-28T09:10+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-08 - DV DEV/jack.gpx
+        195 701 B -- cdate 2025-08-28T09:10+00 -- mdate 2025-08-28T09:10+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-08 - DV DEV/moyartu.gpx
+        125 075 B -- cdate 2025-08-28T09:10+00 -- mdate 2025-08-28T09:10+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-08 - DV DEV/olivia.gpx
+         81 245 B -- cdate 2025-08-28T09:11+00 -- mdate 2025-08-28T09:11+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-08 - DV DEV/rex.gpx
+        189 536 B -- cdate 2025-11-24T08:31+00 -- mdate 2025-11-24T08:31+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-11 - DV DESIGN/ainsley.gpx
+        154 417 B -- cdate 2025-11-24T08:31+00 -- mdate 2025-11-24T08:31+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-11 - DV DESIGN/charlie.gpx
+        120 674 B -- cdate 2025-11-24T08:31+00 -- mdate 2025-11-24T08:31+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-11 - DV DESIGN/joram.gpx
+        214 992 B -- cdate 2025-11-24T08:31+00 -- mdate 2025-11-24T08:31+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-11 - DV DESIGN/sam.gpx
+        144 998 B -- cdate 2025-11-24T08:30+00 -- mdate 2025-11-24T08:30+00 -- /!STUDENT WORKS/Field study GPX tracks/2025-11 - DV DESIGN/tally.gpx
+         16 788 B -- cdate 2025-04-29T16:08+00 -- mdate 2025-04-29T16:08+00 -- /!STUDENT WORKS/Generative art tests/2025-05/baumgardnermattea_44331_1960578_inkscape_mb.svg
+         10 240 B -- cdate 2025-04-29T16:08+00 -- mdate 2025-04-29T16:08+00 -- /!STUDENT WORKS/Generative art tests/2025-05/betancourtivan_43566_1960622_svg.svg
+         21 416 B -- cdate 2025-04-29T16:08+00 -- mdate 2025-04-29T16:08+00 -- /!STUDENT WORKS/Generative art tests/2025-05/burkeaedan_44574_1960550_svg.svg
+         17 876 B -- cdate 2025-04-29T16:08+00 -- mdate 2025-04-29T16:08+00 -- /!STUDENT WORKS/Generative art tests/2025-05/chencharlene_44496_1960123_gen_art_drawing.svg
+         11 393 B -- cdate 2025-04-29T16:08+00 -- mdate 2025-04-29T16:08+00 -- /!STUDENT WORKS/Generative art tests/2025-05/chengrace_43788_1959788_svg_variations-1.svg
+         36 261 B -- cdate 2025-04-29T16:08+00 -- mdate 2025-04-29T16:08+00 -- /!STUDENT WORKS/Generative art tests/2025-05/driscollmeghan_42192_1957805_generativeart.svg
+         21 606 B -- cdate 2025-04-29T16:08+00 -- mdate 2025-04-29T16:08+00 -- /!STUDENT WORKS/Generative art tests/2025-05/gibseliana_42426_1959784_svg.svg
+         48 982 B -- cdate 2025-04-29T16:08+00 -- mdate 2025-04-29T16:08+00 -- /!STUDENT WORKS/Generative art tests/2025-05/kimxavier_44629_1960624_drawing.svg
+         25 470 B -- cdate 2025-04-29T16:08+00 -- mdate 2025-04-29T16:08+00 -- /!STUDENT WORKS/Generative art tests/2025-05/larsonrosie_44495_1958269_GenArt.svg
+         34 649 B -- cdate 2025-04-29T19:47+00 -- mdate 2025-04-29T19:47+00 -- /!STUDENT WORKS/Generative art tests/2025-05/marquezikersanchez_42964_1960365_Generative Art Iker Sanchez.svg
+         19 567 B -- cdate 2025-04-29T19:47+00 -- mdate 2025-04-29T19:47+00 -- /!STUDENT WORKS/Generative art tests/2025-05/mcenroeryan_LATE_44673_1961853_svg.svg
+         12 855 B -- cdate 2025-04-29T16:08+00 -- mdate 2025-04-29T16:08+00 -- /!STUDENT WORKS/Generative art tests/2025-05/nguyenkhai_LATE_43879_1968942_svg (4).svg
+        231 640 B -- cdate 2025-04-29T19:47+00 -- mdate 2025-04-29T19:47+00 -- /!STUDENT WORKS/Generative art tests/2025-05/orthywasifa_LATE_44078_1965996_data vis.svg
+      1 202 307 B -- cdate 2025-04-29T16:08+00 -- mdate 2025-04-29T16:08+00 -- /!STUDENT WORKS/Generative art tests/2025-05/otsukimayuka_44370_1960403_EatTongue.svg
+         33 296 B -- cdate 2025-04-29T19:47+00 -- mdate 2025-04-29T19:47+00 -- /!STUDENT WORKS/Generative art tests/2025-05/picanokyla_44609_1958404_drawing.svg
+         12 537 B -- cdate 2025-04-29T19:47+00 -- mdate 2025-04-29T19:47+00 -- /!STUDENT WORKS/Generative art tests/2025-05/seideltommy_44690_1960251_svg (1).svg
+         28 375 B -- cdate 2025-04-29T19:47+00 -- mdate 2025-04-29T19:47+00 -- /!STUDENT WORKS/Generative art tests/2025-05/smithamelia_LATE_44455_1960915_svg.svg
+         38 895 B -- cdate 2025-04-29T16:08+00 -- mdate 2025-04-29T16:08+00 -- /!STUDENT WORKS/Generative art tests/2025-05/zhangmatthew_44451_1960484_generativeArtTutorial.svg
+      8 589 453 B -- cdate 2023-08-28T16:38+00 -- mdate 2023-08-28T16:38+00 -- /!STUDENT WORKS/Group projects/2022-12 - Microplastics in cosmetics proposal.pptx
+        468 000 B -- cdate 2023-05-08T08:06+00 -- mdate 2023-05-08T08:06+00 -- /!STUDENT WORKS/Group projects/2023-05 - Data Viz - Final Presentation.pdf
+        196 488 B -- cdate 2023-05-02T17:14+00 -- mdate 2023-05-02T17:14+00 -- /!STUDENT WORKS/Group projects/2023-05 - Screenshot 2023-05-02 at 19.11.27.png
+             43 B -- cdate 2023-12-15T12:10+00 -- mdate 2023-12-15T12:10+00 -- /!STUDENT WORKS/Group projects/2023-12 - Forest.links
+     35 067 993 B -- cdate 2023-12-15T12:09+00 -- mdate 2023-12-15T12:09+00 -- /!STUDENT WORKS/Group projects/2023-12 - Forest.pdf
+             43 B -- cdate 2023-12-15T11:54+00 -- mdate 2023-12-15T11:54+00 -- /!STUDENT WORKS/Group projects/2023-12 - Stargazing.links
+      4 882 494 B -- cdate 2023-12-15T11:49+00 -- mdate 2023-12-15T11:49+00 -- /!STUDENT WORKS/Group projects/2023-12 - Stargazing.pptx
+      2 022 055 B -- cdate 2023-12-15T11:40+00 -- mdate 2023-12-15T11:40+00 -- /!STUDENT WORKS/Group projects/2023-12 - Transport website.png
+             96 B -- cdate 2023-12-15T11:42+00 -- mdate 2023-12-15T11:42+00 -- /!STUDENT WORKS/Group projects/2023-12 - Transport.links
+     35 874 528 B -- cdate 2023-12-15T11:37+00 -- mdate 2023-12-15T11:37+00 -- /!STUDENT WORKS/Group projects/2023-12 - Transport.pptx
+      7 910 271 B -- cdate 2023-12-15T12:04+00 -- mdate 2023-12-15T12:04+00 -- /!STUDENT WORKS/Group projects/2023-12 - Views on Homosexuality DIS-only.pdf
+            125 B -- cdate 2023-12-15T12:07+00 -- mdate 2023-12-15T12:07+00 -- /!STUDENT WORKS/Group projects/2023-12 - Views on.links
+          3 179 B -- cdate 2024-05-08T21:20+00 -- mdate 2024-05-08T21:20+00 -- /!STUDENT WORKS/Group projects/2023-12 - notes
+      7 097 393 B -- cdate 2024-05-08T20:51+00 -- mdate 2024-05-08T20:51+00 -- /!STUDENT WORKS/Group projects/2024-05 - Coral Bleaching Across the World.pdf
+             57 B -- cdate 2024-05-08T20:55+00 -- mdate 2024-05-08T20:55+00 -- /!STUDENT WORKS/Group projects/2024-05 - Coral bleach.links
+      2 005 744 B -- cdate 2024-05-08T20:58+00 -- mdate 2024-05-08T20:58+00 -- /!STUDENT WORKS/Group projects/2024-05 - Food Insecurity Presentation.pdf
+             51 B -- cdate 2024-05-08T20:58+00 -- mdate 2024-05-08T20:58+00 -- /!STUDENT WORKS/Group projects/2024-05 - Food insecurity.links
+      3 954 305 B -- cdate 2024-05-08T20:50+00 -- mdate 2024-05-08T20:50+00 -- /!STUDENT WORKS/Group projects/2024-05 - Happiness IHOP Presentation.pdf
+             47 B -- cdate 2024-05-08T20:50+00 -- mdate 2024-05-08T20:50+00 -- /!STUDENT WORKS/Group projects/2024-05 - Happiness-IHoP.links
+            105 B -- cdate 2024-05-08T20:56+00 -- mdate 2024-05-08T20:56+00 -- /!STUDENT WORKS/Group projects/2024-05 - Renewable energy.links
+      2 842 418 B -- cdate 2024-05-08T20:57+00 -- mdate 2024-05-08T20:57+00 -- /!STUDENT WORKS/Group projects/2024-05 - Renewable energy.pdf
+        133 706 B -- cdate 2024-12-11T10:18+00 -- mdate 2024-12-11T10:18+00 -- /!STUDENT WORKS/Group projects/2024-12 - Athletes slides.pdf
+             47 B -- cdate 2024-12-11T10:22+00 -- mdate 2024-12-11T10:22+00 -- /!STUDENT WORKS/Group projects/2024-12 - Athletes.links
+      1 760 384 B -- cdate 2024-12-11T10:20+00 -- mdate 2024-12-11T10:20+00 -- /!STUDENT WORKS/Group projects/2024-12 - Mental slides.pdf
+            152 B -- cdate 2024-12-11T10:21+00 -- mdate 2024-12-11T10:21+00 -- /!STUDENT WORKS/Group projects/2024-12 - Mental.links
+      2 361 399 B -- cdate 2024-12-11T10:26+00 -- mdate 2024-12-11T10:26+00 -- /!STUDENT WORKS/Group projects/2024-12 - Schools slides.pdf
+             53 B -- cdate 2024-12-11T10:28+00 -- mdate 2024-12-11T10:28+00 -- /!STUDENT WORKS/Group projects/2024-12 - Schools.links
+      2 241 827 B -- cdate 2025-05-08T10:00+00 -- mdate 2025-05-08T10:00+00 -- /!STUDENT WORKS/Group projects/2025-05 - AQI - Final Presentation.pdf
+      3 832 629 B -- cdate 2025-05-08T10:10+00 -- mdate 2025-05-08T10:10+00 -- /!STUDENT WORKS/Group projects/2025-05 - AQI - LEGEND.pdf
+          5 876 B -- cdate 2025-05-08T10:10+00 -- mdate 2025-05-08T10:10+00 -- /!STUDENT WORKS/Group projects/2025-05 - AQI - code.py
+     22 389 450 B -- cdate 2025-05-11T12:28+00 -- mdate 2025-05-11T12:28+00 -- /!STUDENT WORKS/Group projects/2025-05 - AQI - video.MOV
+      1 547 164 B -- cdate 2025-05-08T10:09+00 -- mdate 2025-05-08T10:09+00 -- /!STUDENT WORKS/Group projects/2025-05 - CoinTracker - Final Presentation.pdf
+         40 643 B -- cdate 2025-05-08T10:12+00 -- mdate 2025-05-08T10:12+00 -- /!STUDENT WORKS/Group projects/2025-05 - CoinTracker - LEGEND1.pdf
+        217 679 B -- cdate 2025-05-08T10:28+00 -- mdate 2025-05-08T10:28+00 -- /!STUDENT WORKS/Group projects/2025-05 - CoinTracker - LEGEND2.pdf
+         70 938 B -- cdate 2025-05-08T11:27+00 -- mdate 2025-05-08T11:27+00 -- /!STUDENT WORKS/Group projects/2025-05 - Flight Nanny - LEGEND.pdf
+      2 395 748 B -- cdate 2025-05-08T09:47+00 -- mdate 2025-05-08T09:47+00 -- /!STUDENT WORKS/Group projects/2025-05 - Flight nanny.pdf
+      2 350 957 B -- cdate 2025-05-08T10:03+00 -- mdate 2025-05-08T10:03+00 -- /!STUDENT WORKS/Group projects/2025-05 - GEMpi Weather Forecast - Final Presentation.pdf
+         80 627 B -- cdate 2025-05-08T10:13+00 -- mdate 2025-05-08T10:13+00 -- /!STUDENT WORKS/Group projects/2025-05 - GEMpi Weather Forecast - LEGEND.pdf
+          8 475 B -- cdate 2025-05-09T20:58+00 -- mdate 2025-05-09T20:58+00 -- /!STUDENT WORKS/Group projects/2025-05 - GEMpi Weather Forecast - code.zip
+        415 829 B -- cdate 2025-05-14T08:13+00 -- mdate 2025-05-14T08:13+00 -- /!STUDENT WORKS/Group projects/2025-05 - Music Galaxy.pdf
+      4 460 008 B -- cdate 2025-05-09T21:04+00 -- mdate 2025-05-09T21:04+00 -- /!STUDENT WORKS/Group projects/2025-05 - Power and Politics - Final Presentation.pdf
+              0 B -- cdate 2025-12-10T09:03+00 -- mdate 2025-12-10T09:03+00 -- /!STUDENT WORKS/Group projects/2025-12 - F1 ELO.links
+        766 800 B -- cdate 2025-12-10T08:53+00 -- mdate 2025-12-10T08:53+00 -- /!STUDENT WORKS/Group projects/2025-12 - F1 ELO.pdf
+         36 413 B -- cdate 2025-12-10T13:04+00 -- mdate 2025-12-10T13:04+00 -- /!STUDENT WORKS/Group projects/2025-12 - Football Scores Poster.pdf
+        939 920 B -- cdate 2025-12-10T13:04+00 -- mdate 2025-12-10T13:04+00 -- /!STUDENT WORKS/Group projects/2025-12 - Football scores Slides.pdf
+        301 655 B -- cdate 2025-12-10T10:13+00 -- mdate 2025-12-10T10:13+00 -- /!STUDENT WORKS/Group projects/2025-12 - NEWS Poster.png
+        314 059 B -- cdate 2025-12-10T12:23+00 -- mdate 2025-12-10T12:23+00 -- /!STUDENT WORKS/Group projects/2025-12 - News Poster.pdf
+      5 689 720 B -- cdate 2025-12-10T10:13+00 -- mdate 2025-12-10T10:13+00 -- /!STUDENT WORKS/Group projects/2025-12 - News Slides.pdf
+             63 B -- cdate 2025-12-10T09:02+00 -- mdate 2025-12-10T09:02+00 -- /!STUDENT WORKS/Group projects/2025-12 - Rust Belt.links
+      2 571 502 B -- cdate 2025-12-10T08:58+00 -- mdate 2025-12-10T08:58+00 -- /!STUDENT WORKS/Group projects/2025-12 - Rust Belt.pdf
+     28 294 319 B -- cdate 2025-12-10T08:54+00 -- mdate 2025-12-10T08:54+00 -- /!STUDENT WORKS/Group projects/2025-12 - Rust Belt.pptx
+      4 265 546 B -- cdate 2025-12-10T11:13+00 -- mdate 2025-12-10T11:13+00 -- /!STUDENT WORKS/Group projects/2025-12 - SL Departure Poster.pdf
+      1 729 909 B -- cdate 2025-12-10T12:15+00 -- mdate 2025-12-10T12:15+00 -- /!STUDENT WORKS/Group projects/2025-12 - SL Departure Slides.pdf
+      6 561 442 B -- cdate 2023-05-08T17:19+00 -- mdate 2023-05-08T17:19+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2023-05 - CourseMunk.mp4
+     14 953 866 B -- cdate 2023-12-15T11:47+00 -- mdate 2023-12-15T11:47+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2023-12 - Stargazing tiktok.MOV
+      4 043 025 B -- cdate 2023-12-15T11:35+00 -- mdate 2023-12-15T11:35+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2023-12 - Transport Tiktok.mp4
+     11 976 129 B -- cdate 2023-12-15T12:04+00 -- mdate 2023-12-15T12:04+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2023-12 - Views on Homosexuality tiktok DIS-only.mp4
+     71 478 033 B -- cdate 2023-12-15T11:58+00 -- mdate 2023-12-15T11:58+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2023-12 - forest tiktok-1.MOV
+      8 110 964 B -- cdate 2024-05-05T17:10+00 -- mdate 2024-05-05T17:10+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2024-05 - Coral bleach.MOV
+    406 477 416 B -- cdate 2024-05-06T09:50+00 -- mdate 2024-05-06T09:50+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2024-05 - Energy mix.mov
+    134 396 208 B -- cdate 2024-05-06T02:57+00 -- mdate 2024-05-06T02:57+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2024-05 - Food insecurity.mp4
+     68 256 912 B -- cdate 2024-05-06T09:50+00 -- mdate 2024-05-06T09:50+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2024-05 - Happiness IHoP.mp4
+    510 601 998 B -- cdate 2024-12-12T21:34+00 -- mdate 2024-12-12T21:34+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2024-12 - Athletes.mov
+     10 937 480 B -- cdate 2025-01-18T23:31+00 -- mdate 2025-01-18T23:31+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2024-12 - BidenDataVis1080.mp4
+      5 393 468 B -- cdate 2025-05-09T20:19+00 -- mdate 2025-05-09T20:19+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2025-05 - AQI.MOV
+    137 603 183 B -- cdate 2025-05-08T09:51+00 -- mdate 2025-05-08T09:51+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2025-05 - CoinTracker.mp4
+      2 501 746 B -- cdate 2025-05-08T09:48+00 -- mdate 2025-05-08T09:48+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2025-05 - Flight nanny.mp4
+    146 964 526 B -- cdate 2025-05-09T20:26+00 -- mdate 2025-05-09T20:26+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2025-05 - GEMpi Weather Forecast 59s.mp4
+     77 544 250 B -- cdate 2025-05-08T09:41+00 -- mdate 2025-05-08T09:41+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2025-05 - Music Galaxy.mov
+     15 192 923 B -- cdate 2025-05-08T09:39+00 -- mdate 2025-05-08T09:39+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2025-05 - Power and Politics - compressed.mp4
+    139 539 598 B -- cdate 2025-05-08T09:36+00 -- mdate 2025-05-08T09:36+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2025-05 - Power and Politics.mp4
+     19 346 811 B -- cdate 2025-12-10T09:08+00 -- mdate 2025-12-10T09:08+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2025-12 - F1 ELO.MOV
+     62 522 817 B -- cdate 2025-12-10T11:42+00 -- mdate 2025-12-10T11:42+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2025-12 - Football.mp4
+     86 378 082 B -- cdate 2025-12-10T12:13+00 -- mdate 2025-12-10T12:13+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2025-12 - News Tiktok.mov
+      8 389 952 B -- cdate 2025-12-04T17:22+00 -- mdate 2025-12-04T17:22+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2025-12 - Rust Belt.mp4
+     20 393 011 B -- cdate 2025-12-10T11:43+00 -- mdate 2025-12-10T11:43+00 -- /!STUDENT WORKS/Group projects/VIDEOS/2025-12 - Trafiklab.MOV
+      5 395 874 B -- cdate 2023-03-08T15:13+00 -- mdate 2023-03-08T15:13+00 -- /!STUDENT WORKS/Holiday souvenir/2022-12 - Diana Xu - Paris holiday souvenir.gif
+        546 858 B -- cdate 2022-12-12T01:32+00 -- mdate 2022-12-12T01:32+00 -- /!STUDENT WORKS/Holiday souvenir/2022-12 - Diana Xu - digital holiday souvenir.png
+      3 160 453 B -- cdate 2022-12-15T09:47+00 -- mdate 2022-12-15T09:47+00 -- /!STUDENT WORKS/Holiday souvenir/2022-12 - Julian - Digital Holiday Souvenir.pdf
+      2 275 082 B -- cdate 2022-12-12T01:33+00 -- mdate 2022-12-12T01:33+00 -- /!STUDENT WORKS/Holiday souvenir/2022-12 - Mapbox Amsterdam custom marks.png
+        289 658 B -- cdate 2023-08-28T14:06+00 -- mdate 2023-08-28T14:06+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - barrett miles - Tallinn holiday.pdf
+            773 B -- cdate 2023-08-28T14:08+00 -- mdate 2023-08-28T14:08+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - beaver amelia.html
+        775 360 B -- cdate 2023-08-28T14:06+00 -- mdate 2023-08-28T14:06+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - beaver amelia.jpg
+      7 117 863 B -- cdate 2023-08-28T14:06+00 -- mdate 2023-08-28T14:06+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - fiori julianna - Pulpit Rock.pdf
+      1 847 778 B -- cdate 2023-08-28T14:06+00 -- mdate 2023-08-28T14:06+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - frueh gabby - boat tour Dubrovnik.pdf
+          1 091 B -- cdate 2023-08-28T14:08+00 -- mdate 2023-08-28T14:08+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - frueh gabby.html
+     13 505 998 B -- cdate 2023-08-28T14:06+00 -- mdate 2023-08-28T14:06+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - jear annalise - weekend in Rome.mov
+          1 075 B -- cdate 2024-12-09T13:54+00 -- mdate 2024-12-09T13:54+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - jear annalise.html
+      1 462 588 B -- cdate 2024-12-09T13:52+00 -- mdate 2024-12-09T13:52+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - jear annalise.png
+          4 496 B -- cdate 2024-12-09T14:06+00 -- mdate 2024-12-09T14:06+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - lin mikayla - cph bike code.html
+         23 334 B -- cdate 2023-08-28T14:06+00 -- mdate 2023-08-28T14:06+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - lin mikayla - cph bike link.pdf
+      2 086 702 B -- cdate 2024-12-09T14:14+00 -- mdate 2024-12-09T14:14+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - lin mikayla - cph bike.png
+      7 360 201 B -- cdate 2023-08-28T14:06+00 -- mdate 2023-08-28T14:06+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - lonergan fiona.pdf
+     55 397 037 B -- cdate 2023-04-13T14:18+00 -- mdate 2023-04-13T14:18+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - mikayla - animate-path.m4v
+    104 938 048 B -- cdate 2023-04-13T14:22+00 -- mdate 2023-04-13T14:22+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - mikayla - gradient-3d-terrain.mov
+     82 625 944 B -- cdate 2023-04-13T14:21+00 -- mdate 2023-04-13T14:21+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - mikayla - running in CA.mov
+          1 089 B -- cdate 2023-08-28T14:08+00 -- mdate 2023-08-28T14:08+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - randolph reid.html
+      1 219 645 B -- cdate 2024-12-09T13:50+00 -- mdate 2024-12-09T13:50+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - randolph reid.png
+      2 452 970 B -- cdate 2023-08-28T14:06+00 -- mdate 2023-08-28T14:06+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - shi evelyn.png
+        893 314 B -- cdate 2023-08-28T14:06+00 -- mdate 2023-08-28T14:06+00 -- /!STUDENT WORKS/Holiday souvenir/2023-05 - termini rosemary - A trip to Gotland.jpg
+     59 097 367 B -- cdate 2024-12-11T21:37+00 -- mdate 2024-12-11T21:37+00 -- /!STUDENT WORKS/Holiday souvenir/2024-12 - Annika - Holiday souvenir [CLASS ONLY].mov
+     80 414 376 B -- cdate 2024-12-05T12:23+00 -- mdate 2024-12-05T12:23+00 -- /!STUDENT WORKS/Holiday souvenir/2024-12 - Eric - HolidaySouvenir Storytelling.mov
+     37 764 135 B -- cdate 2025-04-29T10:06+00 -- mdate 2025-04-29T10:06+00 -- /!STUDENT WORKS/Holiday souvenir/2025-05 - Charlene Chen - Rome Day I.gif
+    267 127 317 B -- cdate 2025-05-02T23:43+00 -- mdate 2025-05-02T23:43+00 -- /!STUDENT WORKS/Holiday souvenir/2025-05 - Iker - Holiday_Souvenir V2.mp4
+  1 116 248 161 B -- cdate 2025-05-08T09:32+00 -- mdate 2025-05-08T09:32+00 -- /!STUDENT WORKS/Holiday souvenir/2025-05 - Iker - Holiday_Souvenir V3.mp4
+    117 579 544 B -- cdate 2025-04-28T09:04+00 -- mdate 2025-04-28T09:04+00 -- /!STUDENT WORKS/Holiday souvenir/2025-05 - Iker - Holiday_Souvenir v1 moving line.mp4
+          3 725 B -- cdate 2025-12-10T09:10+00 -- mdate 2025-12-10T09:10+00 -- /!STUDENT WORKS/Holiday souvenir/2025-12 - Charlie - Mapbox video - Holiday Souvenir Imrpoved.html
+     54 225 135 B -- cdate 2025-12-10T09:14+00 -- mdate 2025-12-10T09:14+00 -- /!STUDENT WORKS/Holiday souvenir/2025-12 - Tally - Stop motion screen recording.mov
+          4 496 B -- cdate 2024-12-09T14:06+00 -- mdate 2024-12-09T14:06+00 -- /!STUDENT WORKS/Holiday souvenir/copenhagen bike tour.html
+          8 211 B -- cdate 2025-12-01T07:22+00 -- mdate 2025-12-01T07:22+00 -- /!STUDENT WORKS/Holiday souvenir/map of london.html
+      1 349 035 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/barrettmiles_30456_1235523_IMG_1672.HEIC
+      1 684 922 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/beaveramelia_29939_1235716_IMG_5205.HEIC
+      1 232 803 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/dandawatearohi_30626_1235550_OCD_2.jpg
+      1 916 343 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/fiorijulianna_30465_1235052_OCD #2_ My Body.pdf
+      1 550 679 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/fruehgabby_31019_1235548_IMG_6303.heic
+      1 525 899 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/fruehgabby_31019_1235549_IMG_6302.heic
+      2 091 807 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/hohnelizabeth_31052_1235487_3BAFF20D-DC1B-492F-BD2D-7EC557D73377.jpeg
+      2 270 572 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/hohnelizabeth_31052_1235488_0868F395-A975-4AB1-A2EC-6AA4335268F8.jpeg
+      1 865 845 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/jearannalise_31131_1235624_1674686710.2322102.jpg
+      2 475 189 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/kingdexter_30561_1235725_1674723849.0220551.jpg
+      3 349 920 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/linmikayla_30688_1235482_1674657242.452708.jpg
+      3 379 836 B -- cdate 2023-08-28T13:57+00 -- mdate 2023-08-28T13:57+00 -- /!STUDENT WORKS/OCD 1day/2023-05/linmikayla_30688_1237781_1675267324.0792289.jpg
+      2 763 630 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/lonerganfiona_30887_1235089_IMG_4499.HEIC
+      2 392 364 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/lonerganfiona_30887_1235090_IMG_4498.HEIC
+      1 242 941 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/luccioliviviana_30953_1235467_5EC58B68-4E76-41AF-9B2D-A74298D9E188.jpeg
+        690 502 B -- cdate 2023-08-28T13:57+00 -- mdate 2023-08-28T13:57+00 -- /!STUDENT WORKS/OCD 1day/2023-05/randolphreid_29296_1251288_OCD Day 1.jpg
+      3 069 909 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/randolphreid_29296_1251294_OCD Day 2.jpg
+      3 187 204 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/shievelyn_28677_1235620_IMG_5210.jpeg
+      4 092 564 B -- cdate 2023-08-28T13:57+00 -- mdate 2023-08-28T13:57+00 -- /!STUDENT WORKS/OCD 1day/2023-05/shievelyn_28677_1236245_1674890174.8829951.jpg
+        665 819 B -- cdate 2023-08-28T13:58+00 -- mdate 2023-08-28T13:58+00 -- /!STUDENT WORKS/OCD 1day/2023-05/terminirosemary_29275_1235560_IMG_8303.jpg
+        736 702 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/ghosharushi_33165_1397355_Data Drawing 1.jpeg
+        869 215 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/ghosharushi_33165_1397356_Data Drawing 2.jpeg
+      2 846 310 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/gingerichizaac_34825_1397437_1693172519.372491.jpg
+      3 056 918 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/gingerichizaac_34825_1397438_1693172519.066296.jpg
+      3 345 492 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/hansonrosenbergmorgan_32207_1397391_What my Camera Sees Data Drawing.jpeg
+      3 853 244 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/hansonrosenbergmorgan_32207_1397392_My Phone Data Drawing.jpeg
+      3 967 692 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/hendelmannoah_32139_1397053_IMG_3908.jpeg
+      4 086 451 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/hendelmannoah_32139_1397055_IMG_3907.jpeg
+      3 385 366 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/hollifielddaisy_21715_1397097_1692987633.1524549.jpg
+      3 516 766 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/hollifielddaisy_21715_1397098_1692987664.462084.jpg
+      4 006 498 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/johnsonvivian_34019_1397158_IMG_0772.jpeg
+      3 126 195 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/johnsonvivian_34019_1397159_IMG_0773.jpeg
+      1 091 936 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/keerthijahnavi_33430_1397444_8-28-23, 12_57 AM Microsoft Lens_page-0001.jpg
+      1 008 353 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/keerthijahnavi_33430_1397445_8-28-23, 12_57 AM Microsoft Lens_page-0002.jpg
+      2 581 211 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/makazhubob_33831_1397425_1693169852.0864968.jpg
+      2 793 898 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/makazhubob_33831_1397426_1693169847.516887.jpg
+      3 501 979 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/malykhinavalerie_32674_1397412_1693166695.223383.jpg
+      3 533 174 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/malykhinavalerie_32674_1397413_1693166694.776562.jpg
+      3 973 119 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/merchantjonathan_34512_1397377_IMG-3076.jpg
+      4 399 531 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/merchantjonathan_34512_1397378_IMG-3077.jpg
+      2 541 932 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/portillodiego_32818_1397193_IMG_3180.jpeg
+      2 189 973 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/portillodiego_32818_1397194_IMG_3181.jpeg
+      3 463 488 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/salazarmorongabe_33616_1397404_IMG_8971.JPG
+      3 265 398 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/salazarmorongabe_33616_1397405_IMG_8973.JPG
+      3 052 026 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/schubertreed_34323_1397281_IMG-7160.jpg
+      3 042 019 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/schubertreed_34323_1397282_IMG-7157.jpg
+      4 151 547 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/smithgabrielle_34028_1397388_IMG_6068.jpeg
+      3 882 835 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/smithgabrielle_34028_1397389_IMG_6067.jpeg
+        133 064 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/swartoutthomas_34196_1397423_Songs.jpg
+        122 133 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/swartoutthomas_34196_1397424_Exercise 2 - Birthdays .jpg
+      1 688 712 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/yujeanie_34106_1397188_1693066104.678913.jpg
+      1 769 596 B -- cdate 2023-08-28T04:55+00 -- mdate 2023-08-28T04:55+00 -- /!STUDENT WORKS/OCD 1day/2023-12/yujeanie_34106_1397189_1693066104.8045502.jpg
+        901 520 B -- cdate 2024-01-27T09:04+00 -- mdate 2024-01-27T09:04+00 -- /!STUDENT WORKS/OCD 1day/2024-05/donshikbrett_37286_1548169_1705873205.2617621.jpg
+        764 736 B -- cdate 2024-01-27T09:04+00 -- mdate 2024-01-27T09:04+00 -- /!STUDENT WORKS/OCD 1day/2024-05/donshikbrett_37286_1548170_1705873208.892215.jpg
+      2 645 916 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/frantzlilliana_35541_1548503_IMG_2679.jpeg
+      2 786 115 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/frantzlilliana_35541_1548504_IMG_2680.jpeg
+      2 430 530 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/garciaalfonso_36209_1548505_Data_Visualization__Exercise_3_.png
+      2 774 394 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/garciaalfonso_36209_1548506_IMG_0534.png
+      3 196 065 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/giadolorrhonda_LATE_36860_1548564_1705914009.47626.jpg
+      3 427 368 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/giadolorrhonda_LATE_36860_1548565_1705914009.0826092.jpg
+        485 371 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/gormanlaine_37445_1548546_1705911979.568771.jpg
+        528 737 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/huynhkhanh_37449_1547972_Page1.jpg
+        670 903 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/huynhkhanh_37449_1547973_Page2.jpg
+         51 894 B -- cdate 2024-01-27T09:04+00 -- mdate 2024-01-27T09:04+00 -- /!STUDENT WORKS/OCD 1day/2024-05/izaguirremirandadiaz_37098_1547461_#07 MY FAVORITE PAINTER!.jpg
+         53 172 B -- cdate 2024-01-27T09:04+00 -- mdate 2024-01-27T09:04+00 -- /!STUDENT WORKS/OCD 1day/2024-05/izaguirremirandadiaz_37098_1547462_#04 My phone.jpg
+        442 864 B -- cdate 2024-01-27T09:04+00 -- mdate 2024-01-27T09:04+00 -- /!STUDENT WORKS/OCD 1day/2024-05/limmatt_37187_1548172_IMG_3293.jpg
+        440 149 B -- cdate 2024-01-27T09:04+00 -- mdate 2024-01-27T09:04+00 -- /!STUDENT WORKS/OCD 1day/2024-05/limmatt_37187_1548173_IMG_3294.jpg
+      1 794 694 B -- cdate 2024-01-27T09:04+00 -- mdate 2024-01-27T09:04+00 -- /!STUDENT WORKS/OCD 1day/2024-05/mangelsdorfsara_37577_1547974_IMG_6459.jpg
+      1 846 271 B -- cdate 2024-01-27T09:05+00 -- mdate 2024-01-27T09:05+00 -- /!STUDENT WORKS/OCD 1day/2024-05/mangelsdorfsara_37577_1547975_IMG_6461.jpg
+      1 977 186 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/mayorgaleonard_36761_1548501_Ex16.jpg
+      1 780 526 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/mayorgaleonard_36761_1548502_Ex17.jpg
+      1 244 363 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/nijocelyn_36967_1548162_1705870544.461961.jpg
+      1 297 655 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/nijocelyn_36967_1548163_1705870542.1964169.jpg
+      1 638 090 B -- cdate 2024-01-27T09:05+00 -- mdate 2024-01-27T09:05+00 -- /!STUDENT WORKS/OCD 1day/2024-05/papapanounicholas_37100_1548563_1705913631.382935.jpg
+      3 302 100 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/potternico_36992_1548141_IMG_6009.jpg
+      4 238 467 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/potternico_36992_1548142_IMG_6008.jpg
+      1 663 996 B -- cdate 2024-01-27T09:05+00 -- mdate 2024-01-27T09:05+00 -- /!STUDENT WORKS/OCD 1day/2024-05/raynathan_35432_1548196_1.png
+      2 042 541 B -- cdate 2024-01-27T09:05+00 -- mdate 2024-01-27T09:05+00 -- /!STUDENT WORKS/OCD 1day/2024-05/raynathan_35432_1548197_2.png
+        147 223 B -- cdate 2024-01-27T09:05+00 -- mdate 2024-01-27T09:05+00 -- /!STUDENT WORKS/OCD 1day/2024-05/ricehugo_37586_1548166_#11.jpg
+        162 411 B -- cdate 2024-01-27T09:05+00 -- mdate 2024-01-27T09:05+00 -- /!STUDENT WORKS/OCD 1day/2024-05/ricehugo_37586_1548167_#15.jpg
+      2 777 850 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/riveracali_37640_1548507_IMG_9210.jpg
+      2 448 727 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/riveracali_37640_1548508_IMG_9208.jpg
+        751 468 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/rockjacob_36962_1548190_IMG_6563.jpg
+        768 750 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/rockjacob_36962_1548191_IMG_6562.jpg
+      1 318 124 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/rosenblattryan_37675_1548072_IMG_4162.jpg
+      1 683 827 B -- cdate 2024-01-27T07:59+00 -- mdate 2024-01-27T07:59+00 -- /!STUDENT WORKS/OCD 1day/2024-05/rosenblattryan_37675_1548073_IMG_4163.jpg
+        397 352 B -- cdate 2024-01-27T09:05+00 -- mdate 2024-01-27T09:05+00 -- /!STUDENT WORKS/OCD 1day/2024-05/tatumgavin_36779_1547863_image1 (44).jpeg
+        388 582 B -- cdate 2024-01-27T09:05+00 -- mdate 2024-01-27T09:05+00 -- /!STUDENT WORKS/OCD 1day/2024-05/tatumgavin_36779_1547864_image0 (60).jpeg
+      1 999 183 B -- cdate 2023-08-28T14:01+00 -- mdate 2023-08-28T14:01+00 -- /!STUDENT WORKS/OCD 1week/2023-05/barrettmiles_30456_1246003_IMG_1827.jpeg
+      1 509 077 B -- cdate 2023-10-18T17:44+00 -- mdate 2023-10-18T17:44+00 -- /!STUDENT WORKS/OCD 1week/2023-05/barrettmiles_30456_1250157_1676815298.1738172.jpg
+        557 377 B -- cdate 2023-10-18T17:44+00 -- mdate 2023-10-18T17:44+00 -- /!STUDENT WORKS/OCD 1week/2023-05/beaveramelia_29939_1246069_IMG_5462.jpeg
+        494 463 B -- cdate 2023-08-28T14:03+00 -- mdate 2023-08-28T14:03+00 -- /!STUDENT WORKS/OCD 1week/2023-05/beaveramelia_29939_1250712_IMG_5538.jpeg
+      1 740 381 B -- cdate 2023-08-28T14:01+00 -- mdate 2023-08-28T14:01+00 -- /!STUDENT WORKS/OCD 1week/2023-05/dandawatearohi_30626_1245567_IMG_6276.HEIC
+      1 314 264 B -- cdate 2023-08-28T14:03+00 -- mdate 2023-08-28T14:03+00 -- /!STUDENT WORKS/OCD 1week/2023-05/dandawatearohi_30626_1250730_Complaints.HEIC
+      4 420 651 B -- cdate 2023-08-28T14:01+00 -- mdate 2023-08-28T14:01+00 -- /!STUDENT WORKS/OCD 1week/2023-05/fiorijulianna_30465_1238698_5 days _ One Week #1 - DV.pdf
+      3 098 474 B -- cdate 2023-08-28T14:03+00 -- mdate 2023-08-28T14:03+00 -- /!STUDENT WORKS/OCD 1week/2023-05/fiorijulianna_30465_1250496_1676877571.1724482.jpg
+      2 369 696 B -- cdate 2023-08-28T14:01+00 -- mdate 2023-08-28T14:01+00 -- /!STUDENT WORKS/OCD 1week/2023-05/fruehgabby_31019_1246043_1676275324.193111.jpg
+      2 669 557 B -- cdate 2023-08-28T14:01+00 -- mdate 2023-08-28T14:01+00 -- /!STUDENT WORKS/OCD 1week/2023-05/fruehgabby_31019_1246044_1676275326.5807571.jpg
+      2 888 288 B -- cdate 2023-08-28T14:03+00 -- mdate 2023-08-28T14:03+00 -- /!STUDENT WORKS/OCD 1week/2023-05/fruehgabby_31019_1250481_1676873383.052476.jpg
+      1 451 501 B -- cdate 2023-10-18T17:44+00 -- mdate 2023-10-18T17:44+00 -- /!STUDENT WORKS/OCD 1week/2023-05/hohnelizabeth_31052_1250211_OCD 2.jpeg
+         40 162 B -- cdate 2023-08-28T14:01+00 -- mdate 2023-08-28T14:01+00 -- /!STUDENT WORKS/OCD 1week/2023-05/hohnelizabeth_31052_1269515_mail-2.jpeg
+      2 947 088 B -- cdate 2023-08-28T14:01+00 -- mdate 2023-08-28T14:01+00 -- /!STUDENT WORKS/OCD 1week/2023-05/jearannalise_31131_1246010_1676253510.4316049.jpg
+      1 722 162 B -- cdate 2023-08-28T14:03+00 -- mdate 2023-08-28T14:03+00 -- /!STUDENT WORKS/OCD 1week/2023-05/jearannalise_31131_1250508_1676879470.74031.jpg
+      1 244 467 B -- cdate 2023-10-18T17:44+00 -- mdate 2023-10-18T17:44+00 -- /!STUDENT WORKS/OCD 1week/2023-05/kingdexter_30561_1246055_1676276721.584636.jpg
+      1 611 393 B -- cdate 2023-10-18T17:44+00 -- mdate 2023-10-18T17:44+00 -- /!STUDENT WORKS/OCD 1week/2023-05/kingdexter_30561_1246527_1676317737.857635.jpg
+      3 833 398 B -- cdate 2023-08-28T14:01+00 -- mdate 2023-08-28T14:01+00 -- /!STUDENT WORKS/OCD 1week/2023-05/linmikayla_30688_1245565_Mikayla_OCD#3.JPG
+      3 912 968 B -- cdate 2023-08-28T14:03+00 -- mdate 2023-08-28T14:03+00 -- /!STUDENT WORKS/OCD 1week/2023-05/linmikayla_30688_1250192_Mikayla_OCD#4.JPG
+      2 518 868 B -- cdate 2023-08-28T14:03+00 -- mdate 2023-08-28T14:03+00 -- /!STUDENT WORKS/OCD 1week/2023-05/lonerganfiona_30887_1251157_1676901710.586773.jpg
+      4 279 819 B -- cdate 2023-08-28T14:01+00 -- mdate 2023-08-28T14:01+00 -- /!STUDENT WORKS/OCD 1week/2023-05/lonerganfiona_30887_1271807_Note Mar 22, 2023.pdf
+      1 658 000 B -- cdate 2023-08-28T14:01+00 -- mdate 2023-08-28T14:01+00 -- /!STUDENT WORKS/OCD 1week/2023-05/luccioliviviana_30953_1245906_0A26F0C8-EC08-4134-A3E5-4AEC6EDFDE5F.jpeg
+      1 295 450 B -- cdate 2023-08-28T14:03+00 -- mdate 2023-08-28T14:03+00 -- /!STUDENT WORKS/OCD 1week/2023-05/luccioliviviana_30953_1250375_FullSizeRender.jpeg
+      1 043 004 B -- cdate 2023-08-28T14:01+00 -- mdate 2023-08-28T14:01+00 -- /!STUDENT WORKS/OCD 1week/2023-05/randolphreid_29296_1246072_Reid Week Planner.jpg
+      1 674 492 B -- cdate 2023-08-28T14:03+00 -- mdate 2023-08-28T14:03+00 -- /!STUDENT WORKS/OCD 1week/2023-05/randolphreid_29296_1250451_Reid Randolph OCD 5 Day #2.heic
+      2 123 826 B -- cdate 2023-08-28T14:01+00 -- mdate 2023-08-28T14:01+00 -- /!STUDENT WORKS/OCD 1week/2023-05/shievelyn_28677_1245871_IMG_5758.jpeg
+      2 406 491 B -- cdate 2023-08-28T14:01+00 -- mdate 2023-08-28T14:01+00 -- /!STUDENT WORKS/OCD 1week/2023-05/shievelyn_28677_1245872_IMG_5759.jpeg
+     15 041 393 B -- cdate 2023-08-28T14:03+00 -- mdate 2023-08-28T14:03+00 -- /!STUDENT WORKS/OCD 1week/2023-05/shievelyn_28677_1251043_Evelyn 1 week 2.pdf
+        594 839 B -- cdate 2023-08-28T14:01+00 -- mdate 2023-08-28T14:01+00 -- /!STUDENT WORKS/OCD 1week/2023-05/terminirosemary_29275_1246046_IMG_8513.jpg
+      3 038 010 B -- cdate 2023-08-28T14:03+00 -- mdate 2023-08-28T14:03+00 -- /!STUDENT WORKS/OCD 1week/2023-05/terminirosemary_29275_1250506_1676879348.350823.jpg
+      2 054 334 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/dietschebrogan_LATE_32189_1415748_2 Data Drawings 1w REDO - Brogan Dietsche.jpg
+      2 031 631 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/dietschebrogan_LATE_32189_1415749_2 Data Drawings 5d REDO - Brogan Dietsche.jpg
+      3 340 170 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/gingerichizaac_34825_1409269_1695755299.511475.jpg
+      3 422 715 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/gingerichizaac_34825_1409270_1695755299.160905.jpg
+        266 009 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/hendelmannoah_32139_1409836_IMG_4127 Large.jpeg
+        249 578 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/hendelmannoah_32139_1409837_IMG_4128 Large.jpeg
+         79 601 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/johnsonvivian_LATE_34019_1423391_5day Task2.jpg
+        142 726 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/johnsonvivian_LATE_34019_1423392_5day Task.jpg
+        859 416 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/keerthijahnavi_LATE_33430_1411262_10-1-23, 6_51 PM Microsoft Lens.jpeg
+      2 494 121 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/makazhubob_33831_1409763_1695848019.782699.jpg
+      2 561 816 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/makazhubob_33831_1409764_1695848023.150388.jpg
+      2 752 584 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/portillodiego_LATE_32818_1411114_IMG_4225.jpeg
+      2 781 654 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/portillodiego_LATE_32818_1411115_IMG_4256.jpeg
+      2 751 512 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/portillodiego_LATE_32818_1411116_IMG_4257.jpeg
+        516 297 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/sachmannick_33603_1409665_1695837344.092036.jpg
+        606 855 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/sachmannick_33603_1409666_1695837347.122652.jpg
+        281 434 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/salazarmorongabe_33616_1409752_Page2.jpg
+        327 185 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/salazarmorongabe_33616_1409753_Page1.jpg
+        462 804 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/salazarmorongabe_33616_1409754_Page3.jpg
+        564 840 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/sheriefsumeyya_LATE_35087_1410373_1695909574.56006.jpg
+      3 350 284 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/sheriefsumeyya_LATE_35087_1410374_1695909578.929318.jpg
+        655 030 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/yujeanie_LATE_34106_1411076_Yu Jeanie -2.jpg
+        488 644 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/yujeanie_LATE_34106_1411077_Yu Jeanie -3.jpg
+        633 775 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/yujeanie_LATE_34106_1411078_Yu Jeanie -4.jpg
+        284 788 B -- cdate 2023-10-26T07:05+00 -- mdate 2023-10-26T07:05+00 -- /!STUDENT WORKS/OCD 1week/2023-12/yujeanie_LATE_34106_1411079_Yu Jeanie -5.jpg
+      2 560 967 B -- cdate 2024-02-29T08:16+00 -- mdate 2024-02-29T08:16+00 -- /!STUDENT WORKS/OCD 1week/2024-05/donshikbrett_37286_1569952_1708534650.9993238.jpg
+      1 693 837 B -- cdate 2024-02-29T09:22+00 -- mdate 2024-02-29T09:22+00 -- /!STUDENT WORKS/OCD 1week/2024-05/donshikbrett_37286_1569953_1708534695.171115.jpg
+        603 712 B -- cdate 2024-02-29T08:16+00 -- mdate 2024-02-29T08:16+00 -- /!STUDENT WORKS/OCD 1week/2024-05/garciaalfonso_36209_1570294_purchases to discover what you spend your-1.png
+        635 849 B -- cdate 2024-02-29T08:16+00 -- mdate 2024-02-29T08:16+00 -- /!STUDENT WORKS/OCD 1week/2024-05/garciaalfonso_36209_1570295_What do you worry about, and is this-1.png
+      1 873 936 B -- cdate 2024-02-29T09:22+00 -- mdate 2024-02-29T09:22+00 -- /!STUDENT WORKS/OCD 1week/2024-05/giadolorrhonda_36860_1572328_1708937966.7949228.jpg
+      1 816 297 B -- cdate 2024-02-29T09:22+00 -- mdate 2024-02-29T09:22+00 -- /!STUDENT WORKS/OCD 1week/2024-05/giadolorrhonda_36860_1572329_1708937970.0073729.jpg
+        307 870 B -- cdate 2024-02-29T09:23+00 -- mdate 2024-02-29T09:23+00 -- /!STUDENT WORKS/OCD 1week/2024-05/gormanlaine_37445_1569400_1708452949.335387.jpg
+        410 454 B -- cdate 2024-02-29T09:23+00 -- mdate 2024-02-29T09:23+00 -- /!STUDENT WORKS/OCD 1week/2024-05/gormanlaine_37445_1569401_1708452949.193958.jpg
+        529 755 B -- cdate 2024-02-29T08:16+00 -- mdate 2024-02-29T08:16+00 -- /!STUDENT WORKS/OCD 1week/2024-05/huynhkhanh_37449_1569754_2 Big data drawing.jpg
+      3 527 510 B -- cdate 2024-02-29T08:16+00 -- mdate 2024-02-29T08:16+00 -- /!STUDENT WORKS/OCD 1week/2024-05/izaguirremirandadiaz_37098_1570022_Screenshot 2024-02-21 at 7.42.18 PM.png
+      5 299 105 B -- cdate 2024-02-29T08:16+00 -- mdate 2024-02-29T08:16+00 -- /!STUDENT WORKS/OCD 1week/2024-05/izaguirremirandadiaz_37098_1570023_Screenshot 2024-02-21 at 7.42.07 PM.png
+      1 763 992 B -- cdate 2024-02-29T09:23+00 -- mdate 2024-02-29T09:23+00 -- /!STUDENT WORKS/OCD 1week/2024-05/limmatt_37187_1570173_IMG_4294-1.jpg
+        408 518 B -- cdate 2024-02-29T09:23+00 -- mdate 2024-02-29T09:23+00 -- /!STUDENT WORKS/OCD 1week/2024-05/limmatt_37187_1570174_IMG_4306.jpg
+      1 817 196 B -- cdate 2024-02-29T09:23+00 -- mdate 2024-02-29T09:23+00 -- /!STUDENT WORKS/OCD 1week/2024-05/mangelsdorfsara_37577_1569407_1708454089.930839.jpg
+      1 837 058 B -- cdate 2024-02-29T09:23+00 -- mdate 2024-02-29T09:23+00 -- /!STUDENT WORKS/OCD 1week/2024-05/mangelsdorfsara_37577_1569408_1708454089.426622.jpg
+        282 248 B -- cdate 2024-02-29T08:16+00 -- mdate 2024-02-29T08:16+00 -- /!STUDENT WORKS/OCD 1week/2024-05/nijocelyn_36967_1569841_worries.jpg
+        224 811 B -- cdate 2024-02-29T08:16+00 -- mdate 2024-02-29T08:16+00 -- /!STUDENT WORKS/OCD 1week/2024-05/nijocelyn_36967_1569842_spending.jpg
+        206 607 B -- cdate 2024-02-29T09:23+00 -- mdate 2024-02-29T09:23+00 -- /!STUDENT WORKS/OCD 1week/2024-05/ricehugo_37586_1569954_LargeDrawing_page-0001.jpg
+        160 770 B -- cdate 2024-02-29T09:23+00 -- mdate 2024-02-29T09:23+00 -- /!STUDENT WORKS/OCD 1week/2024-05/ricehugo_37586_1569955_LargeDrawing_page-0002.jpg
+      2 840 994 B -- cdate 2024-02-29T09:26+00 -- mdate 2024-02-29T09:26+00 -- /!STUDENT WORKS/OCD 1week/2024-05/riveracali_37640_1569755_IMG_0033.jpg
+      1 835 491 B -- cdate 2024-02-29T08:16+00 -- mdate 2024-02-29T08:16+00 -- /!STUDENT WORKS/OCD 1week/2024-05/riveracali_37640_1569755_IMG_0049.jpg
+      3 007 042 B -- cdate 2024-02-29T08:16+00 -- mdate 2024-02-29T08:16+00 -- /!STUDENT WORKS/OCD 1week/2024-05/riveracali_37640_1569756_IMG_0040-1.jpg
+        771 837 B -- cdate 2024-02-29T08:16+00 -- mdate 2024-02-29T08:16+00 -- /!STUDENT WORKS/OCD 1week/2024-05/rosenblattryan_37675_1569932_IMG_4743.jpg
+      1 338 634 B -- cdate 2024-02-29T08:16+00 -- mdate 2024-02-29T08:16+00 -- /!STUDENT WORKS/OCD 1week/2024-05/rosenblattryan_37675_1569933_IMG_4739.jpg
+      1 555 041 B -- cdate 2024-02-29T09:23+00 -- mdate 2024-02-29T09:23+00 -- /!STUDENT WORKS/OCD 1week/2024-05/tatumgavin_36779_1570132_IMG_4183.jpg
+      1 701 921 B -- cdate 2024-02-29T09:23+00 -- mdate 2024-02-29T09:23+00 -- /!STUDENT WORKS/OCD 1week/2024-05/tatumgavin_36779_1570133_image0 (64).jpeg
+      1 516 897 B -- cdate 2022-12-14T11:39+00 -- mdate 2022-12-14T11:39+00 -- /!STUDENT WORKS/River trails/2022-12 - River trails.pdf
+      1 843 289 B -- cdate 2022-12-28T23:52+00 -- mdate 2022-12-28T23:52+00 -- /!STUDENT WORKS/River trails/2022-12 - River trails.png
+         22 467 B -- cdate 2023-04-02T20:33+00 -- mdate 2023-04-02T20:33+00 -- /!STUDENT WORKS/River trails/mississippi river.json
+      3 131 058 B -- cdate 2024-05-08T20:47+00 -- mdate 2024-05-08T20:47+00 -- /!STUDENT WORKS/troll/Sara 2024-05-08T09_49_45.488Z.jpg
+      3 426 368 B -- cdate 2024-05-08T20:47+00 -- mdate 2024-05-08T20:47+00 -- /!STUDENT WORKS/troll/Sara 2024-05-08T09_49_54.507Z.jpg
+         10 244 B -- cdate 2025-02-22T17:11+00 -- mdate 2026-03-06T15:57+00 -- /.DS_Store
+        116 516 B -- cdate 2023-05-27T12:43+00 -- mdate 2023-05-27T12:43+00 -- /2204028 Data Visualization FA22.pdf
+        128 065 B -- cdate 2023-05-27T12:42+00 -- mdate 2023-05-27T12:42+00 -- /2302028 Data Visualization SP23.pdf
+         62 357 B -- cdate 2024-08-19T13:37+00 -- mdate 2024-08-19T13:37+00 -- /A4 Letterhead STO.docx
+     22 860 540 B -- cdate 2025-02-12T16:58+00 -- mdate 2025-02-12T16:58+00 -- /AQAL/AQAL A4 - 1.pdf
+     28 122 042 B -- cdate 2025-02-12T17:00+00 -- mdate 2025-02-12T17:00+00 -- /AQAL/AQAL A4 - 2.pdf
+      2 009 070 B -- cdate 2025-02-06T18:32+00 -- mdate 2025-02-06T18:32+00 -- /AQAL/AQAL HM SIMPLIFIED-summary.png
+     10 002 391 B -- cdate 2024-11-10T07:51+00 -- mdate 2024-11-10T07:51+00 -- /AQAL/AQAL HM SIMPLIFIED.png
+     13 184 901 B -- cdate 2026-02-07T11:08+00 -- mdate 2026-02-07T11:08+00 -- /AQAL/AQAL1.pdf
+      9 441 088 B -- cdate 2025-02-12T15:46+00 -- mdate 2025-02-12T15:46+00 -- /AQAL/AQAL2.pdf
+     19 346 218 B -- cdate 2025-02-12T15:47+00 -- mdate 2025-02-12T15:47+00 -- /AQAL/AQAL3.pdf
+     18 593 719 B -- cdate 2025-02-12T15:47+00 -- mdate 2025-02-12T15:47+00 -- /AQAL/AQAL4.pdf
+      6 112 423 B -- cdate 2026-03-02T06:12+00 -- mdate 2026-03-02T06:12+00 -- /AQAL/LEVELS 1 THE BASICS.pdf
+     11 201 020 B -- cdate 2025-02-12T17:18+00 -- mdate 2025-02-12T17:18+00 -- /AQAL/qrcodes.pdf
+          2 948 B -- cdate 2024-12-09T13:24+00 -- mdate 2024-12-09T13:24+00 -- /DIS EVALUATIONS/2023-02-04 - Feedback from Louis Gounden (lgounden@oberlin.edu).txt
+2023-02-04 - Feedback from Louis.tt
+        116 516 B -- cdate 2023-05-27T12:43+00 -- mdate 2023-05-27T12:43+00 -- /DIS EVALUATIONS/2204028 Data Visualization FA22.pdf
+        128 065 B -- cdate 2023-05-27T12:42+00 -- mdate 2023-05-27T12:42+00 -- /DIS EVALUATIONS/2302028 Data Visualization SP23.pdf
+        121 374 B -- cdate 2024-01-08T17:26+00 -- mdate 2024-01-08T17:26+00 -- /DIS EVALUATIONS/2304046 Data Visualization FA23.pdf
+        126 664 B -- cdate 2024-06-06T07:04+00 -- mdate 2024-06-06T07:04+00 -- /DIS EVALUATIONS/2402046 Data Visualization SP24.pdf
+        124 330 B -- cdate 2026-01-21T15:12+00 -- mdate 2026-01-21T15:12+00 -- /DIS EVALUATIONS/2404046 Data Visualization FA24.pdf
+        122 099 B -- cdate 2026-01-21T15:09+00 -- mdate 2026-01-21T15:09+00 -- /DIS EVALUATIONS/2502030 Data-Driven Information Visualization SP25.pdf
+         82 308 B -- cdate 2026-01-21T15:09+00 -- mdate 2026-01-21T15:09+00 -- /DIS EVALUATIONS/2502046 Data Visualization SP25.pdf
+        118 154 B -- cdate 2026-01-07T18:19+00 -- mdate 2026-01-07T18:19+00 -- /DIS EVALUATIONS/2504030 Data-Driven Information Visualization FA25.pdf
+        114 896 B -- cdate 2026-01-07T18:19+00 -- mdate 2026-01-07T18:19+00 -- /DIS EVALUATIONS/2504046 Data Visualization FA25.pdf
+        191 784 B -- cdate 2026-01-15T02:45+00 -- mdate 2026-01-15T02:45+00 -- /DIS EVALUATIONS/Screenshot 2025-06-07 at 02.30.15.png
+         46 137 B -- cdate 2017-09-22T18:37+00 -- mdate 2026-02-23T08:44+00 -- /Data/UN-migrant-stock-data-exported-truecsv.csv
+         46 559 B -- cdate 2017-09-22T18:37+00 -- mdate 2017-09-22T18:37+00 -- /Data/UN-migrant-stock-data-exported.csv
+        276 480 B -- cdate 2023-09-21T07:38+00 -- mdate 2023-09-21T07:38+00 -- /Data/UN-migrant-stock-data.xls
+      1 467 401 B -- cdate 2026-02-12T10:35+00 -- mdate 2026-02-13T21:21+00 -- /Data/ddf--datapoints--gdp_pcap--by--country--time.csv
+         57 096 B -- cdate 2026-02-12T10:10+00 -- mdate 2026-02-13T21:21+00 -- /Data/ddf--datapoints--literacy_rate_adult--by--geo--gender--time.csv
+         19 004 B -- cdate 2026-02-12T10:35+00 -- mdate 2026-02-12T10:35+00 -- /Data/ddf--datapoints--literacy_rate_adult--by--geo--time.csv
+      1 420 759 B -- cdate 2026-02-12T10:35+00 -- mdate 2026-02-13T21:21+00 -- /Data/ddf--datapoints--pop--by--country--time.csv
+         24 132 B -- cdate 2025-11-27T14:19+00 -- mdate 2026-02-13T21:20+00 -- /Data/ddf--entities--geo--country.csv
+          5 588 B -- cdate 2024-11-19T09:00+00 -- mdate 2024-11-19T09:00+00 -- /GRADES/2022-12-15T1000_Grades-2204028___Data_Visualization.csv
+          8 437 B -- cdate 2024-11-19T09:00+00 -- mdate 2024-11-19T09:00+00 -- /GRADES/2023-05-15T1000_Grades-2302028___Data_Visualization.csv
+         15 401 B -- cdate 2024-11-19T09:00+00 -- mdate 2024-11-19T09:00+00 -- /GRADES/2023-12-15T1000_Grades-2304046___Data_Visualization.csv
+         14 787 B -- cdate 2024-11-19T09:00+00 -- mdate 2024-11-19T09:00+00 -- /GRADES/2024-05-15T1000_Grades-2402046___Data_Visualization.csv
+          9 320 B -- cdate 2026-02-11T15:56+00 -- mdate 2026-02-11T15:56+00 -- /GRADES/2024-12-15T1000_Grades-2404046___Data_Visualization.csv
+          9 377 B -- cdate 2026-02-11T15:52+00 -- mdate 2026-02-11T15:52+00 -- /GRADES/2025-05-15T1000_Grades-2502030___Data-Driven_Information_Visualization.csv
+          8 081 B -- cdate 2026-02-11T15:50+00 -- mdate 2026-02-11T15:50+00 -- /GRADES/2025-05-15T1000_Grades-2502046___Data_Visualization.csv
+          6 351 B -- cdate 2026-02-11T15:53+00 -- mdate 2026-02-11T15:53+00 -- /GRADES/2025-12-15T1000_Grades-2504030___Data-Driven_Information_Visualization.csv
+          6 836 B -- cdate 2026-02-11T15:51+00 -- mdate 2026-02-11T15:51+00 -- /GRADES/2025-12-15T1000_Grades-2504046___Data_Visualization.csv
+          2 107 B -- cdate 2025-04-29T21:56+00 -- mdate 2025-04-29T21:56+00 -- /GRADES/allquizzes.csv
+        660 245 B -- cdate 2014-06-06T10:35+00 -- mdate 2014-06-06T10:35+00 -- /MEMES and BS charts/3815032658_01cdffda0c_o.jpg
+         38 625 B -- cdate 2013-02-13T11:36+00 -- mdate 2013-02-13T11:36+00 -- /MEMES and BS charts/531737_486620518066899_335591929_n.jpg
+        104 282 B -- cdate 2019-02-23T18:00+00 -- mdate 2019-02-23T18:00+00 -- /MEMES and BS charts/8feff263e1eb6441cb3458e6ec42f80a.jpg
+         47 262 B -- cdate 2017-04-10T13:53+00 -- mdate 2017-04-10T13:53+00 -- /MEMES and BS charts/CuLFQcTWYAQbJCL.jpg
+      6 586 184 B -- cdate 2018-01-10T13:28+00 -- mdate 2018-01-10T13:28+00 -- /MEMES and BS charts/DataDino-600x455.gif
+      4 548 248 B -- cdate 2018-01-10T13:28+00 -- mdate 2018-01-10T13:28+00 -- /MEMES and BS charts/DinoSequentialSmaller.gif
+         42 517 B -- cdate 2021-11-23T12:40+00 -- mdate 2021-11-23T12:40+00 -- /MEMES and BS charts/FEz_QIUWQAQo6Xd.jpeg
+        171 159 B -- cdate 2024-10-09T20:18+00 -- mdate 2024-10-09T20:18+00 -- /MEMES and BS charts/GZce8EUXcAEpbXC.mp4
+        306 462 B -- cdate 2018-01-14T22:52+00 -- mdate 2018-01-14T22:52+00 -- /MEMES and BS charts/IAIJKSHtvO.gif
+        420 274 B -- cdate 2025-02-15T23:08+00 -- mdate 2025-02-15T23:08+00 -- /MEMES and BS charts/Redlined_Richmond-scaled.jpeg
+      1 237 507 B -- cdate 2013-02-08T22:44+00 -- mdate 2013-02-08T22:44+00 -- /MEMES and BS charts/Walter Houghton-Conspectus of the History of Political Parties and the Federal Government-1880.jpg
+        556 386 B -- cdate 2025-01-12T21:34+00 -- mdate 2025-01-12T21:34+00 -- /MEMES and BS charts/attention-filter-02.jpg
+        533 461 B -- cdate 2018-02-27T21:58+00 -- mdate 2018-02-27T21:58+00 -- /MEMES and BS charts/bubbles.png
+        646 410 B -- cdate 2023-04-24T07:19+00 -- mdate 2023-04-24T07:19+00 -- /MEMES and BS charts/chinese vs indian temple.png
+         79 526 B -- cdate 2025-02-15T20:47+00 -- mdate 2025-02-15T20:47+00 -- /MEMES and BS charts/datahumanism.jpeg
+      1 467 737 B -- cdate 2025-02-15T21:07+00 -- mdate 2025-02-15T21:07+00 -- /MEMES and BS charts/factfulness-poster-web-images-20180215-v3_Rules-of-thumb.jpg
+        138 482 B -- cdate 2025-02-17T17:58+00 -- mdate 2025-02-17T17:58+00 -- /MEMES and BS charts/full-WCAS-D-21-0173.1-f2.jpg
+        658 083 B -- cdate 2023-11-10T21:52+00 -- mdate 2023-11-10T21:52+00 -- /MEMES and BS charts/image.png
+     14 604 192 B -- cdate 2013-01-18T07:22+00 -- mdate 2013-01-18T07:22+00 -- /MEMES and BS charts/metro-map2-hi-res.tif
+         46 989 B -- cdate 2022-01-20T16:45+00 -- mdate 2022-01-20T16:45+00 -- /MEMES and BS charts/mode-median-mean.gif
+      1 325 175 B -- cdate 2018-01-15T02:02+00 -- mdate 2018-01-15T02:02+00 -- /MEMES and BS charts/remove to improve/data-ink.gif
+        886 610 B -- cdate 2018-01-15T02:03+00 -- mdate 2018-01-15T02:03+00 -- /MEMES and BS charts/remove to improve/devourThePie3.gif
+      2 924 916 B -- cdate 2018-01-15T02:06+00 -- mdate 2018-01-15T02:06+00 -- /MEMES and BS charts/remove to improve/map_reduce2.gif
+      1 372 774 B -- cdate 2024-10-24T11:45+00 -- mdate 2024-10-24T11:45+00 -- /MEMES and BS charts/shower faucet gradient video.mp4
+        331 240 B -- cdate 2025-01-30T19:26+00 -- mdate 2025-01-30T19:26+00 -- /MEMES and BS charts/tableau showing dimensions and measures.png
+      3 393 717 B -- cdate 2023-03-21T16:00+00 -- mdate 2023-03-21T16:00+00 -- /MEMES and BS charts/tax the rich robinhood.gif
+    121 116 406 B -- cdate 2022-12-01T00:46+00 -- mdate 2022-12-01T00:46+00 -- /Peter Tallberg - Presentation 2.0.pdf
+    107 934 806 B -- cdate 2022-11-29T18:17+00 -- mdate 2022-11-29T18:17+00 -- /Peter Tallberg - Presentation.pdf
+      1 680 781 B -- cdate 2024-08-19T16:05+00 -- mdate 2024-08-19T16:05+00 -- /Recommendation letters/2024-08-19 - Ryan Rosenblatt recommendation letter SENT.pdf
+        692 014 B -- cdate 2024-08-19T15:54+00 -- mdate 2024-08-19T15:54+00 -- /Recommendation letters/2024-08-19 - Ryan Rosenblatt recommendation letter.docx
+        975 021 B -- cdate 2024-08-19T15:54+00 -- mdate 2024-08-19T15:54+00 -- /Recommendation letters/2024-08-19 - Ryan Rosenblatt recommendation letter.pdf
+        672 081 B -- cdate 2025-01-29T12:32+00 -- mdate 2025-01-29T12:32+00 -- /Recommendation letters/2025-01-29 - Ryan Rosenblatt to Uni Ottawa.docx
+      1 068 112 B -- cdate 2025-11-13T16:34+00 -- mdate 2025-11-13T16:34+00 -- /Recommendation letters/2025-11-13 - Ryan Rosenblatt recommendation letter SENT.pdf
+        691 622 B -- cdate 2025-11-13T16:28+00 -- mdate 2025-11-13T16:28+00 -- /Recommendation letters/2025-11-13 - Ryan Rosenblatt recommendation letter.docx
+        962 871 B -- cdate 2025-11-13T16:28+00 -- mdate 2025-11-13T16:28+00 -- /Recommendation letters/2025-11-13 - Ryan Rosenblatt recommendation letter.pdf
+         45 198 B -- cdate 2024-08-11T20:36+00 -- mdate 2024-08-11T20:36+00 -- /Recommendation letters/Ryan_Rosenblatt-Statement_Grant_Purpose.pdf
+      4 043 765 B -- cdate 2025-02-13T18:38+00 -- mdate 2025-02-13T18:38+00 -- /Selected photos/20190227-202840-Angie-1p5.jpg
+      1 253 128 B -- cdate 2024-05-15T10:41+00 -- mdate 2024-05-15T10:41+00 -- /Selected photos/20210201-151008-Angie-1p5.jpg
+        650 567 B -- cdate 2024-05-15T13:18+00 -- mdate 2024-05-15T13:18+00 -- /Selected photos/20210201-151008-Angie-1p5_small.jpg
+      4 840 137 B -- cdate 2023-02-20T08:51+00 -- mdate 2023-02-20T08:51+00 -- /Selected photos/20230215 - Field study group photo.jpg
+      3 302 643 B -- cdate 2025-03-31T21:36+00 -- mdate 2025-03-31T21:36+00 -- /Selected photos/20240321-102927-Angie-1p5.jpg
+        814 164 B -- cdate 2024-05-15T13:06+00 -- mdate 2024-05-15T13:06+00 -- /Selected photos/20240425-102914-Mario_crop.jpg
+      5 154 327 B -- cdate 2024-08-19T12:05+00 -- mdate 2024-08-19T12:05+00 -- /Selected photos/20240506-100150-Angie-1p5.jpg
+      9 576 638 B -- cdate 2025-04-01T00:38+00 -- mdate 2025-04-01T00:38+00 -- /Selected photos/20250123-122833-Angie-zf10.jpg
+        391 806 B -- cdate 2024-05-15T12:54+00 -- mdate 2024-05-15T12:54+00 -- /Selected photos/Angie Hjort_31-Edit.jpg
+      5 364 849 B -- cdate 2024-05-15T12:53+00 -- mdate 2024-05-15T12:53+00 -- /Selected photos/Angie Hjort_31-Edit.png
+      1 188 945 B -- cdate 2020-02-24T13:34+00 -- mdate 2020-02-24T13:34+00 -- /Selected photos/Gapminder copy.jpg
+      2 737 136 B -- cdate 2023-10-05T23:58+00 -- mdate 2023-10-05T23:58+00 -- /Selected photos/IMG_6220.jpeg
+        140 501 B -- cdate 2023-08-16T23:22+00 -- mdate 2023-08-16T23:22+00 -- /Selected photos/Mikayla hero image.jpg
+        193 946 B -- cdate 2023-08-16T23:21+00 -- mdate 2023-08-16T23:21+00 -- /Selected photos/Mikayla hero image.webp
+      1 495 068 B -- cdate 2023-03-20T13:33+00 -- mdate 2023-03-20T13:33+00 -- /Selected photos/P3046278.JPG
+         35 728 B -- cdate 2020-09-07T04:35+00 -- mdate 2020-09-07T04:35+00 -- /Selected photos/bio crop photo.jpg
+         23 309 B -- cdate 2024-08-19T13:14+00 -- mdate 2024-08-19T13:14+00 -- /Teaching certification ADHjort.docx
+        186 473 B -- cdate 2024-08-19T13:14+00 -- mdate 2024-08-19T13:14+00 -- /Teaching certification ADHjort.pdf
+     21 645 275 B -- cdate 2023-08-23T17:47+00 -- mdate 2023-08-23T17:47+00 -- /U.S DRG Analysis Project Base.twbx
+        189 416 B -- cdate 2019-02-12T23:27+00 -- mdate 2019-02-12T23:27+00 -- /books/2012_Bi-symmetric-log-transformation_v6-final.pdf
+     14 706 000 B -- cdate 2022-11-20T20:16+00 -- mdate 2022-11-20T20:16+00 -- /books/Angie Thesis InfoVis and UX design for AM _full.pdf
+     11 628 871 B -- cdate 2022-09-03T18:16+00 -- mdate 2022-09-03T18:16+00 -- /books/Colin Ware - Infovis, perception for design.pdf
+     40 905 889 B -- cdate 2022-09-20T23:11+00 -- mdate 2022-09-20T23:11+00 -- /books/D_Ignazio_Catherine_Klein_Lauren_F_Data_Feminism_2020.pdf
+    271 124 923 B -- cdate 2022-11-14T16:58+00 -- mdate 2022-11-14T16:58+00 -- /books/EN - Factfulness (Roslings)/EN - Factfulness (Roslings).mp3
+      6 929 217 B -- cdate 2020-01-06T23:53+00 -- mdate 2020-01-06T23:53+00 -- /books/EN - Factfulness (Roslings)/EN - Factfulness (Roslings).pdf
+     29 578 388 B -- cdate 2022-11-14T16:58+00 -- mdate 2022-11-14T16:58+00 -- /books/EN - Factfulness (Roslings)/EN - Factfulness - illustrations.pdf
+      5 428 459 B -- cdate 2022-11-16T15:49+00 -- mdate 2022-11-16T15:49+00 -- /books/EN - Factfulness (Roslings)/Factfulness_ Ten Reasons We’re Wrong About the World—and Why Things Are Better Than You Think ( PDFDrive ).pdf
+      6 981 994 B -- cdate 2022-11-14T16:58+00 -- mdate 2022-11-14T16:58+00 -- /books/EN - Factfulness (Roslings)/Ola-Anna-interview.mp3
+        182 534 B -- cdate 2022-06-28T14:11+00 -- mdate 2022-06-28T14:11+00 -- /books/Health_inequalities_substance_misuse.pdf
+        249 682 B -- cdate 2014-06-16T20:08+00 -- mdate 2014-06-16T20:08+00 -- /books/ISO_9241-210-2010.PDF
+     26 900 478 B -- cdate 2020-01-06T12:15+00 -- mdate 2020-01-06T12:15+00 -- /books/Keith Larson Presentation CURRENT 191111.pptx
+    299 392 475 B -- cdate 2024-11-14T21:10+00 -- mdate 2024-11-14T21:10+00 -- /books/Making with Data.pdf
+         57 449 B -- cdate 2026-03-01T22:17+00 -- mdate 2026-03-01T22:17+00 -- /books/Mastering D3 Video tutorials plan.pdf
+      4 479 328 B -- cdate 2025-01-15T19:28+00 -- mdate 2025-01-15T19:28+00 -- /books/OCD/Datavis-DESIGN.pdf
+     10 171 709 B -- cdate 2025-08-20T18:31+00 -- mdate 2025-08-20T18:31+00 -- /books/OCD/Datavis-DEV.pdf
+      2 280 377 B -- cdate 2024-10-17T07:41+00 -- mdate 2024-10-17T07:41+00 -- /books/OCD/Escaping flatland topics and tips.pdf
+    603 082 878 B -- cdate 2024-08-21T23:39+00 -- mdate 2024-08-21T23:39+00 -- /books/OCD/all pages.psd
+      8 124 502 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0000_sharpc@dis.dk_20240821_210628_0001.jpg.jpg
+      2 693 430 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0001_sharpc@dis.dk_20240821_202742_0001.jpg.jpg
+      2 021 000 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0002_sharpc@dis.dk_20240821_202742_0002.jpg.jpg
+     12 787 576 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0003_sharpc@dis.dk_20240821_202742_0003.jpg.jpg
+      2 687 202 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0004_sharpc@dis.dk_20240821_202742_0004.jpg.jpg
+      2 649 871 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0005_sharpc@dis.dk_20240821_202742_0005.jpg.jpg
+      2 894 438 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0006_sharpc@dis.dk_20240821_202742_0006.jpg.jpg
+      1 568 862 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0007_sharpc@dis.dk_20240821_203317_0002.jpg.jpg
+      7 223 370 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0008_sharpc@dis.dk_20240821_203317_0003.jpg.jpg
+      1 837 816 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0009_sharpc@dis.dk_20240821_203317_0005.jpg.jpg
+      2 352 682 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0010_sharpc@dis.dk_20240821_203317_0004.jpg.jpg
+      1 808 002 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0011_sharpc@dis.dk_20240821_203317_0006.jpg.jpg
+      1 603 334 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0012_sharpc@dis.dk_20240821_203317_0007.jpg.jpg
+      2 273 676 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0013_sharpc@dis.dk_20240821_203317_0008.jpg.jpg
+      1 582 596 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0014_sharpc@dis.dk_20240821_203317_0009.jpg.jpg
+      1 620 846 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0015_sharpc@dis.dk_20240821_203317_0010.jpg.jpg
+      1 669 165 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0016_sharpc@dis.dk_20240821_203317_0012.jpg.jpg
+      1 764 679 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0017_sharpc@dis.dk_20240821_203317_0013.jpg.jpg
+      1 759 150 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0018_sharpc@dis.dk_20240821_203317_0014.jpg.jpg
+      1 597 628 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0019_sharpc@dis.dk_20240821_203317_0015.jpg.jpg
+      1 490 796 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0020_sharpc@dis.dk_20240821_203317_0016.jpg.jpg
+      2 212 221 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0021_sharpc@dis.dk_20240821_203317_0017.jpg.jpg
+      1 979 574 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0022_sharpc@dis.dk_20240821_203317_0018.jpg.jpg
+      1 572 929 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0023_sharpc@dis.dk_20240821_205059_0001.jpg.jpg
+      2 661 206 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0024_sharpc@dis.dk_20240821_205059_0002.jpg.jpg
+      2 029 369 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0025_sharpc@dis.dk_20240821_205059_0003.jpg.jpg
+      2 058 195 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0026_sharpc@dis.dk_20240821_205059_0004.jpg.jpg
+      1 750 312 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0027_sharpc@dis.dk_20240821_205059_0005.jpg.jpg
+      2 026 543 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0028_sharpc@dis.dk_20240821_205059_0006.jpg.jpg
+      1 574 985 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0029_sharpc@dis.dk_20240821_205059_0007.jpg.jpg
+      2 196 487 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0030_sharpc@dis.dk_20240821_205059_0008.jpg.jpg
+      1 672 038 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0031_sharpc@dis.dk_20240821_205059_0009.jpg.jpg
+      1 929 858 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0032_sharpc@dis.dk_20240821_205059_0010.jpg.jpg
+      1 776 630 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0033_sharpc@dis.dk_20240821_205059_0011.jpg.jpg
+      2 243 378 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0034_sharpc@dis.dk_20240821_205059_0012.jpg.jpg
+     11 615 154 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0035_sharpc@dis.dk_20240821_205059_0013.jpg.jpg
+      1 848 301 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0036_sharpc@dis.dk_20240821_205059_0014.jpg.jpg
+      2 686 455 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0037_sharpc@dis.dk_20240821_205059_0015.jpg.jpg
+      1 791 264 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0038_sharpc@dis.dk_20240821_205059_0016.jpg.jpg
+      8 266 842 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0039_sharpc@dis.dk_20240821_205059_0017.jpg.jpg
+      1 661 861 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0040_sharpc@dis.dk_20240821_205626_0001.jpg.jpg
+      1 593 520 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0041_sharpc@dis.dk_20240821_205626_0002.jpg.jpg
+      3 482 574 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0042_sharpc@dis.dk_20240821_205626_0003.jpg.jpg
+      1 911 335 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0043_sharpc@dis.dk_20240821_205626_0004.jpg.jpg
+      1 577 988 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0044_sharpc@dis.dk_20240821_205626_0005.jpg.jpg
+      1 455 820 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0045_sharpc@dis.dk_20240821_205626_0006.jpg.jpg
+      2 112 394 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0046_sharpc@dis.dk_20240821_205626_0007.jpg.jpg
+      2 106 222 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0047_sharpc@dis.dk_20240821_205626_0008.jpg.jpg
+      1 912 979 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0048_sharpc@dis.dk_20240821_205626_0009.jpg.jpg
+      2 294 759 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0049_sharpc@dis.dk_20240821_205626_0010.jpg.jpg
+      2 170 246 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0050_sharpc@dis.dk_20240821_205626_0011.jpg.jpg
+      1 785 075 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0051_sharpc@dis.dk_20240821_205626_0012.jpg.jpg
+      2 717 745 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0052_sharpc@dis.dk_20240821_205626_0013.jpg.jpg
+      2 326 022 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0053_sharpc@dis.dk_20240821_205626_0014.jpg.jpg
+      2 664 907 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0054_sharpc@dis.dk_20240821_205626_0015.jpg.jpg
+      1 722 498 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0055_sharpc@dis.dk_20240821_205626_0016.jpg.jpg
+      1 616 471 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0056_sharpc@dis.dk_20240821_205853_0001.jpg.jpg
+      2 693 572 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0057_sharpc@dis.dk_20240821_205853_0002.jpg.jpg
+      1 850 502 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0058_sharpc@dis.dk_20240821_205853_0003.jpg.jpg
+      1 591 013 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0059_sharpc@dis.dk_20240821_205853_0004.jpg.jpg
+      1 894 478 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0060_sharpc@dis.dk_20240821_205853_0005.jpg.jpg
+      4 494 745 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0061_sharpc@dis.dk_20240821_205853_0006.jpg.jpg
+      1 848 817 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0062_sharpc@dis.dk_20240821_205853_0007.jpg.jpg
+      2 565 187 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0063_sharpc@dis.dk_20240821_205853_0008.jpg.jpg
+      2 798 004 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0064_sharpc@dis.dk_20240821_210417_0001.jpg.jpg
+      1 055 176 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0065_sharpc@dis.dk_20240821_210417_0002.jpg.jpg
+      1 195 858 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0066_sharpc@dis.dk_20240821_210417_0003.jpg.jpg
+      1 063 772 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0067_sharpc@dis.dk_20240821_210417_0004.jpg.jpg
+      1 103 732 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0068_sharpc@dis.dk_20240821_210417_0005.jpg.jpg
+      1 020 289 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0069_sharpc@dis.dk_20240821_210417_0006.jpg.jpg
+      1 080 936 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0070_sharpc@dis.dk_20240821_210417_0007.jpg.jpg
+      1 043 765 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0071_sharpc@dis.dk_20240821_210417_0008.jpg.jpg
+      1 147 663 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0072_sharpc@dis.dk_20240821_210417_0009.jpg.jpg
+      1 104 669 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0073_sharpc@dis.dk_20240821_210417_0010.jpg.jpg
+      1 084 059 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0074_sharpc@dis.dk_20240821_210417_0011.jpg.jpg
+      1 042 712 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/edited/page_0075_sharpc@dis.dk_20240821_210417_0012.jpg.jpg
+      1 073 558 B -- cdate 2024-08-21T23:44+00 -- mdate 2024-08-21T23:44+00 -- /books/OCD/edited/page_0076_sharpc@dis.dk_20240821_210417_0013.jpg.jpg
+      3 475 074 B -- cdate 2024-08-21T23:44+00 -- mdate 2024-08-21T23:44+00 -- /books/OCD/edited/page_0077_sharpc@dis.dk_20240821_210417_0014.jpg.jpg
+      1 153 646 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_202742_0001.jpg
+        890 769 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_202742_0002.jpg
+      3 853 050 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_202742_0003.jpg
+      1 106 435 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_202742_0004.jpg
+      1 121 914 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_202742_0005.jpg
+      1 273 483 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_202742_0006.jpg
+      1 436 644 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0002.jpg
+      2 742 771 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0003.jpg
+      1 001 121 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0004.jpg
+        793 335 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0005.jpg
+        764 184 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0006.jpg
+        722 100 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0007.jpg
+        876 689 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0008.jpg
+        621 725 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0009.jpg
+        693 072 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0010.jpg
+        675 592 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0012.jpg
+        782 023 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0013.jpg
+        777 616 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0014.jpg
+        708 598 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0015.jpg
+        646 814 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0016.jpg
+        940 720 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0017.jpg
+      2 120 608 B -- cdate 2024-08-21T15:46+00 -- mdate 2024-08-21T15:46+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_203317_0018.jpg
+        696 389 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0001.jpg
+      1 204 397 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0002.jpg
+        865 243 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0003.jpg
+        884 994 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0004.jpg
+        768 357 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0005.jpg
+        852 372 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0006.jpg
+        693 450 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0007.jpg
+        929 729 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0008.jpg
+        728 345 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0009.jpg
+        850 903 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0010.jpg
+        785 933 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0011.jpg
+        966 092 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0012.jpg
+      4 654 593 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0013.jpg
+        807 301 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0014.jpg
+      1 151 246 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0015.jpg
+        765 598 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0016.jpg
+      3 819 974 B -- cdate 2024-08-21T16:02+00 -- mdate 2024-08-21T16:02+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205059_0017.jpg
+        724 472 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0001.jpg
+        699 575 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0002.jpg
+      1 347 204 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0003.jpg
+        827 335 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0004.jpg
+        680 387 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0005.jpg
+        633 419 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0006.jpg
+        932 133 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0007.jpg
+        911 843 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0008.jpg
+        816 445 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0009.jpg
+      1 012 108 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0010.jpg
+        919 181 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0011.jpg
+        800 185 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0012.jpg
+      1 158 015 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0013.jpg
+      1 025 573 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0014.jpg
+      1 119 016 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0015.jpg
+        732 293 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205626_0016.jpg
+        696 034 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205853_0001.jpg
+      1 139 911 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205853_0002.jpg
+        804 938 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205853_0003.jpg
+        670 035 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205853_0004.jpg
+        823 590 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205853_0005.jpg
+      1 859 980 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205853_0006.jpg
+      1 914 705 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205853_0007.jpg
+      1 060 631 B -- cdate 2024-08-21T16:10+00 -- mdate 2024-08-21T16:10+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_205853_0008.jpg
+      1 181 064 B -- cdate 2024-08-21T16:16+00 -- mdate 2024-08-21T16:16+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_210417_0001.jpg
+        456 297 B -- cdate 2024-08-21T16:16+00 -- mdate 2024-08-21T16:16+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_210417_0002.jpg
+        523 550 B -- cdate 2024-08-21T16:16+00 -- mdate 2024-08-21T16:16+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_210417_0003.jpg
+        460 978 B -- cdate 2024-08-21T16:16+00 -- mdate 2024-08-21T16:16+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_210417_0004.jpg
+        480 630 B -- cdate 2024-08-21T16:16+00 -- mdate 2024-08-21T16:16+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_210417_0005.jpg
+        437 647 B -- cdate 2024-08-21T16:16+00 -- mdate 2024-08-21T16:16+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_210417_0006.jpg
+        467 989 B -- cdate 2024-08-21T16:16+00 -- mdate 2024-08-21T16:16+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_210417_0007.jpg
+        452 670 B -- cdate 2024-08-21T16:16+00 -- mdate 2024-08-21T16:16+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_210417_0008.jpg
+        498 749 B -- cdate 2024-08-21T16:16+00 -- mdate 2024-08-21T16:16+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_210417_0009.jpg
+        486 139 B -- cdate 2024-08-21T16:16+00 -- mdate 2024-08-21T16:16+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_210417_0010.jpg
+        472 188 B -- cdate 2024-08-21T16:16+00 -- mdate 2024-08-21T16:16+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_210417_0011.jpg
+        451 988 B -- cdate 2024-08-21T16:16+00 -- mdate 2024-08-21T16:16+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_210417_0012.jpg
+        467 210 B -- cdate 2024-08-21T16:16+00 -- mdate 2024-08-21T16:16+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_210417_0013.jpg
+      1 440 300 B -- cdate 2024-08-21T16:16+00 -- mdate 2024-08-21T16:16+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_210417_0014.jpg
+      3 138 817 B -- cdate 2024-08-21T18:17+00 -- mdate 2024-08-21T18:17+00 -- /books/OCD/scans/sharpc@dis.dk_20240821_210628_0001.jpg
+    136 565 814 B -- cdate 2024-08-22T00:20+00 -- mdate 2024-08-22T00:20+00 -- /books/OCD/selection 140MB.pdf
+      8 124 502 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0000_sharpc@dis.dk_20240821_210628_0001.jpg.jpg
+      6 783 167 B -- cdate 2024-08-22T00:17+00 -- mdate 2024-08-22T00:17+00 -- /books/OCD/selection/page_0003_sharpc@dis.dk_20240821_202742_0003.jpg.jpg
+      5 098 237 B -- cdate 2025-08-20T18:30+00 -- mdate 2025-08-20T18:30+00 -- /books/OCD/selection/page_0003_sharpc@dis.dk_20240821_202742_0003_DEV.jpg
+     20 056 120 B -- cdate 2025-08-20T18:31+00 -- mdate 2025-08-20T18:31+00 -- /books/OCD/selection/page_0003_sharpc@dis.dk_20240821_202742_0003_DEV.pdf
+      2 687 202 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0004_sharpc@dis.dk_20240821_202742_0004.jpg.jpg
+      7 223 370 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0008_sharpc@dis.dk_20240821_203317_0003.jpg.jpg
+      1 837 816 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0009_sharpc@dis.dk_20240821_203317_0005.jpg.jpg
+      2 352 682 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0010_sharpc@dis.dk_20240821_203317_0004.jpg.jpg
+      1 808 002 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0011_sharpc@dis.dk_20240821_203317_0006.jpg.jpg
+      1 603 334 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0012_sharpc@dis.dk_20240821_203317_0007.jpg.jpg
+      2 273 676 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0013_sharpc@dis.dk_20240821_203317_0008.jpg.jpg
+      1 582 596 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0014_sharpc@dis.dk_20240821_203317_0009.jpg.jpg
+      1 355 592 B -- cdate 2024-08-21T23:48+00 -- mdate 2024-08-21T23:48+00 -- /books/OCD/selection/page_0015_sharpc@dis.dk_20240821_203317_0010.jpg.jpg
+      1 669 165 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0016_sharpc@dis.dk_20240821_203317_0012.jpg.jpg
+      2 018 433 B -- cdate 2024-08-21T23:51+00 -- mdate 2024-08-21T23:51+00 -- /books/OCD/selection/page_0017_sharpc@dis.dk_20240821_203317_0013.jpg.jpg
+      1 597 628 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0019_sharpc@dis.dk_20240821_203317_0015.jpg.jpg
+      1 490 796 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0020_sharpc@dis.dk_20240821_203317_0016.jpg.jpg
+      2 212 221 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0021_sharpc@dis.dk_20240821_203317_0017.jpg.jpg
+      1 979 574 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0022_sharpc@dis.dk_20240821_203317_0018.jpg.jpg
+      2 661 206 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0024_sharpc@dis.dk_20240821_205059_0002.jpg.jpg
+      2 029 369 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0025_sharpc@dis.dk_20240821_205059_0003.jpg.jpg
+      2 058 195 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0026_sharpc@dis.dk_20240821_205059_0004.jpg.jpg
+      1 750 312 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0027_sharpc@dis.dk_20240821_205059_0005.jpg.jpg
+      2 026 543 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0028_sharpc@dis.dk_20240821_205059_0006.jpg.jpg
+      1 574 985 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0029_sharpc@dis.dk_20240821_205059_0007.jpg.jpg
+      2 196 487 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0030_sharpc@dis.dk_20240821_205059_0008.jpg.jpg
+      1 672 038 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0031_sharpc@dis.dk_20240821_205059_0009.jpg.jpg
+      1 929 858 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0032_sharpc@dis.dk_20240821_205059_0010.jpg.jpg
+      1 776 630 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0033_sharpc@dis.dk_20240821_205059_0011.jpg.jpg
+     11 615 154 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0035_sharpc@dis.dk_20240821_205059_0013.jpg.jpg
+      1 848 301 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0036_sharpc@dis.dk_20240821_205059_0014.jpg.jpg
+      1 577 988 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0044_sharpc@dis.dk_20240821_205626_0005.jpg.jpg
+      1 455 820 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0045_sharpc@dis.dk_20240821_205626_0006.jpg.jpg
+      2 112 394 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0046_sharpc@dis.dk_20240821_205626_0007.jpg.jpg
+      2 106 222 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0047_sharpc@dis.dk_20240821_205626_0008.jpg.jpg
+      1 912 979 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0048_sharpc@dis.dk_20240821_205626_0009.jpg.jpg
+      2 294 759 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0049_sharpc@dis.dk_20240821_205626_0010.jpg.jpg
+      2 170 246 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0050_sharpc@dis.dk_20240821_205626_0011.jpg.jpg
+      1 785 075 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0051_sharpc@dis.dk_20240821_205626_0012.jpg.jpg
+      2 717 745 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0052_sharpc@dis.dk_20240821_205626_0013.jpg.jpg
+      2 326 022 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0053_sharpc@dis.dk_20240821_205626_0014.jpg.jpg
+      2 664 907 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0054_sharpc@dis.dk_20240821_205626_0015.jpg.jpg
+      2 565 187 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0063_sharpc@dis.dk_20240821_205853_0008.jpg.jpg
+      2 798 004 B -- cdate 2024-08-21T23:43+00 -- mdate 2024-08-21T23:43+00 -- /books/OCD/selection/page_0064_sharpc@dis.dk_20240821_210417_0001.jpg.jpg
+      2 764 059 B -- cdate 2024-08-22T00:01+00 -- mdate 2024-08-22T00:01+00 -- /books/OCD/selection/page_0076_sharpc@dis.dk_20240821_210417_0013.jpg.jpg
+     17 166 310 B -- cdate 2023-08-23T17:32+00 -- mdate 2023-08-23T17:32+00 -- /books/ObserveCollectDraw Scan.pdf
+        122 768 B -- cdate 2014-05-31T20:52+00 -- mdate 2014-05-31T20:52+00 -- /books/P2_ieehf.pdf
+        554 550 B -- cdate 2014-05-31T20:40+00 -- mdate 2014-05-31T20:40+00 -- /books/P5_Human Centered Design, HCII 2009.pdf
+     10 999 457 B -- cdate 2022-09-03T18:19+00 -- mdate 2022-09-03T18:19+00 -- /books/Riccardo Mazza - Introduction to Infovis.pdf
+     23 088 726 B -- cdate 2025-08-04T11:41+00 -- mdate 2025-08-04T11:41+00 -- /books/System_Design_Interview_An_Insider’s_Guide_by_Alex_Xu_z_lib_org.pdf
+     10 002 391 B -- cdate 2023-10-12T05:00+00 -- mdate 2023-10-12T05:00+00 -- /books/hoe_math/AQAL HM SIMPLIFIED.png
+        736 529 B -- cdate 2023-12-17T19:41+00 -- mdate 2023-12-17T19:41+00 -- /books/hoe_math/Levels Compatibility Chart.png
+        137 557 B -- cdate 2023-08-20T22:12+00 -- mdate 2023-08-20T22:12+00 -- /books/hoe_math/Lines + Levels.png
+      4 475 133 B -- cdate 2024-02-19T18:52+00 -- mdate 2024-02-19T18:52+00 -- /books/hoe_math/Self-Maximize Map.png
+      2 150 845 B -- cdate 2014-06-05T18:28+00 -- mdate 2014-06-05T18:28+00 -- /books/leebyron_stackedgraphs_byron_wattenberg.pdf
+      2 755 166 B -- cdate 2025-02-17T16:54+00 -- mdate 2025-02-17T16:54+00 -- /books/philisophy/2025 Metamodern Theory and praxis v1i1.pdf
+        132 298 B -- cdate 2025-02-24T15:46+00 -- mdate 2025-02-24T15:46+00 -- /books/philisophy/fraan realism till post-sanning och tillbaka igen kp-1-2-2018_p39.pdf
+        771 283 B -- cdate 2025-06-05T14:10+00 -- mdate 2025-06-05T14:10+00 -- /books/philisophy/wp2015-21-be-smart-live-long.pdf
+          2 053 B -- cdate 2023-03-30T17:47+00 -- mdate 2023-03-30T17:47+00 -- /class feedback
+         11 729 B -- cdate 2025-12-02T12:50+00 -- mdate 2025-12-02T12:50+00 -- /medals/2025 FA/Sam Drawing.svg
+      3 481 514 B -- cdate 2025-12-02T18:56+00 -- mdate 2025-12-02T18:56+00 -- /medals/2025 FA/medals fall 2025.png
+        466 263 B -- cdate 2025-12-02T18:56+00 -- mdate 2025-12-02T18:56+00 -- /medals/2025 FA/medals fall 2025.svg
+        259 247 B -- cdate 2025-12-02T13:34+00 -- mdate 2025-12-02T13:34+00 -- /medals/2025 FA/racecar.svg
+         10 849 B -- cdate 2025-12-02T13:13+00 -- mdate 2025-12-02T13:13+00 -- /medals/2025 FA/sam houses.svg
+         58 285 B -- cdate 2025-12-02T12:45+00 -- mdate 2025-12-02T12:45+00 -- /medals/2025 FA/sam.svg
+          2 217 B -- cdate 2025-04-29T18:20+00 -- mdate 2025-04-29T18:20+00 -- /medals/2025 FA/sample.svg
+          5 971 B -- cdate 2025-12-02T13:37+00 -- mdate 2025-12-02T13:37+00 -- /medals/2025 FA/untitled(4).svg
+        259 247 B -- cdate 2025-12-02T13:40+00 -- mdate 2025-12-02T13:40+00 -- /medals/2025 FA/untitled(5).svg
+        594 317 B -- cdate 2024-12-05T14:07+00 -- mdate 2024-12-05T14:07+00 -- /medals/Cinzel.zip
+     36 418 720 B -- cdate 2024-12-06T12:02+00 -- mdate 2024-12-06T12:02+00 -- /medals/LightBurn.V1.7.03.dmg
+      1 725 552 B -- cdate 2025-04-30T14:09+00 -- mdate 2025-04-30T14:09+00 -- /medals/bitmap.png
+      5 264 047 B -- cdate 2024-12-06T12:12+00 -- mdate 2024-12-06T12:12+00 -- /medals/medals fall 2024.png
+      2 247 490 B -- cdate 2024-12-08T06:37+00 -- mdate 2024-12-08T06:37+00 -- /medals/medals fall 2024.svg
+      5 116 307 B -- cdate 2025-04-30T11:06+00 -- mdate 2025-04-30T11:06+00 -- /medals/medals spring 2025.png
+        791 315 B -- cdate 2025-04-30T14:03+00 -- mdate 2025-04-30T14:03+00 -- /medals/medals spring 2025.svg
+          2 217 B -- cdate 2025-04-29T18:20+00 -- mdate 2025-04-29T18:20+00 -- /medals/sample.svg
+         25 185 B -- cdate 2025-04-29T18:03+00 -- mdate 2025-04-29T18:03+00 -- /medals/untitled(1).svg
+          4 998 B -- cdate 2025-11-17T09:54+00 -- mdate 2025-11-17T09:54+00 -- /rPI/mixtour/main.py
+        119 864 B -- cdate 2025-02-03T20:24+00 -- mdate 2025-02-03T20:24+00 -- /receipts/F2227244.pdf
+        119 845 B -- cdate 2025-11-18T09:55+00 -- mdate 2025-11-18T09:55+00 -- /receipts/F2290876.pdf
+         97 243 B -- cdate 2025-12-15T10:44+00 -- mdate 2025-12-15T10:44+00 -- /receipts/Gmail - Kvitto 56428 (Järvsö Bergscykelpark AB).pdf
+      4 263 218 B -- cdate 2024-12-02T12:27+00 -- mdate 2024-12-02T12:27+00 -- /receipts/P_20241202_132143.jpg
+        312 911 B -- cdate 2026-01-21T21:05+00 -- mdate 2026-01-21T21:05+00 -- /receipts/Screenshot 2026-01-21 at 22.05.03.png
+        138 969 B -- cdate 2025-12-01T00:19+00 -- mdate 2025-12-01T00:19+00 -- /receipts/SeasonTicket.pdf
+         83 414 B -- cdate 2025-11-18T17:13+00 -- mdate 2025-11-18T17:13+00 -- /receipts/footballapiinvoice.pdf
+         14 340 B -- cdate 2026-02-07T10:06+00 -- mdate 2026-03-06T20:25+00 -- /recordings/.DS_Store
+  4 289 240 818 B -- cdate 2024-03-18T10:54+00 -- mdate 2024-03-18T10:54+00 -- /recordings/2024 color without screen rec/2024-03-18 perception3 color pt1.MP4
+  4 289 232 379 B -- cdate 2024-03-18T11:22+00 -- mdate 2024-03-18T11:22+00 -- /recordings/2024 color without screen rec/2024-03-18 perception3 color pt2.MP4
+  2 539 216 673 B -- cdate 2026-02-07T02:40+00 -- mdate 2026-02-07T02:40+00 -- /recordings/2024 color without screen rec/2024-03-18 perception3 color pt3.MP4
+  4 282 102 292 B -- cdate 2024-03-21T14:50+00 -- mdate 2024-03-21T14:50+00 -- /recordings/2024 color without screen rec/2024-03-21 Visual perception p3 - Color - duplicate or somth.mov
+  5 196 485 695 B -- cdate 2024-03-21T13:46+00 -- mdate 2024-03-21T13:46+00 -- /recordings/2024 color without screen rec/2024-03-21 Visual perception p3 - Color.mov
+  4 288 793 381 B -- cdate 2024-10-24T10:00+00 -- mdate 2024-10-24T10:00+00 -- /recordings/2024 color without screen rec/2024-10-24-120031-Angie-gh5 color 1.mp4
+  4 288 205 958 B -- cdate 2026-02-07T02:10+00 -- mdate 2026-02-07T02:10+00 -- /recordings/2024 color without screen rec/2024-10-24-122855-Angie-gh5 color 2.mp4
+    676 922 948 B -- cdate 2026-02-07T02:21+00 -- mdate 2026-02-07T02:21+00 -- /recordings/2024 color without screen rec/2024-10-24-122855-Angie-gh5 color 3.mp4
+  1 343 673 522 B -- cdate 2024-03-18T14:06+00 -- mdate 2024-03-18T14:06+00 -- /recordings/2024-03-18 AXIDRAW/P1055152.MP4
+     61 684 396 B -- cdate 2024-03-18T14:07+00 -- mdate 2024-03-18T14:07+00 -- /recordings/2024-03-18 AXIDRAW/P1055153.MP4
+    335 965 477 B -- cdate 2024-03-18T14:44+00 -- mdate 2024-03-18T14:44+00 -- /recordings/2024-03-18 AXIDRAW/P1055154.MP4
+    818 318 396 B -- cdate 2026-02-07T02:41+00 -- mdate 2026-02-07T02:41+00 -- /recordings/2024-03-18 AXIDRAW/P1055155.MP4
+    202 816 193 B -- cdate 2024-03-18T14:53+00 -- mdate 2024-03-18T14:53+00 -- /recordings/2024-03-18 AXIDRAW/P1055156.MP4
+    195 340 476 B -- cdate 2024-03-18T14:55+00 -- mdate 2024-03-18T14:55+00 -- /recordings/2024-03-18 AXIDRAW/P1055157.MP4
+    579 909 810 B -- cdate 2024-03-18T13:34+00 -- mdate 2024-03-18T13:34+00 -- /recordings/2024-03-18 AXIDRAW/axidraw intro 2.MP4
+    170 338 979 B -- cdate 2024-03-18T13:35+00 -- mdate 2024-03-18T13:35+00 -- /recordings/2024-03-18 AXIDRAW/axidraw intro 3.MP4
+    206 767 118 B -- cdate 2024-03-18T13:37+00 -- mdate 2024-03-18T13:37+00 -- /recordings/2024-03-18 AXIDRAW/axidraw intro 4.MP4
+    509 778 056 B -- cdate 2024-03-18T13:41+00 -- mdate 2024-03-18T13:41+00 -- /recordings/2024-03-18 AXIDRAW/axidraw intro 5.MP4
+    619 041 874 B -- cdate 2024-03-18T13:46+00 -- mdate 2024-03-18T13:46+00 -- /recordings/2024-03-18 AXIDRAW/axidraw intro 6.MP4
+    560 056 403 B -- cdate 2024-03-18T13:51+00 -- mdate 2024-03-18T13:51+00 -- /recordings/2024-03-18 AXIDRAW/axidraw intro 7.MP4
+     76 351 918 B -- cdate 2024-03-18T13:30+00 -- mdate 2024-03-18T13:30+00 -- /recordings/2024-03-18 AXIDRAW/axidraw intro.MP4
+  4 288 377 514 B -- cdate 2024-04-11T09:29+00 -- mdate 2024-04-11T09:29+00 -- /recordings/2024-04-11 sorytelling without screen rec/2024-04-11 storytelling with data 2.MP4
+  1 620 187 257 B -- cdate 2026-02-07T02:42+00 -- mdate 2026-02-07T02:42+00 -- /recordings/2024-04-11 sorytelling without screen rec/2024-04-11 storytelling with data 3.MP4
+  4 288 437 894 B -- cdate 2024-04-11T09:00+00 -- mdate 2024-04-11T09:00+00 -- /recordings/2024-04-11 sorytelling without screen rec/2024-04-11 storytelling with data.MP4
+    135 873 465 B -- cdate 2026-02-07T02:15+00 -- mdate 2026-02-07T02:15+00 -- /recordings/2024-11-13 wrong aggregation in observable.mov
+  4 288 537 597 B -- cdate 2024-12-04T10:19+00 -- mdate 2024-12-04T10:19+00 -- /recordings/2024-12-04-111949-Angie-gh5 marior uniview tour.mp4
+  4 155 329 190 B -- cdate 2024-12-04T10:47+00 -- mdate 2024-12-04T10:47+00 -- /recordings/2024-12-04-114717-Angie-gh5 marior uniview tour.mp4
+     16 389 144 B -- cdate 2025-01-30T23:23+00 -- mdate 2025-01-30T23:23+00 -- /recordings/2025-01-31 bisymmetric log transformation.mov
+  4 288 936 878 B -- cdate 2026-02-07T02:07+00 -- mdate 2026-02-07T02:07+00 -- /recordings/2025-03-10 The Eye/2024-10-17-120455-Angie-gh5 the eye.mp4
+  3 894 036 365 B -- cdate 2024-10-17T10:30+00 -- mdate 2024-10-17T10:30+00 -- /recordings/2025-03-10 The Eye/2024-10-17-123040-Angie-gh5 the eye.mp4
+  2 431 004 387 B -- cdate 2025-03-10T10:24+00 -- mdate 2025-03-10T10:24+00 -- /recordings/2025-03-10 The Eye/2025-03-10 THE EYE Screen Recording at 10.13.52.mov
+  4 288 337 372 B -- cdate 2025-03-10T10:04+00 -- mdate 2025-03-10T10:04+00 -- /recordings/2025-03-10 The Eye/2025-03-10-110458-Angie-gh5 the eye.mp4
+  2 529 567 376 B -- cdate 2026-02-07T02:24+00 -- mdate 2026-02-07T02:24+00 -- /recordings/2025-03-10 The Eye/2025-03-10-112140-Angie-gh5 the eye.mp4
+  4 288 692 653 B -- cdate 2024-10-21T10:05+00 -- mdate 2024-10-21T10:05+00 -- /recordings/2025-03-13 v cognition/2024-10-21-120506-Angie-gh5 visual cognition.mp4
+  4 288 315 532 B -- cdate 2024-10-21T10:33+00 -- mdate 2024-10-21T10:33+00 -- /recordings/2025-03-13 v cognition/2024-10-21-123331-Angie-gh5 visual cognition.mp4
+  1 840 881 722 B -- cdate 2024-10-21T10:45+00 -- mdate 2024-10-21T10:45+00 -- /recordings/2025-03-13 v cognition/2024-10-21-124539-Angie-gh5 visual cognition.mp4
+  5 034 897 439 B -- cdate 2026-02-07T02:31+00 -- mdate 2026-02-07T02:31+00 -- /recordings/2025-03-13 v cognition/2025-03-13 at 10.11.44 visual cognition screen rec.mov
+  4 288 771 248 B -- cdate 2026-02-07T02:00+00 -- mdate 2026-02-07T02:00+00 -- /recordings/2025-03-13 v cognition/2025-03-13-110513-Angie-gh5 visual cognition.mp4
+  4 288 356 697 B -- cdate 2025-03-13T10:33+00 -- mdate 2025-03-13T10:33+00 -- /recordings/2025-03-13 v cognition/2025-03-13-113338-Angie-gh5 visual cognition.mp4
+  1 820 281 065 B -- cdate 2025-03-13T10:45+00 -- mdate 2025-03-13T10:45+00 -- /recordings/2025-03-13 v cognition/2025-03-13-114538-Angie-gh5 visual cognition.mp4
+      1 789 110 B -- cdate 2025-03-18T13:09+00 -- mdate 2025-03-18T13:09+00 -- /recordings/2025-03-17 TIPS/14 - TIPS_ A Theory of Inventive Problem Solving.pdf
+  4 289 108 242 B -- cdate 2025-03-17T12:37+00 -- mdate 2025-03-17T12:37+00 -- /recordings/2025-03-17 TIPS/P1055324.MP4
+  4 289 011 564 B -- cdate 2026-02-07T02:51+00 -- mdate 2026-02-07T02:51+00 -- /recordings/2025-03-17 TIPS/P1055325.MP4
+  3 008 575 052 B -- cdate 2025-03-17T13:25+00 -- mdate 2025-03-17T13:25+00 -- /recordings/2025-03-17 TIPS/P1055326.MP4
+  3 405 058 251 B -- cdate 2026-02-07T02:51+00 -- mdate 2026-02-07T02:51+00 -- /recordings/2025-03-17 TIPS/Screen Recording 2025-03-17 at 11.46.48.mov
+  4 039 888 601 B -- cdate 2025-03-20T10:49+00 -- mdate 2025-03-20T10:49+00 -- /recordings/2025-03-20 maps/2025-03-20 Maps design class screen rec.mov
+  4 288 803 745 B -- cdate 2026-02-07T02:25+00 -- mdate 2026-02-07T02:25+00 -- /recordings/2025-03-20 maps/2025-03-20-112307-Angie-gh5 maps.mp4
+  2 169 041 960 B -- cdate 2026-02-07T02:01+00 -- mdate 2026-02-07T02:01+00 -- /recordings/2025-03-20 maps/2025-03-20-113727-Angie-gh5 maps.mp4
+  4 288 277 641 B -- cdate 2024-04-25T09:10+00 -- mdate 2024-04-25T09:10+00 -- /recordings/2025-04-07 BS charts/2024-04-25 bs charts 1.MP4
+  4 289 159 941 B -- cdate 2024-04-25T09:39+00 -- mdate 2024-04-25T09:39+00 -- /recordings/2025-04-07 BS charts/2024-04-25 bs charts 2.MP4
+  1 417 195 109 B -- cdate 2024-04-25T09:48+00 -- mdate 2024-04-25T09:48+00 -- /recordings/2025-04-07 BS charts/2024-04-25 bs charts 3.MP4
+  2 775 581 883 B -- cdate 2025-04-07T11:04+00 -- mdate 2025-04-07T11:04+00 -- /recordings/2025-04-07 BS charts/2025-04-07 BS charts screen rec.mov
+  4 288 461 328 B -- cdate 2026-02-07T02:15+00 -- mdate 2026-02-07T02:15+00 -- /recordings/2025-04-07 BS charts/2025-04-07-124211-Angie-gh5 BS charts.mp4
+  4 288 153 786 B -- cdate 2025-04-07T11:10+00 -- mdate 2025-04-07T11:10+00 -- /recordings/2025-04-07 BS charts/2025-04-07-131035-Angie-gh5 BS charts.mp4
+  2 757 503 740 B -- cdate 2026-02-07T02:28+00 -- mdate 2026-02-07T02:28+00 -- /recordings/2025-04-07 BS charts/2025-04-07-132849-Angie-gh5 BS charts.mp4
+          3 541 B -- cdate 2024-02-15T14:50+00 -- mdate 2024-02-15T14:50+00 -- /script.py
+     28 428 815 B -- cdate 2023-11-02T10:40+00 -- mdate 2023-11-02T10:40+00 -- /software/AxiDraw_Install_393.app.zip
+          6 148 B -- cdate 2023-08-12T18:46+00 -- mdate 2023-08-12T18:46+00 -- /software/Axidraw-Examples-1.4/.DS_Store
+         34 158 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/AxiDraw_First.svg
+        175 098 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/basic demos/Appolonius gasket.svg
+         43 657 B -- cdate 2018-12-03T20:53+00 -- mdate 2018-12-03T20:53+00 -- /software/Axidraw-Examples-1.4/basic demos/Gosper Curve.svg
+         86 650 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/basic demos/HappyBirthday.svg
+        310 046 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/basic demos/arrowhead_bb_curve.svg
+        248 293 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/basic demos/arrowhead_curve.svg
+        981 598 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/basic demos/text-test-outlines3.svg
+         43 232 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/basic demos/wiresphere.svg
+         62 854 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/from launch video/AxiDraw-Name-Huge.svg
+      2 310 726 B -- cdate 2018-12-03T21:28+00 -- mdate 2018-12-03T21:28+00 -- /software/Axidraw-Examples-1.4/from launch video/SquiggleDraw-Grace-2.svg
+        647 880 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/from launch video/arrowhead_curve-exploration.svg
+        235 322 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/from launch video/birthdayCard_outlines.svg
+      2 513 588 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/from launch video/carson_stipple.svg
+      2 660 566 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/from launch video/lorem_ipsum_outline.svg
+         45 922 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/from launch video/signatures.svg
+        337 315 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/from launch video/wedding-invite.svg
+        667 628 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/less basic demos/Declaration.svg
+      3 491 697 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/less basic demos/Woolf.svg
+      4 564 628 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/less basic demos/cat-stipple2.svg
+         44 061 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/test and cal/Page-Size-Demo.svg
+        132 492 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/test and cal/PrecisionTest.svg
+          8 195 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/test and cal/Rapid-Travel-Test.svg
+         59 060 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/test and cal/SmalltestPattern.svg
+        329 285 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/test and cal/Test-Speed-Plots.svg
+         19 416 B -- cdate 2018-01-11T03:05+00 -- mdate 2018-01-11T03:05+00 -- /software/Axidraw-Examples-1.4/test and cal/Tests_for_Hatch_Fill.svg
