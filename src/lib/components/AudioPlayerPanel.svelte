@@ -47,11 +47,22 @@
 
     const barW    = VW / count;
     const centerY = VH / 2;
+    const gc      = _gainCurve; // reactive dep — redraws when curve is set
+
+    // Find the tallest visual amplitude after gain, so we can scale the Y axis
+    // to always fill the full height regardless of how flat the gain curve is.
+    let visualPeak = 0;
+    for (let i = 0; i < count; i++) {
+      const v = (maxs[i] / norm) * (gc ? gc[i] : 1);
+      if (v > visualPeak) visualPeak = v;
+    }
+    const yScale = visualPeak > 0 ? 1 / visualPeak : 1;
 
     return mins.map((lo, i) => {
+      const gain    = gc ? gc[i] : 1;
       const hi      = maxs[i];
-      const yTop    = centerY - (hi / norm) * centerY;
-      const yBottom = centerY - (lo / norm) * centerY;
+      const yTop    = centerY - (hi / norm) * gain * yScale * centerY;
+      const yBottom = centerY - (lo / norm) * gain * yScale * centerY;
       return {
         x: i * barW,
         y: yTop,
@@ -104,9 +115,86 @@
     isPlaying   = false;
   });
 
-  // ── Audio control helpers ─────────────────────────────────────────────────
+  // ── Volume / gain ──────────────────────────────────────────────────────────
+  /** Manual volume in dB. Slider range -30..0. */
+  let volumeDb   = $state(0);
+  /** When true, per-moment waveform lookahead adjusts gain dynamically. */
+  let autoAdjust     = $state(false);
+  /** How aggressively to suppress loud sections. 0 = off, 1 = extreme. */
+  let suppressLoud   = $state(0);
+  /** Amplitude threshold (0..1): only samples above this are suppressed. */
+  let suppressCutoff = $state(0);
+  /** How much to boost quiet sections toward volume 1. 0 = off, 1 = full makeup. */
+  let boostQuiet     = $state(0);
+  /** Amplitude threshold (0..1): only samples below this are boosted. */
+  let boostCutoff    = $state(1);
 
-  function togglePlay() {
+  /** dB → linear gain (0..1). */
+  function dbToLinear(db) { return Math.pow(10, db / 20); }
+
+  /**
+   * Precomputed gain curve: one multiplier per waveform sample.
+   * Recomputed whenever waveData changes or autoAdjust is toggled.
+   * Reactive so bars() updates when the curve is computed.
+   */
+  let _gainCurve = /** @type {Float32Array | null} */ ($state(null));
+
+  // Keep audioEl.volume in sync with slider when auto-adjust is off.
+  $effect(() => {
+    if (audioEl && !autoAdjust) audioEl.volume = dbToLinear(volumeDb);
+  });
+
+  // Rebuild gain curve whenever any normalisation param changes.
+  $effect(() => {
+    if (!autoAdjust || !waveData) { _gainCurve = null; return; }
+    const { maxs, norm } = waveData;
+    const n = maxs.length;
+
+    // Phase 1 — suppress samples whose peak is above suppressCutoff.
+    const suppressTarget = Math.pow(0.0001, suppressLoud);
+    const curve = new Float32Array(n);
+    for (let i = 0; i < n; i++) {
+      const peak = maxs[i] / norm;  // 0..1
+      if (peak <= suppressCutoff || suppressLoud === 0) {
+        curve[i] = 1; // below cutoff or strength is off: no change
+      } else {
+        const fullSuppress = peak > 0 ? Math.min(1, suppressTarget / peak) : 1;
+        curve[i] = 1 + suppressLoud * (fullSuppress - 1);
+      }
+    }
+
+    // Phase 2 — boost samples whose peak is below boostCutoff.
+    // For each eligible sample, compute the gain that would bring its amplitude
+    // up to boostCutoff (i.e. as loud as the quietest "not-quiet" sound).
+    // Blend toward that target by boostQuiet.  Capped at 1.0 (audioEl.volume max).
+    if (boostQuiet > 0) {
+      for (let i = 0; i < n; i++) {
+        const peak = maxs[i] / norm;
+        if (peak <= 0 || peak >= boostCutoff) continue;
+        const targetGain = Math.min(1, boostCutoff / peak);   // gain to reach the cutoff level
+        curve[i] = Math.min(1, curve[i] + boostQuiet * (targetGain - curve[i]));
+      }
+    }
+
+    _gainCurve = curve;
+  });
+
+  /** On each timeupdate, look up the precomputed gain for the current position. */
+  function applyAutoVolume() {
+    if (!audioEl || !_gainCurve) return;
+    const dur = audioEl.duration;
+    if (!dur) return;
+    const idx = Math.min(_gainCurve.length - 1,
+      Math.floor((audioEl.currentTime / dur) * _gainCurve.length));
+    audioEl.volume = Math.max(0, Math.min(1, dbToLinear(volumeDb) * _gainCurve[idx]));
+  }
+
+  const volLabel        = $derived(volumeDb === 0 ? '0 dB' : `${volumeDb.toFixed(1)} dB`);
+  const suppressLabel   = $derived(suppressLoud   === 0 ? 'off' : `${Math.round(suppressLoud   * 100)}%`);
+  const boostLabel      = $derived(boostQuiet     === 0 ? 'off' : `${Math.round(boostQuiet     * 100)}%`);
+  const suppressCutLbl  = $derived(`>${Math.round(suppressCutoff * 100)}%`);
+  const boostCutLbl     = $derived(`<${Math.round(boostCutoff    * 100)}%`);
+  async function togglePlay() {
     if (!audioEl) return;
     if (isPlaying) {
       audioEl.pause();
@@ -126,7 +214,9 @@
   function handleEnded() { isPlaying = false; currentTime = 0; }
 
   function handleTimeUpdate() {
-    if (audioEl) currentTime = audioEl.currentTime;
+    if (!audioEl) return;
+    currentTime = audioEl.currentTime;
+    applyAutoVolume();
   }
   function handleLoadedMetadata() {
     if (audioEl) duration = audioEl.duration || entry.durationSec;
@@ -135,7 +225,7 @@
   // ── Waveform click-to-seek ────────────────────────────────────────────────
 
   /** @param {MouseEvent & { currentTarget: SVGSVGElement }} e */
-  function handleWaveformClick(e) {
+  async function handleWaveformClick(e) {
     if (!audioEl || !duration) return;
     const rect  = e.currentTarget.getBoundingClientRect();
     const ratio = (e.clientX - rect.left) / rect.width;
@@ -307,6 +397,45 @@
         </svg>
       {/if}
     </button>
+  </div>
+
+  <!-- ── Volume control ── -->
+  <div class="volume-row">
+    <label class="vol-label" for="vol-slider">{volLabel}</label>
+    <input
+      id="vol-slider"
+      class="vol-slider"
+      type="range"
+      min="-30"
+      max="0"
+      step="0.5"
+      bind:value={volumeDb}
+      aria-label="Volume"
+    />
+    <label class="auto-label">
+      <input type="checkbox" bind:checked={autoAdjust} />
+      auto
+    </label>
+    {#if autoAdjust}
+      <div class="norm-rows">
+        <div class="norm-row">
+          <span class="norm-label">suppress {suppressLabel}</span>
+          <input class="norm-slider" type="range" min="0" max="1" step="0.01"
+            bind:value={suppressLoud} aria-label="Suppress amount" />
+          <span class="norm-label cutoff-lbl">{suppressCutLbl}</span>
+          <input class="norm-slider cutoff-slider" type="range" min="0" max="1" step="0.01"
+            bind:value={suppressCutoff} aria-label="Suppress cutoff" />
+        </div>
+        <div class="norm-row">
+          <span class="norm-label">boost {boostLabel}</span>
+          <input class="norm-slider" type="range" min="0" max="1" step="0.01"
+            bind:value={boostQuiet} aria-label="Boost amount" />
+          <span class="norm-label cutoff-lbl">{boostCutLbl}</span>
+          <input class="norm-slider cutoff-slider" type="range" min="0" max="1" step="0.01"
+            bind:value={boostCutoff} aria-label="Boost cutoff" />
+        </div>
+      </div>
+    {/if}
   </div>
 
   <!-- Native audio element (hidden, drives playback) -->
@@ -490,4 +619,77 @@
   .play-btn:hover   { background: #333; }
   .play-btn:active  { transform: scale(0.94); }
   .play-btn:disabled { background: #ccc; cursor: default; }
+
+  /* ── Volume row ── */
+  .volume-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .vol-label {
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+    color: #555;
+    min-width: 5.5ch;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .vol-slider {
+    flex: 1;
+    accent-color: #1a1a1a;
+    cursor: pointer;
+    height: 4px;
+  }
+
+  .auto-label {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    color: #555;
+    cursor: pointer;
+    flex-shrink: 0;
+    user-select: none;
+  }
+  .auto-label input { cursor: pointer; accent-color: #1a1a1a; }
+
+  .norm-label {
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+    color: #555;
+    min-width: 7.5ch;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .norm-label.cutoff-lbl {
+    min-width: 4ch;
+    margin-left: 0.4rem;
+  }
+
+  .norm-slider {
+    flex: 2;
+    accent-color: #1a1a1a;
+    cursor: pointer;
+    height: 4px;
+  }
+
+  .norm-slider.cutoff-slider {
+    flex: 1;
+  }
+
+  .norm-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+  }
+
+  .norm-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
 </style>
