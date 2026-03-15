@@ -129,13 +129,16 @@
   });
 
   const BAR_GAP = 0.1; // viewBox units gap on each side of a bar
+
+  const globalMax = $derived(() => yearRows()[0]?.maxCount ?? 1);
 </script>
 
 <div class="overview">
-  {#each yearRows() as row (row.year)}
+  {#each yearRows() as row, i (row.year)}
     <div class="year-row">
       <div class="year-label">{row.year}</div>
       <div class="year-chart-wrap">
+        {#if i === 0}<span class="y-max-label">{globalMax()} events max</span>{/if}
         <svg
           class="year-chart"
           viewBox="0 0 {row.nBins} {CHART_H}"
@@ -220,6 +223,17 @@
     flex: 1;
     min-width: 0;
     padding: 6px 0;
+    position: relative;
+  }
+
+  .y-max-label {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    font-size: 0.65rem;
+    color: #1a1a1a;
+    pointer-events: none;
+    line-height: 1;
   }
 
   .year-chart {
@@ -233,7 +247,7 @@
     margin: 0;
     padding: 4px 14px 6px;
     font-size: 0.75rem;
-    color: #999;
+    color: #1a1a1a;
     line-height: 2;
     display: flex;
     flex-wrap: wrap;

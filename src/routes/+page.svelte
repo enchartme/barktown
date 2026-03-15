@@ -15,7 +15,16 @@
   /** @type {string | null} */
   let loadError = $state(null);
 
-  const days      = $derived(groupByDate(entries));
+  /** Entry kind filter. */
+  let kindFilter = $state('both'); // 'text' | 'audio' | 'both'
+
+  const filteredEntries = $derived(
+    kindFilter === 'both'  ? entries :
+    kindFilter === 'audio' ? entries.filter(e => e.kind === 'audio') :
+    entries.filter(e => e.kind !== 'audio')
+  );
+
+  const days      = $derived(groupByDate(filteredEntries));
   const sunByDate = $derived(data.sunByDate ?? {});
 
   /** @type {import('$lib/types').Entry | null} */
@@ -100,7 +109,18 @@
       onclick={() => (showOverview = !showOverview)}
       aria-pressed={showOverview}
       title="Toggle overview chart"
-    >{#if loading}Loading…{:else if loadError}Error{:else}{entries.length} recordings{/if}</button>
+    >{#if loading}Loading…{:else if loadError}Error{:else}{entries.length} recorded events{/if}</button>
+
+    <div class="kind-controls" role="group" aria-label="Entry type filter">
+      {#each ['text', 'audio', 'both'] as k (k)}
+        <button
+          class="zoom-btn"
+          class:active={kindFilter === k}
+          onclick={() => (kindFilter = k)}
+          aria-pressed={kindFilter === k}
+        >{k}</button>
+      {/each}
+    </div>
 
     <div class="zoom-controls" role="group" aria-label="Zoom level">
       {#each ZOOM_LEVELS as level (level.label)}
@@ -118,7 +138,7 @@
 
   <main class="diary-main">
     {#if showOverview}
-      <OverviewPanel {entries} />
+      <OverviewPanel entries={filteredEntries} />
     {/if}
     {#if loading}
       <p class="status-msg">Loading recordings…</p>
@@ -201,10 +221,15 @@
   .recordings-toggle:hover { background: #f0f0ec; border-color: #d0d0cc; color: #555; }
   .recordings-toggle.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
 
-  .zoom-controls {
+  .kind-controls {
     display: flex;
     gap: 0.25rem;
     margin-left: auto;
+  }
+
+  .zoom-controls {
+    display: flex;
+    gap: 0.25rem;
   }
 
   .zoom-btn {
