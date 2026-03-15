@@ -1,0 +1,8 @@
+python compare-name-lists.py ./history-of-renamings/04-OUTPUT-4718-files.txt ./history-of-renamings/10-OUTPUT.txt 
+Matching names: 2
+
+2021-05-25 15-44-00 bjäfsigt.aac
+2022-04-04 10-35-00 barks into calm.aac
+
+Unique to 04-OUTPUT-4718-files.txt: 4716
+Unique to 10-OUTPUT.txt: 453

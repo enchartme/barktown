@@ -1,0 +1,143 @@
+command:
+
+setopt null_glob
+for z in *.[zZ][iI][pP]; do
+  base="${z%.*}"
+  out="$base zip"
+  mkdir -p -- "$out"
+  7z x -y -o"$out" -- "$z"
+done
+unsetopt null_glob
+
+
+7-Zip [64] 17.05 : Copyright (c) 1999-2021 Igor Pavlov : 2017-08-28 p7zip Version 17.05 (locale=utf8,Utf16=on,HugeFiles=on,64 bits,8 CPUs LE)
+
+Scanning the drive for archives: 1 file, 113440609 bytes (109 MiB)
+Extracting archive: April 2021.zip --- Path = April 2021.zip --- Type = zip --- Physical Size = 113440609 
+--- Everything is Ok --- Files: 15 --- Size: 164619994 --- Compressed: 113440609
+
+Scanning the drive for archives: 1 file, 167965071 bytes (161 MiB)
+Extracting archive: May 2021.zip --- Path = May 2021.zip --- Type = zip --- Physical Size = 167965071 
+--- Everything is Ok --- Size: 245331676 --- Compressed: 167965071
+
+Scanning the drive for archives: 1 file, 775234032 bytes (740 MiB)
+Extracting archive: october 2021 part 1.zip --- Path = october 2021 part 1.zip --- Type = zip --- Physical Size = 775234032 
+--- Everything is Ok --- Files: 21 --- Size: 1120873868 --- Compressed: 775234032
+
+Scanning the drive for archives: 1 file, 1930687277 bytes (1842 MiB)
+Extracting archive: audust 2021 part 1.zip --- Path = audust 2021 part 1.zip --- Type = zip --- Physical Size = 1930687277 
+--- Everything is Ok --- Files: 27 --- Size: 2495783762 --- Compressed: 1930687277
+
+Scanning the drive for archives: 1 file, 1888592026 bytes (1802 MiB)
+Extracting archive: august 2021 part 2.zip --- Path = august 2021 part 2.zip --- Type = zip --- Physical Size = 1888592026 
+--- Everything is Ok --- Files: 13 --- Size: 2448686349 --- Compressed: 1888592026
+
+Scanning the drive for archives: 1 file, 789957989 bytes (754 MiB)
+Extracting archive: august 2021 part 3.zip --- Path = august 2021 part 3.zip --- Type = zip --- Physical Size = 789957989 
+--- Everything is Ok --- Files: 2 --- Size: 988761308 --- Compressed: 789957989
+
+Scanning the drive for archives: 1 file, 2146054192 bytes (2047 MiB)
+Extracting archive: Barking dogs-20220730T081933Z-001.zip --- Path = Barking dogs-20220730T081933Z-001.zip --- Type = zip --- Physical Size = 2146054192 
+--- Everything is Ok --- Files: 87 --- Size: 3294085200 --- Compressed: 2146054192
+
+Scanning the drive for archives: 1 file, 2147473288 bytes (2048 MiB)
+Extracting archive: Barking dogs-20220730T081933Z-002.zip --- Path = Barking dogs-20220730T081933Z-002.zip --- Type = zip --- Physical Size = 2147473288 
+--- Everything is Ok --- Files: 42 --- Size: 3276608441 --- Compressed: 2147473288
+
+Scanning the drive for archives: 1 file, 2146617687 bytes (2048 MiB)
+Extracting archive: Barking dogs-20220730T081933Z-003.zip --- Path = Barking dogs-20220730T081933Z-003.zip --- Type = zip --- Physical Size = 2146617687 
+--- Everything is Ok --- Files: 33 --- Size: 3288438311 --- Compressed: 2146617687
+
+Scanning the drive for archives: 1 file, 2145271484 bytes (2046 MiB)
+Extracting archive: Barking dogs-20220730T081933Z-004.zip --- Path = Barking dogs-20220730T081933Z-004.zip --- Type = zip --- Physical Size = 2145271484 
+--- Everything is Ok --- Files: 22 --- Size: 3299652334 --- Compressed: 2145271484
+
+Scanning the drive for archives: 1 file, 2145234474 bytes (2046 MiB)
+Extracting archive: Barking dogs-20220730T081933Z-006.zip --- Path = Barking dogs-20220730T081933Z-006.zip --- Type = zip --- Physical Size = 2145234474 
+--- Everything is Ok --- Files: 24 --- Size: 3199065747 --- Compressed: 2145234474
+
+Scanning the drive for archives: 1 file, 2147201197 bytes (2048 MiB)
+Extracting archive: Barking dogs-20220730T081933Z-007.zip --- Path = Barking dogs-20220730T081933Z-007.zip --- Type = zip --- Physical Size = 2147201197 
+--- Everything is Ok --- Files: 28 --- Size: 3265370077 --- Compressed: 2147201197
+
+Scanning the drive for archives: 1 file, 2146419754 bytes (2047 MiB)
+Extracting archive: Barking dogs-20220730T081933Z-008.zip --- Path = Barking dogs-20220730T081933Z-008.zip --- Type = zip --- Physical Size = 2146419754 
+--- Everything is Ok --- Files: 25 --- Size: 3206526067 --- Compressed: 2146419754
+
+Scanning the drive for archives: 1 file, 2145248507 bytes (2046 MiB)
+Extracting archive: Barking dogs-20220730T081933Z-009.zip --- Path = Barking dogs-20220730T081933Z-009.zip --- Type = zip --- Physical Size = 2145248507 
+--- Everything is Ok --- Files: 31 --- Size: 3155445024 --- Compressed: 2145248507
+
+Scanning the drive for archives: 1 file, 2146917711 bytes (2048 MiB)
+Extracting archive: Barking dogs-20220730T081933Z-010.zip --- Path = Barking dogs-20220730T081933Z-010.zip --- Type = zip --- Physical Size = 2146917711 
+--- Everything is Ok --- Files: 31 --- Size: 3021786640 --- Compressed: 2146917711
+
+Scanning the drive for archives: 1 file, 2147481624 bytes (2048 MiB)
+Extracting archive: Barking dogs-20220730T081933Z-011.zip --- Path = Barking dogs-20220730T081933Z-011.zip --- Type = zip --- Physical Size = 2147481624 
+--- ERROR: Data Error : Barking dogs/13 May, 19.55 bark bark bark.aac
+
+Sub items Errors: 1
+Archives with Errors: 1
+Sub items Errors: 1
+13 May, 19.55 bark bark bark.aac is still extracted, but measures 4.1 MB instead of 8.2MB
+the file was later found in a different archive intact, so all good
+
+Scanning the drive for archives: 1 file, 2036352376 bytes (1943 MiB)
+Extracting archive: Barking dogs-20220730T081933Z-012.zip --- Path = Barking dogs-20220730T081933Z-012.zip --- Type = zip --- Physical Size = 2036352376 
+--- Everything is Ok --- Files: 43 --- Size: 2639854843 --- Compressed: 2036352376
+
+Scanning the drive for archives: 1 file, 1989261294 bytes (1898 MiB)
+Extracting archive: Barking dogs-20220730T081933Z-013.zip --- Path = Barking dogs-20220730T081933Z-013.zip --- Type = zip --- Physical Size = 1989261294 
+--- Everything is Ok --- Files: 28 --- Size: 2662133558 --- Compressed: 1989261294
+
+Scanning the drive for archives: 1 file, 1861753998 bytes (1776 MiB)
+Extracting archive: Barking dogs-20220730T081933Z-014.zip --- Path = Barking dogs-20220730T081933Z-014.zip --- Type = zip --- Physical Size = 1861753998 
+--- Everything is Ok --- Files: 16 --- Size: 2534920189 --- Compressed: 1861753998
+
+Scanning the drive for archives: 1 file, 1666422004 bytes (1590 MiB)
+Extracting archive: Barking dogs-20220730T081933Z-015.zip --- Path = Barking dogs-20220730T081933Z-015.zip --- Type = zip --- Physical Size = 1666422004 
+--- Everything is Ok --- Files: 8 --- Size: 2197222833 --- Compressed: 1666422004
+
+Scanning the drive for archives: 1 file, 560560654 bytes (535 MiB)
+Extracting archive: Barking dogs-20220730T081933Z-016.zip --- Path = Barking dogs-20220730T081933Z-016.zip --- Type = zip --- Physical Size = 560560654 
+--- Everything is Ok --- Files: 3 --- Size: 781528200 --- Compressed: 560560654
+
+Scanning the drive for archives: 1 file, 2146734427 bytes (2048 MiB)
+Extracting archive: Barking dogs-zipped autumn 2021-spring 2022.zip --- Path = Barking dogs-zipped autumn 2021-spring 2022.zip --- Type = zip --- Physical Size = 2146734427 
+--- Everything is Ok --- Files: 21 --- Size: 3253214925 --- Compressed: 2146734427
+
+Scanning the drive for archives: 1 file, 331247843 bytes (316 MiB)
+Extracting archive: december 2021 part 1.zip --- Path = december 2021 part 1.zip --- Type = zip --- Physical Size = 331247843 
+--- Everything is Ok --- Files: 3 --- Size: 504007713 --- Compressed: 331247843
+
+Scanning the drive for archives: 1 file, 1619783797 bytes (1545 MiB)
+Extracting archive: december 2021 part 2.zip --- Path = december 2021 part 2.zip --- Type = zip --- Physical Size = 1619783797 
+--- Everything is Ok --- Files: 31 --- Size: 2499305805 --- Compressed: 1619783797
+
+Scanning the drive for archives: 1 file, 1996397575 bytes (1904 MiB)
+Extracting archive: july 2021 2.zip --- Path = july 2021 2.zip --- Type = zip --- Physical Size = 1996397575 
+--- Everything is Ok --- Files: 28 --- Size: 2519697185 --- Compressed: 1996397575
+
+Scanning the drive for archives: 1 file, 1271608614 bytes (1213 MiB)
+Extracting archive: July 2021.zip --- Path = July 2021.zip --- Type = zip --- Physical Size = 1271608614 
+--- Everything is Ok --- Files: 4 --- Size: 1596818340 --- Compressed: 1271608614
+
+Scanning the drive for archives: 1 file, 1230784504 bytes (1174 MiB)
+Extracting archive: June 2021.zip --- Path = June 2021.zip --- Type = zip --- Physical Size = 1230784504 
+--- Everything is Ok --- Files: 14 --- Size: 1780708309 --- Compressed: 1230784504
+
+Scanning the drive for archives: 1 file, 1790209393 bytes (1708 MiB)
+Extracting archive: May 2021 2.zip --- Path = May 2021 2.zip --- Type = zip --- Physical Size = 1790209393 
+--- Everything is Ok --- Files: 56 --- Size: 2587083304 --- Compressed: 1790209393
+
+Scanning the drive for archives: 1 file, 185337573 bytes (177 MiB)
+Extracting archive: November 2021 part 1.zip --- Path = November 2021 part 1.zip --- Type = zip --- Physical Size = 185337573 
+--- Everything is Ok --- Size: 280862613 --- Compressed: 185337573
+
+Scanning the drive for archives: 1 file, 1559001944 bytes (1487 MiB)
+Extracting archive: november part 2.zip --- Path = november part 2.zip --- Type = zip --- Physical Size = 1559001944 
+--- Everything is Ok --- Files: 22 --- Size: 2384832864 --- Compressed: 1559001944
+
+Scanning the drive for archives: 1 file, 1073989761 bytes (1025 MiB)
+Extracting archive: september 2021 part 1.zip --- Path = september 2021 part 1.zip --- Type = zip --- Physical Size = 1073989761 
+--- Everything is Ok --- Files: 20 --- Size: 1576070419 --- Compressed: 1073989761

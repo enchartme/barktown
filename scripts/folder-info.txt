@@ -1,0 +1,465 @@
+folders
+level 0
+   45 576 877 235 B in     456 files
+
+level 1
+   23 968 928 161 B in     263 files -- /2021
+   21 607 940 878 B in     192 files -- /2022
+
+files
+          8 196 B -- cdate 2026-03-15T18:19+00 -- mdate 2026-03-15T18:19+00 -- /.DS_Store
+    106 233 495 B -- cdate 2021-11-29T09:50+00 -- mdate 2021-11-29T09:50+00 -- /2021/1 Aug, 16.23 some barks.aac
+    287 864 798 B -- cdate 2021-07-23T13:59+00 -- mdate 2021-07-23T13:59+00 -- /2021/1 Jul, 12.58 barks at times.aac
+    130 190 446 B -- cdate 2021-07-23T13:49+00 -- mdate 2021-07-23T13:49+00 -- /2021/1 Jun, 21.06 barky bark.aac
+     72 194 307 B -- cdate 2021-12-13T02:05+00 -- mdate 2021-12-13T02:05+00 -- /2021/1 Nov, 14.56 bark bark bark.aac
+     29 149 452 B -- cdate 2021-12-13T02:06+00 -- mdate 2021-12-13T02:06+00 -- /2021/1 Nov, 20.52 yap yap .aac
+     16 459 585 B -- cdate 2021-05-06T07:42+00 -- mdate 2021-05-06T07:42+00 -- /2021/10 Apr, 18.01hundar I början.aac
+    282 949 544 B -- cdate 2021-11-29T10:37+00 -- mdate 2021-11-29T10:37+00 -- /2021/10 Aug, 18.16.aac
+    116 755 050 B -- cdate 2021-11-29T11:03+00 -- mdate 2021-11-29T11:03+00 -- /2021/10 Aug, 22.46 late night barkoff.aac
+    404 167 426 B -- cdate 2021-07-23T14:01+00 -- mdate 2021-07-23T14:01+00 -- /2021/10 Jul, 17.12some barks.aac
+      4 519 386 B -- cdate 2021-05-06T07:40+00 -- mdate 2021-05-06T07:40+00 -- /2021/11 Apr, 10.53 hundar.aac
+      6 979 427 B -- cdate 2021-05-06T07:40+00 -- mdate 2021-05-06T07:40+00 -- /2021/11 Apr, 12.07hundar.aac
+     56 445 769 B -- cdate 2021-11-29T11:06+00 -- mdate 2021-11-29T11:06+00 -- /2021/11 Aug, 12.34 barkoff.aac
+    202 256 475 B -- cdate 2021-11-29T11:09+00 -- mdate 2021-11-29T11:09+00 -- /2021/11 Aug, 13.38.aac
+    292 132 456 B -- cdate 2021-11-29T11:13+00 -- mdate 2021-11-29T11:13+00 -- /2021/11 Aug, 16.56 many barks.aac
+    144 112 058 B -- cdate 2021-12-13T09:48+00 -- mdate 2021-12-13T09:48+00 -- /2021/11 Dec, 19.00​ frozen barks.aac
+      9 565 677 B -- cdate 2021-05-22T11:27+00 -- mdate 2021-05-22T11:27+00 -- /2021/11 May, 19.40 hund.aac
+     27 152 177 B -- cdate 2021-12-13T02:09+00 -- mdate 2021-12-13T02:09+00 -- /2021/11 Nov, 15.34 bark bark.aac
+    254 997 354 B -- cdate 2021-11-29T11:15+00 -- mdate 2021-11-29T11:15+00 -- /2021/12 Aug, 20.55 NonStop yapping.aac
+    130 336 656 B -- cdate 2021-12-13T09:49+00 -- mdate 2021-12-13T09:49+00 -- /2021/12 Dec, 13.20​ barktown + video.aac
+    110 579 085 B -- cdate 2021-12-13T09:56+00 -- mdate 2021-12-13T09:56+00 -- /2021/12 Dec, 15.12​ barktown continues huui ending.aac
+     56 100 936 B -- cdate 2021-12-13T09:56+00 -- mdate 2021-12-13T09:56+00 -- /2021/12 Dec, 16.09​ huuui beg barkoff continue.aac
+     57 421 824 B -- cdate 2021-12-13T10:11+00 -- mdate 2021-12-13T10:11+00 -- /2021/12 Dec, 17.07​.aac
+    219 090 944 B -- cdate 2021-12-13T10:14+00 -- mdate 2021-12-13T10:14+00 -- /2021/12 Dec, 19.52​.aac
+     22 218 992 B -- cdate 2021-07-23T13:54+00 -- mdate 2021-07-23T13:54+00 -- /2021/12 Jun, 18.36 hund i början, prat i slut.aac
+      9 964 994 B -- cdate 2021-05-22T11:27+00 -- mdate 2021-05-22T11:27+00 -- /2021/12 May, 18.29 hund då familj kommer hem.aac
+     84 602 100 B -- cdate 2021-05-22T11:33+00 -- mdate 2021-05-22T11:33+00 -- /2021/12 May, 18.58 hundar i mitten.aac
+     60 091 347 B -- cdate 2021-05-22T11:30+00 -- mdate 2021-05-22T11:30+00 -- /2021/12 May, 19.54 hundar i början .aac
+     17 848 574 B -- cdate 2021-05-22T11:30+00 -- mdate 2021-05-22T11:30+00 -- /2021/12 May, 20.39 hundarna.aac
+     11 545 710 B -- cdate 2021-05-22T11:28+00 -- mdate 2021-05-22T11:28+00 -- /2021/12 May, 20.50 dog.aac
+    140 785 106 B -- cdate 2021-12-13T02:10+00 -- mdate 2021-12-13T02:10+00 -- /2021/12 Nov, 08.06 bangs n barks.aac
+     58 304 421 B -- cdate 2021-11-29T23:09+00 -- mdate 2021-11-29T23:09+00 -- /2021/12 Sep, 10.59 barky bark. cut end.aac
+     78 404 756 B -- cdate 2021-11-29T23:12+00 -- mdate 2021-11-29T23:12+00 -- /2021/12 Sep, 13.13 barky barky talky bark.aac
+     42 973 820 B -- cdate 2021-12-13T10:15+00 -- mdate 2021-12-13T10:15+00 -- /2021/13 Dec, 14.39​ quiet - yaps l8er car.aac
+     77 977 162 B -- cdate 2021-12-13T10:19+00 -- mdate 2021-12-13T10:19+00 -- /2021/13 Dec, 17.29​ bark bark bark.aac
+      5 353 193 B -- cdate 2021-07-23T13:56+00 -- mdate 2021-07-23T13:56+00 -- /2021/13 Jul, 16.42 barks.aac
+     17 196 149 B -- cdate 2021-07-23T13:57+00 -- mdate 2021-07-23T13:57+00 -- /2021/13 Jul, 17.54 lotsa yap, cut pre Eyal.aac
+    164 429 638 B -- cdate 2021-07-23T13:59+00 -- mdate 2021-07-23T13:59+00 -- /2021/13 Jul, 18.04 barky here barky there.aac
+     26 655 617 B -- cdate 2021-07-23T13:58+00 -- mdate 2021-07-23T13:58+00 -- /2021/13 Jul, 22.50 late night yapping.aac
+     84 653 825 B -- cdate 2021-07-23T13:56+00 -- mdate 2021-07-23T13:56+00 -- /2021/13 Jun, 19.18 barking sessions.aac
+     56 794 051 B -- cdate 2021-05-22T11:33+00 -- mdate 2021-05-22T11:33+00 -- /2021/13 May, 16.15 bark .aac
+     25 747 326 B -- cdate 2021-05-22T11:30+00 -- mdate 2021-05-22T11:30+00 -- /2021/13 May, 18.06 3 hundar i början .aac
+     15 124 391 B -- cdate 2021-05-22T11:33+00 -- mdate 2021-05-22T11:33+00 -- /2021/13 May, 18.43 bark bark.aac
+      8 239 448 B -- cdate 2021-05-22T11:33+00 -- mdate 2021-05-22T11:33+00 -- /2021/13 May, 19.55 bark bark bark.aac
+     32 959 171 B -- cdate 2021-11-29T23:13+00 -- mdate 2021-11-29T23:13+00 -- /2021/13 Sep, 14.22 Little barks, talk ending.aac
+     62 287 935 B -- cdate 2021-11-29T23:24+00 -- mdate 2021-11-29T23:24+00 -- /2021/13 Sep, 18.06 barky town, cut end.aac
+     86 288 335 B -- cdate 2021-11-29T23:25+00 -- mdate 2021-11-29T23:25+00 -- /2021/13 Sep, 18.41 lots of barks and video.aac
+     36 630 956 B -- cdate 2021-11-29T23:31+00 -- mdate 2021-11-29T23:31+00 -- /2021/13 Sep, 19.53 Barks.aac
+    549 621 575 B -- cdate 2021-11-29T11:26+00 -- mdate 2021-11-29T11:26+00 -- /2021/14 Aug, 16.44 yap orchestra in middle.aac
+    195 943 266 B -- cdate 2021-12-14T12:14+00 -- mdate 2021-12-14T12:14+00 -- /2021/14 Dec, 13.52​ bark town.aac
+    175 661 056 B -- cdate 2021-12-14T12:23+00 -- mdate 2021-12-14T12:23+00 -- /2021/14 Dec, 19.42​ batks quiet ending.aac
+     65 207 984 B -- cdate 2021-07-23T13:59+00 -- mdate 2021-07-23T13:59+00 -- /2021/14 Jul, 09.26 more yaps.aac
+    131 675 299 B -- cdate 2021-07-23T14:00+00 -- mdate 2021-07-23T14:00+00 -- /2021/14 Jul, 19.10 evening of barks.aac
+    309 716 887 B -- cdate 2021-07-23T14:02+00 -- mdate 2021-07-23T14:02+00 -- /2021/14 Jul, 20.35 bark first then unsure.aac
+     22 721 759 B -- cdate 2021-05-22T11:33+00 -- mdate 2021-05-22T11:33+00 -- /2021/14 May, 10.30 hund.aac
+      6 150 448 B -- cdate 2021-05-22T11:33+00 -- mdate 2021-05-22T11:33+00 -- /2021/14 May, 10.43 lite skall.aac
+      5 335 262 B -- cdate 2021-05-22T11:33+00 -- mdate 2021-05-22T11:33+00 -- /2021/14 May, 12.37 yap yap.aac
+     22 590 722 B -- cdate 2021-05-22T11:33+00 -- mdate 2021-05-22T11:33+00 -- /2021/14 May, 12.51 bark.aac
+     89 231 143 B -- cdate 2021-05-22T11:34+00 -- mdate 2021-05-22T11:34+00 -- /2021/14 May, 16.16 bark in beg.aac
+     46 640 088 B -- cdate 2021-05-22T11:34+00 -- mdate 2021-05-22T11:34+00 -- /2021/14 May, 19.15 Barking echo.aac
+      4 304 900 B -- cdate 2021-05-22T11:33+00 -- mdate 2021-05-22T11:33+00 -- /2021/14 May, 19.55 bark beg delete end.aac
+      2 690 390 B -- cdate 2021-05-22T11:33+00 -- mdate 2021-05-22T11:33+00 -- /2021/14 May, 20.03 yap yap.aac
+     31 668 115 B -- cdate 2021-05-22T11:34+00 -- mdate 2021-05-22T11:34+00 -- /2021/14 May, 20.12 Barking dogs delete end.aac
+    311 323 120 B -- cdate 2021-12-13T02:13+00 -- mdate 2021-12-13T02:13+00 -- /2021/14 Nov, 13.47 continuing bark.aac
+    133 619 469 B -- cdate 2021-12-13T02:14+00 -- mdate 2021-12-13T02:14+00 -- /2021/14 Nov, 19.30 evening bsrks.aac
+     31 635 011 B -- cdate 2021-11-29T23:31+00 -- mdate 2021-11-29T23:31+00 -- /2021/14 Sep, 11.41 bark.aac
+     44 575 916 B -- cdate 2021-11-29T23:32+00 -- mdate 2021-11-29T23:32+00 -- /2021/14 Sep, 12.44 some barks.aac
+    256 474 633 B -- cdate 2021-11-29T11:18+00 -- mdate 2021-11-29T11:18+00 -- /2021/15 Aug, 10.41 till och från. måste sluta .aac
+    106 836 264 B -- cdate 2021-12-22T10:51+00 -- mdate 2021-12-22T10:51+00 -- /2021/15 Dec, 17.23​ bark bark.aac
+     40 621 367 B -- cdate 2021-07-23T13:59+00 -- mdate 2021-07-23T13:59+00 -- /2021/15 Jul, 16.49 barks.aac
+    278 407 399 B -- cdate 2021-07-23T14:02+00 -- mdate 2021-07-23T14:02+00 -- /2021/15 Jul, 17.20 barks in beginning not much at end.aac
+     13 289 188 B -- cdate 2021-07-23T14:00+00 -- mdate 2021-07-23T14:00+00 -- /2021/15 Jul, 19.45 barkoff.aac
+     50 758 778 B -- cdate 2021-07-23T14:01+00 -- mdate 2021-07-23T14:01+00 -- /2021/15 Jul, 20.00 barks at first.aac
+     39 082 721 B -- cdate 2021-05-22T11:34+00 -- mdate 2021-05-22T11:34+00 -- /2021/15 May, 12.47 barking.aac
+     21 877 607 B -- cdate 2021-05-22T11:34+00 -- mdate 2021-05-22T11:34+00 -- /2021/15 May, 13.20 barking.aac
+      8 662 214 B -- cdate 2021-05-22T11:34+00 -- mdate 2021-05-22T11:34+00 -- /2021/15 May, 19.15 barky bark.aac
+    147 768 670 B -- cdate 2021-12-13T02:15+00 -- mdate 2021-12-13T02:15+00 -- /2021/15 Nov, 15.11 continuous barking.aac
+      9 353 260 B -- cdate 2021-11-29T11:16+00 -- mdate 2021-11-29T11:16+00 -- /2021/16 Aug, 13.02 barky bark.aac
+      9 038 082 B -- cdate 2021-11-29T11:28+00 -- mdate 2021-11-29T11:28+00 -- /2021/16 Aug, 19.08n.aac
+      4 441 467 B -- cdate 2021-12-22T10:52+00 -- mdate 2021-12-22T10:52+00 -- /2021/16 Dec, 22.38​ late night barks.aac
+    105 963 836 B -- cdate 2021-07-23T14:02+00 -- mdate 2021-07-23T14:02+00 -- /2021/16 Jul, 15.33 barks.aac
+    104 721 746 B -- cdate 2021-07-23T14:02+00 -- mdate 2021-07-23T14:02+00 -- /2021/16 Jul, 18.26 barks.aac
+    351 818 968 B -- cdate 2021-07-23T14:13+00 -- mdate 2021-07-23T14:13+00 -- /2021/16 Jul, 19.30 kors of barks .aac
+     10 296 724 B -- cdate 2021-05-22T11:34+00 -- mdate 2021-05-22T11:34+00 -- /2021/16 May, 13.03 bark bark.aac
+     22 014 850 B -- cdate 2021-05-22T11:34+00 -- mdate 2021-05-22T11:34+00 -- /2021/16 May, 18.59 yappedi yap.aac
+      7 751 854 B -- cdate 2021-05-22T11:34+00 -- mdate 2021-05-22T11:34+00 -- /2021/16 May, 19.25 bark n talk.aac
+     71 308 086 B -- cdate 2021-12-13T02:16+00 -- mdate 2021-12-13T02:16+00 -- /2021/16 Nov, 09.09 morning barks.aac
+     89 878 050 B -- cdate 2021-12-13T02:17+00 -- mdate 2021-12-13T02:17+00 -- /2021/16 Nov, 11.57 barky bark.aac
+    185 601 025 B -- cdate 2021-12-13T02:19+00 -- mdate 2021-12-13T02:19+00 -- /2021/16 Nov, 13.48 bark barks.aac
+    111 524 618 B -- cdate 2021-12-13T02:20+00 -- mdate 2021-12-13T02:20+00 -- /2021/16 Nov, 15.24 continuing barks.aac
+     66 782 493 B -- cdate 2021-12-22T10:54+00 -- mdate 2021-12-22T10:54+00 -- /2021/17 Dec, 15.43​ bsrktown.aac
+     34 763 339 B -- cdate 2021-12-22T10:55+00 -- mdate 2021-12-22T10:55+00 -- /2021/17 Dec, 17.44​ Dan not home bark bark.aac
+     26 700 446 B -- cdate 2021-12-22T10:56+00 -- mdate 2021-12-22T10:56+00 -- /2021/17 Dec, 18.53​ bark bark stop.aac
+    119 865 344 B -- cdate 2021-12-22T10:59+00 -- mdate 2021-12-22T10:59+00 -- /2021/17 Dec, 19.24​.aac
+    182 605 803 B -- cdate 2021-07-23T14:11+00 -- mdate 2021-07-23T14:11+00 -- /2021/17 Jul, 09.31 some barks at beginning.aac
+    522 522 502 B -- cdate 2021-07-23T14:28+00 -- mdate 2021-07-23T14:28+00 -- /2021/17 Jul, 11.40 some barks.aac
+     44 012 458 B -- cdate 2021-05-22T11:34+00 -- mdate 2021-05-22T11:34+00 -- /2021/17 May, 16.36 some bark.aac
+     49 739 450 B -- cdate 2021-05-22T11:38+00 -- mdate 2021-05-22T11:38+00 -- /2021/17 May, 19.03 barky bark.aac
+      3 643 510 B -- cdate 2021-05-22T11:34+00 -- mdate 2021-05-22T11:34+00 -- /2021/17 May, 19.48 lite yap.aac
+     10 565 004 B -- cdate 2021-05-22T11:34+00 -- mdate 2021-05-22T11:34+00 -- /2021/17 May, 21.39 skall.aac
+    171 384 236 B -- cdate 2021-05-27T01:44+00 -- mdate 2021-05-27T01:44+00 -- /2021/17 May, 21.57 maybe bark.aac
+     74 256 411 B -- cdate 2021-12-13T02:21+00 -- mdate 2021-12-13T02:21+00 -- /2021/17 Nov, 16.54 barktown.aac
+     27 920 466 B -- cdate 2021-12-13T00:32+00 -- mdate 2021-12-13T00:32+00 -- /2021/17 Oct, 08.45 morning barks.aac
+     78 286 133 B -- cdate 2021-12-13T00:33+00 -- mdate 2021-12-13T00:33+00 -- /2021/17 Oct, 10.42 yaps n bark(1).aac
+     78 286 133 B -- cdate 2021-12-13T00:35+00 -- mdate 2021-12-13T00:35+00 -- /2021/17 Oct, 10.42 yaps n bark.aac
+     65 183 156 B -- cdate 2021-12-13T00:44+00 -- mdate 2021-12-13T00:44+00 -- /2021/17 Oct, 11.23 some bark.aac
+     16 886 489 B -- cdate 2021-12-13T01:07+00 -- mdate 2021-12-13T01:07+00 -- /2021/17 Oct, 12.14 barkoff.aac
+      3 960 067 B -- cdate 2021-12-13T01:08+00 -- mdate 2021-12-13T01:08+00 -- /2021/17 Oct, 12.23 yap attack.aac
+     64 605 215 B -- cdate 2021-12-13T01:09+00 -- mdate 2021-12-13T01:09+00 -- /2021/17 Oct, 12.27 barks.aac
+     15 285 773 B -- cdate 2021-12-13T01:09+00 -- mdate 2021-12-13T01:09+00 -- /2021/17 Oct, 16.47 barkoff.aac
+      5 515 265 B -- cdate 2021-12-13T01:10+00 -- mdate 2021-12-13T01:10+00 -- /2021/17 Oct, 16.58 barking at passerby.aac
+     52 400 874 B -- cdate 2021-12-13T01:10+00 -- mdate 2021-12-13T01:10+00 -- /2021/17 Oct, 17.58 bark attacks.aac
+      1 533 819 B -- cdate 2021-05-06T07:39+00 -- mdate 2021-05-06T07:39+00 -- /2021/18 Apr, 21.10 hundar.aac
+     87 585 598 B -- cdate 2021-12-22T11:03+00 -- mdate 2021-12-22T11:03+00 -- /2021/18 Dec, 15.21​ bark work bastu bark.aac
+     19 581 706 B -- cdate 2021-07-23T14:09+00 -- mdate 2021-07-23T14:09+00 -- /2021/18 Jul, 17.33 yap.aac
+     67 472 160 B -- cdate 2021-07-23T14:11+00 -- mdate 2021-07-23T14:11+00 -- /2021/18 Jul, 20.13 från andra sidan dalen .aac
+     77 775 780 B -- cdate 2021-05-22T11:39+00 -- mdate 2021-05-22T11:39+00 -- /2021/18 May, 18.17 hundar början kanske senare.aac
+     40 866 199 B -- cdate 2021-05-22T11:38+00 -- mdate 2021-05-22T11:38+00 -- /2021/18 May, 21.02 screeching yaps.aac
+     65 368 676 B -- cdate 2021-12-13T02:26+00 -- mdate 2021-12-13T02:26+00 -- /2021/18 Nov, 15.54 barky bark.aac
+      7 367 020 B -- cdate 2021-05-06T07:40+00 -- mdate 2021-05-06T07:40+00 -- /2021/19 Apr, 19.23 hundar.aac
+     48 056 664 B -- cdate 2021-11-29T11:29+00 -- mdate 2021-11-29T11:29+00 -- /2021/19 Aug, 17.27.aac
+    210 730 410 B -- cdate 2021-11-29T11:31+00 -- mdate 2021-11-29T11:31+00 -- /2021/19 Aug, 21.14 barks cut pre brumm.aac
+     15 010 596 B -- cdate 2021-12-22T11:04+00 -- mdate 2021-12-22T11:04+00 -- /2021/19 Dec, 16.11​ barks.aac
+     25 672 153 B -- cdate 2021-07-23T14:12+00 -- mdate 2021-07-23T14:12+00 -- /2021/19 Jul, 12.57 dogg.aac
+    318 309 444 B -- cdate 2021-07-23T14:17+00 -- mdate 2021-07-23T14:17+00 -- /2021/19 Jul, 15.41 lots of barking.aac
+    125 361 400 B -- cdate 2021-05-27T01:41+00 -- mdate 2021-05-27T01:41+00 -- /2021/19 May, 18.54 bjäfsande och skällande.aac
+     22 185 888 B -- cdate 2021-05-22T11:39+00 -- mdate 2021-05-22T11:39+00 -- /2021/19 May, 20.06 barksy.aac
+      5 711 820 B -- cdate 2021-12-13T01:18+00 -- mdate 2021-12-13T01:18+00 -- /2021/19 Oct, 08.40 bark.aac
+    195 623 261 B -- cdate 2021-11-29T23:33+00 -- mdate 2021-11-29T23:33+00 -- /2021/19 Sep, 10.59 barking.aac
+     27 319 077 B -- cdate 2021-11-29T23:34+00 -- mdate 2021-11-29T23:34+00 -- /2021/19 Sep, 14.36 barks.aac
+    127 745 578 B -- cdate 2021-11-29T23:35+00 -- mdate 2021-11-29T23:35+00 -- /2021/19 Sep, 16.52 barky.aac
+     25 461 115 B -- cdate 2021-11-29T09:47+00 -- mdate 2021-11-29T09:47+00 -- /2021/2 Aug, 09.45 inside.aac
+     17 682 364 B -- cdate 2021-11-29T09:46+00 -- mdate 2021-11-29T09:46+00 -- /2021/2 Aug, 10.00.aac
+    145 681 049 B -- cdate 2021-11-29T09:35+00 -- mdate 2021-11-29T09:35+00 -- /2021/2 Aug, 11.23.aac
+    239 768 135 B -- cdate 2021-07-23T13:52+00 -- mdate 2021-07-23T13:52+00 -- /2021/2 Jun, 19.49 bark inside talk other room .aac
+     62 644 493 B -- cdate 2021-11-29T23:05+00 -- mdate 2021-11-29T23:05+00 -- /2021/2 Sep, 16.36 afternoon barkoff from inside.aac
+      3 111 777 B -- cdate 2021-05-06T07:39+00 -- mdate 2021-05-06T07:39+00 -- /2021/20 Apr, 10.37 calm.aac
+     71 788 783 B -- cdate 2021-05-06T08:32+00 -- mdate 2021-05-06T08:32+00 -- /2021/20 Apr, 10.41work @ home.aac
+      5 011 119 B -- cdate 2021-05-06T07:38+00 -- mdate 2021-05-06T07:38+00 -- /2021/20 Apr, 11.33 hundar.aac
+    120 343 386 B -- cdate 2021-05-27T01:41+00 -- mdate 2021-05-27T01:41+00 -- /2021/20 May, 15.00some barks.aac
+     36 355 779 B -- cdate 2021-05-27T01:38+00 -- mdate 2021-05-27T01:38+00 -- /2021/20 May, 17.23 sir barksalot I början.aac
+    192 676 315 B -- cdate 2021-05-27T01:45+00 -- mdate 2021-05-27T01:45+00 -- /2021/20 May, 20.26  barky here barky there.aac
+      9 142 912 B -- cdate 2021-12-13T01:18+00 -- mdate 2021-12-13T01:18+00 -- /2021/20 Oct, 09.56 barks.aac
+     70 508 762 B -- cdate 2021-12-13T01:19+00 -- mdate 2021-12-13T01:19+00 -- /2021/20 Oct, 17.18 bark wavea.aac
+     80 829 624 B -- cdate 2021-11-29T23:36+00 -- mdate 2021-11-29T23:36+00 -- /2021/20 Sep, 13.02 bark.aac
+    206 071 711 B -- cdate 2021-11-29T23:38+00 -- mdate 2021-11-29T23:38+00 -- /2021/20 Sep, 15.03 bark barks.aac
+     56 414 734 B -- cdate 2021-11-29T23:39+00 -- mdate 2021-11-29T23:39+00 -- /2021/20 Sep, 18.24 barksalot.aac
+     65 805 925 B -- cdate 2021-11-29T23:40+00 -- mdate 2021-11-29T23:40+00 -- /2021/20 Sep, 18.54 barking frenzy.aac
+    152 624 613 B -- cdate 2021-05-27T01:46+00 -- mdate 2021-05-27T01:46+00 -- /2021/21 May, 14.13 bark beg n beginning.aac
+    198 408 825 B -- cdate 2021-05-27T01:46+00 -- mdate 2021-05-27T01:46+00 -- /2021/21 May, 18.34 barking here barking there.aac
+     82 270 338 B -- cdate 2021-12-13T02:27+00 -- mdate 2021-12-13T02:27+00 -- /2021/21 Nov, 11.50 bark bark bark bark.aac
+     54 943 675 B -- cdate 2021-12-13T02:27+00 -- mdate 2021-12-13T02:27+00 -- /2021/21 Nov, 13.36 some barks.aac
+     92 520 853 B -- cdate 2021-12-13T09:29+00 -- mdate 2021-12-13T09:29+00 -- /2021/21 Nov, 15.46 long quite, barks at end.aac
+     50 456 014 B -- cdate 2021-11-29T23:40+00 -- mdate 2021-11-29T23:40+00 -- /2021/21 Sep, 19.17 Barks perhaps.aac
+     57 287 162 B -- cdate 2021-11-29T23:41+00 -- mdate 2021-11-29T23:41+00 -- /2021/21 Sep, 19.57 evening bsrkoff.aac
+     93 291 211 B -- cdate 2021-11-29T11:35+00 -- mdate 2021-11-29T11:35+00 -- /2021/22 Aug, 16.47 barks and building.aac
+    290 615 879 B -- cdate 2021-11-29T11:38+00 -- mdate 2021-11-29T11:38+00 -- /2021/22 Aug, 20.16 barking at beginning cut end.aac
+     51 949 142 B -- cdate 2021-12-22T11:41+00 -- mdate 2021-12-22T11:41+00 -- /2021/22 Dec, 17.43​ barktown.aac
+     67 052 153 B -- cdate 2021-12-22T11:53+00 -- mdate 2021-12-22T11:53+00 -- /2021/22 Dec, 18.46​ continuing barks.aac
+     39 472 383 B -- cdate 2021-12-22T11:54+00 -- mdate 2021-12-22T11:54+00 -- /2021/22 Dec, 20.11​ more barks.aac
+    123 850 341 B -- cdate 2021-12-26T05:47+00 -- mdate 2021-12-26T05:47+00 -- /2021/22 Dec, 21.59​ bark at first maybe not lster.aac
+     21 909 331 B -- cdate 2021-05-27T01:44+00 -- mdate 2021-05-27T01:44+00 -- /2021/22 May, 20.28 barking from beach.aac
+     43 863 490 B -- cdate 2021-05-27T01:45+00 -- mdate 2021-05-27T01:45+00 -- /2021/22 May, 21.02 bark in beginning.aac
+     79 280 632 B -- cdate 2021-12-13T09:31+00 -- mdate 2021-12-13T09:31+00 -- /2021/22 Nov, 18.00 barky bark.aac
+     91 074 622 B -- cdate 2021-12-13T01:30+00 -- mdate 2021-12-13T01:30+00 -- /2021/22 Oct, 10.08 barktown.aac
+     45 660 762 B -- cdate 2021-12-26T05:50+00 -- mdate 2021-12-26T05:50+00 -- /2021/23 Dec, 10.25​ morning barks n voices at enf.aac
+     27 528 736 B -- cdate 2021-12-26T05:51+00 -- mdate 2021-12-26T05:51+00 -- /2021/23 Dec, 21.33​ barking heard from inside Dan_s.aac
+     19 654 121 B -- cdate 2021-09-21T00:57+00 -- mdate 2021-09-21T00:57+00 -- /2021/23 Jul, 23.56 midnight madness .aac
+     67 821 821 B -- cdate 2021-07-23T13:47+00 -- mdate 2021-07-23T13:47+00 -- /2021/23 May, 14.13 lite hund kanske.aac
+     22 267 268 B -- cdate 2021-07-23T13:47+00 -- mdate 2021-07-23T13:47+00 -- /2021/23 May, 18.36 barks.aac
+     61 941 723 B -- cdate 2021-07-23T13:47+00 -- mdate 2021-07-23T13:47+00 -- /2021/23 May, 19.33 bjöfs I början.aac
+    129 497 331 B -- cdate 2021-11-29T23:42+00 -- mdate 2021-11-29T23:42+00 -- /2021/23 Sep, 18.34 bark bark.aac
+     46 562 846 B -- cdate 2021-12-26T05:54+00 -- mdate 2021-12-26T05:54+00 -- /2021/24 Dec, 18.04​.aac
+    135 305 704 B -- cdate 2021-12-26T05:56+00 -- mdate 2021-12-26T05:56+00 -- /2021/24 Dec, 19.30​ -12 barks.aac
+      7 776 682 B -- cdate 2021-12-26T05:57+00 -- mdate 2021-12-26T05:57+00 -- /2021/24 Dec, 20.42​ att nside yaps.aac
+     30 452 922 B -- cdate 2021-07-23T13:47+00 -- mdate 2021-07-23T13:47+00 -- /2021/24 May, 15.43 hunden e lös.aac
+    245 331 676 B -- cdate 2021-07-23T13:50+00 -- mdate 2021-07-23T13:50+00 -- /2021/24 May, 17.14 barking bsginning bjäfs I slut.aac
+     88 584 388 B -- cdate 2021-07-23T13:48+00 -- mdate 2021-07-23T13:48+00 -- /2021/24 May, 21.03 barky.aac
+    109 967 351 B -- cdate 2021-12-13T01:40+00 -- mdate 2021-12-13T01:40+00 -- /2021/24 Oct, 12.45 barks m work.aac
+    104 645 193 B -- cdate 2021-12-13T01:41+00 -- mdate 2021-12-13T01:41+00 -- /2021/24 Oct, 19.36 barksperhaps.aac
+    135 457 431 B -- cdate 2021-12-13T01:44+00 -- mdate 2021-12-13T01:44+00 -- /2021/24 Oct, 20.32 evening barks m noise.aac
+     85 289 008 B -- cdate 2021-11-29T23:44+00 -- mdate 2021-11-29T23:44+00 -- /2021/24 Sep, 13.46 Barks.aac
+     35 535 076 B -- cdate 2021-11-29T11:46+00 -- mdate 2021-11-29T11:46+00 -- /2021/25 Aug, 16.08.aac
+     61 007 224 B -- cdate 2021-12-26T05:59+00 -- mdate 2021-12-26T05:59+00 -- /2021/25 Dec, 14.31​ frozen barks.aac
+     48 217 356 B -- cdate 2021-09-21T00:59+00 -- mdate 2021-09-21T00:59+00 -- /2021/25 Jul, 13.19 barks.aac
+    225 272 031 B -- cdate 2021-07-23T13:50+00 -- mdate 2021-07-23T13:50+00 -- /2021/25 May, 13.11 bjäfs I bland.aac
+     17 185 115 B -- cdate 2021-07-23T13:48+00 -- mdate 2021-07-23T13:48+00 -- /2021/25 May, 15.44 bjäfsigt.aac
+     56 428 527 B -- cdate 2021-12-13T01:45+00 -- mdate 2021-12-13T01:45+00 -- /2021/25 Oct, 17.09 barks and later deer pass.aac
+     93 818 806 B -- cdate 2021-11-29T11:50+00 -- mdate 2021-11-29T11:50+00 -- /2021/26 Aug, 10.23 bark bark.aac
+     50 875 331 B -- cdate 2021-11-29T11:51+00 -- mdate 2021-11-29T11:51+00 -- /2021/26 Aug, 13.14 barky bark.aac
+     49 231 856 B -- cdate 2021-11-29T11:52+00 -- mdate 2021-11-29T11:52+00 -- /2021/26 Aug, 20.02 barktown.aac
+    145 551 392 B -- cdate 2021-12-26T06:00+00 -- mdate 2021-12-26T06:00+00 -- /2021/26 Dec, 14.04​ barks at times and wood thieving.aac
+    150 051 467 B -- cdate 2021-09-21T01:01+00 -- mdate 2021-09-21T01:01+00 -- /2021/26 Jul, 20.13 barking concert and other noise.aac
+     66 707 319 B -- cdate 2021-09-21T01:02+00 -- mdate 2021-09-21T01:02+00 -- /2021/26 Jul, 21.48 barks and talk.aac
+    230 423 841 B -- cdate 2021-12-13T09:33+00 -- mdate 2021-12-13T09:33+00 -- /2021/26 Nov, 16.57​ continuing barktown with fire alar.aac
+    112 543 945 B -- cdate 2021-12-28T08:42+00 -- mdate 2021-12-28T08:42+00 -- /2021/27 Dec, 13.36​ barkoff at times.aac
+    388 326 473 B -- cdate 2021-12-28T08:47+00 -- mdate 2021-12-28T08:47+00 -- /2021/27 Dec, 15.57​ barks at first, silence n sauna.aac
+    121 991 689 B -- cdate 2021-09-21T01:02+00 -- mdate 2021-09-21T01:02+00 -- /2021/27 Jul, 12.45 some barks.aac
+      6 989 083 B -- cdate 2021-11-29T11:52+00 -- mdate 2021-11-29T11:52+00 -- /2021/28 Aug, 15.20 hundskall inomhus.aac
+    280 862 613 B -- cdate 2021-12-13T09:36+00 -- mdate 2021-12-13T09:36+00 -- /2021/28 Nov, 09.57​ never ending barks.aac
+     18 647 208 B -- cdate 2021-12-13T09:36+00 -- mdate 2021-12-13T09:36+00 -- /2021/28 Nov, 14.00​ bark bark.aac
+    210 515 923 B -- cdate 2021-12-13T09:38+00 -- mdate 2021-12-13T09:38+00 -- /2021/28 Nov, 14.44​ barkoff.aac
+     59 781 687 B -- cdate 2021-12-13T09:39+00 -- mdate 2021-12-13T09:39+00 -- /2021/28 Nov, 17.26​ continuing barks.aac
+     19 162 389 B -- cdate 2021-12-13T01:47+00 -- mdate 2021-12-13T01:47+00 -- /2021/28 Oct, 15.13 bark bark.aac
+    183 086 500 B -- cdate 2021-11-29T11:54+00 -- mdate 2021-11-29T11:54+00 -- /2021/29 Aug, 15.36 barks.aac
+      3 173 157 B -- cdate 2021-09-21T01:02+00 -- mdate 2021-09-21T01:02+00 -- /2021/29 Jul, 22.54.aac
+      3 994 550 B -- cdate 2021-05-06T07:44+00 -- mdate 2021-05-06T07:44+00 -- /2021/3 Apr, 18.46 hundar.aac
+      7 041 497 B -- cdate 2021-05-06T07:45+00 -- mdate 2021-05-06T07:45+00 -- /2021/3 Apr, 18.52 hundar.aac
+      6 122 172 B -- cdate 2021-05-06T07:44+00 -- mdate 2021-05-06T07:44+00 -- /2021/3 Apr, 20.46 hundar.aac
+     90 712 547 B -- cdate 2021-11-29T09:26+00 -- mdate 2021-11-29T09:26+00 -- /2021/3 Aug, 10.54 breakfast barks.aac
+    277 789 537 B -- cdate 2021-11-29T09:37+00 -- mdate 2021-11-29T09:37+00 -- /2021/3 Aug, 15.14 barky bark i början. sen tyst.aac
+    172 395 288 B -- cdate 2021-12-13T09:41+00 -- mdate 2021-12-13T09:41+00 -- /2021/3 Dec, 11.33​ barks at first, cut end.aac
+     66 563 869 B -- cdate 2021-07-23T13:51+00 -- mdate 2021-07-23T13:51+00 -- /2021/3 Jun, 21.44 skällkalas.aac
+     43 522 795 B -- cdate 2021-12-06T09:10+00 -- mdate 2021-12-06T09:10+00 -- /2021/3 Oct, 14.14 rain wind barks.aac
+     45 140 063 B -- cdate 2021-11-29T11:54+00 -- mdate 2021-11-29T11:54+00 -- /2021/30 Aug, 18.17 bsrkybark.aac
+    173 799 449 B -- cdate 2021-12-30T08:33+00 -- mdate 2021-12-30T08:33+00 -- /2021/30 Dec, 10.45​ some yaps close to beg.aac
+     82 763 449 B -- cdate 2021-12-30T08:45+00 -- mdate 2021-12-30T08:45+00 -- /2021/30 Dec, 15.59​ bark bark and snap.aac
+    105 768 660 B -- cdate 2021-11-29T11:56+00 -- mdate 2021-11-29T11:56+00 -- /2021/31 Aug, 17.56 barks n bikes.aac
+     97 028 514 B -- cdate 2021-11-29T11:57+00 -- mdate 2021-11-29T11:57+00 -- /2021/31 Aug, 20.24 barkoff.aac
+     63 264 503 B -- cdate 2021-09-21T01:03+00 -- mdate 2021-09-21T01:03+00 -- /2021/31 Jul, 12.48 little at first, cut latter part.aac
+      7 284 260 B -- cdate 2021-09-21T01:03+00 -- mdate 2021-09-21T01:03+00 -- /2021/31 Jul, 19.24 some more.aac
+     54 687 119 B -- cdate 2021-09-21T01:04+00 -- mdate 2021-09-21T01:04+00 -- /2021/31 Jul, 19.32 doorsteps.aac
+     87 472 493 B -- cdate 2021-10-24T00:30+00 -- mdate 2021-10-24T00:30+00 -- /2021/31 Jul, 23.04 late night barkoff.aac
+     32 699 856 B -- cdate 2021-11-29T09:59+00 -- mdate 2021-11-29T09:59+00 -- /2021/4 Aug, 10.51 barky barky bark.aac
+     68 528 729 B -- cdate 2021-11-29T10:01+00 -- mdate 2021-11-29T10:01+00 -- /2021/4 Aug, 12.45 barks continue, cut end noise.aac
+     53 691 240 B -- cdate 2021-11-29T10:01+00 -- mdate 2021-11-29T10:01+00 -- /2021/4 Aug, 13.37 barky machine.aac
+    138 469 205 B -- cdate 2021-12-13T09:42+00 -- mdate 2021-12-13T09:42+00 -- /2021/4 Dec, 10.44​ yaps chats and work.aac
+     31 766 737 B -- cdate 2021-12-13T09:43+00 -- mdate 2021-12-13T09:43+00 -- /2021/4 Dec, 17.56​ barks in the dark n cold.aac
+    248 331 726 B -- cdate 2021-07-23T13:53+00 -- mdate 2021-07-23T13:53+00 -- /2021/4 Jun, 14.08 massa bjäfs.aac
+    176 486 390 B -- cdate 2021-07-23T13:53+00 -- mdate 2021-07-23T13:53+00 -- /2021/4 Jun, 17.36 Eyal presentation.aac
+    146 702 446 B -- cdate 2021-07-23T13:53+00 -- mdate 2021-07-23T13:53+00 -- /2021/4 Jun, 19.51 barky bark.aac
+      2 958 671 B -- cdate 2021-05-06T07:42+00 -- mdate 2021-05-06T07:42+00 -- /2021/5 Apr, 18.21hundar.aac
+      5 908 375 B -- cdate 2021-05-06T07:42+00 -- mdate 2021-05-06T07:42+00 -- /2021/5 Apr, 19.37 hundar.aac
+     15 447 844 B -- cdate 2021-05-06T07:42+00 -- mdate 2021-05-06T07:42+00 -- /2021/5 Apr, 19.50 hundar.aac
+     40 475 848 B -- cdate 2021-12-13T09:44+00 -- mdate 2021-12-13T09:44+00 -- /2021/5 Dec, 16.21​ batks.aac
+     88 787 687 B -- cdate 2021-07-23T13:53+00 -- mdate 2021-07-23T13:53+00 -- /2021/5 Jun, 10.43 dogs during workshop.aac
+     35 473 006 B -- cdate 2021-07-23T13:53+00 -- mdate 2021-07-23T13:53+00 -- /2021/5 Jun, 11.31 barktown.aac
+    185 406 539 B -- cdate 2021-07-23T13:56+00 -- mdate 2021-07-23T13:56+00 -- /2021/5 Jun, 12.45 some barks.aac
+    110 462 531 B -- cdate 2021-11-29T10:07+00 -- mdate 2021-11-29T10:07+00 -- /2021/6 Aug, 21.37 barkoff.aac
+    282 728 851 B -- cdate 2021-07-23T13:57+00 -- mdate 2021-07-23T13:57+00 -- /2021/6 Jun, 14.29 bark and workmusik.aac
+      4 875 254 B -- cdate 2021-05-06T07:38+00 -- mdate 2021-05-06T07:38+00 -- /2021/6 May, 15.25 hundar.aac
+      5 940 789 B -- cdate 2021-05-06T07:38+00 -- mdate 2021-05-06T07:38+00 -- /2021/6 May, 15.33 hundar.aac
+      5 722 855 B -- cdate 2021-05-06T07:38+00 -- mdate 2021-05-06T07:38+00 -- /2021/6 May, 15.37 hundarna.aac
+     18 051 336 B -- cdate 2021-10-24T01:06+00 -- mdate 2021-10-24T01:06+00 -- /2021/6 May, 18.42 hundar i början.aac
+     66 922 495 B -- cdate 2021-12-06T09:20+00 -- mdate 2021-12-06T09:20+00 -- /2021/6 Oct, 18.30 barks.aac
+     22 865 899 B -- cdate 2021-11-29T10:05+00 -- mdate 2021-11-29T10:05+00 -- /2021/7 Aug, 10.10 yapping.aac
+     50 514 636 B -- cdate 2021-11-29T10:06+00 -- mdate 2021-11-29T10:06+00 -- /2021/7 Aug, 21.29 dark and wet yarps.aac
+     73 576 399 B -- cdate 2021-11-29T10:10+00 -- mdate 2021-11-29T10:10+00 -- /2021/7 Aug, 23.58 yap yap.aac
+     49 727 036 B -- cdate 2021-07-23T13:54+00 -- mdate 2021-07-23T13:54+00 -- /2021/7 Jun, 18.10 Little bark little work.aac
+      7 985 651 B -- cdate 2021-05-07T10:15+00 -- mdate 2021-05-07T10:15+00 -- /2021/7 May, 17.15 hundar.aac
+    439 139 733 B -- cdate 2021-11-29T10:30+00 -- mdate 2021-11-29T10:30+00 -- /2021/8 Aug, 10.03 barks home alone in the wet cut end.aac
+    215 944 289 B -- cdate 2021-11-29T10:12+00 -- mdate 2021-11-29T10:12+00 -- /2021/8 Aug, 16.45.aac
+      4 182 829 B -- cdate 2021-05-08T10:40+00 -- mdate 2021-05-08T10:40+00 -- /2021/8 May, 20.37 hundar!.aac
+     96 519 540 B -- cdate 2021-12-13T02:08+00 -- mdate 2021-12-13T02:08+00 -- /2021/8 Nov, 15.45 couple bsrkoffs and some RED.aac
+      6 375 969 B -- cdate 2021-05-06T07:41+00 -- mdate 2021-05-06T07:41+00 -- /2021/9 Apr, 13.43 hundar.aac
+    301 898 136 B -- cdate 2021-11-29T10:16+00 -- mdate 2021-11-29T10:16+00 -- /2021/9 Aug, 09.29 dogs at beginning and later.aac
+    121 585 475 B -- cdate 2021-11-29T10:15+00 -- mdate 2021-11-29T10:15+00 -- /2021/9 Aug, 16.24(1).aac
+    121 585 475 B -- cdate 2021-11-29T10:35+00 -- mdate 2021-11-29T10:35+00 -- /2021/9 Aug, 16.24.aac
+    316 986 663 B -- cdate 2021-11-29T10:54+00 -- mdate 2021-11-29T10:54+00 -- /2021/9 Aug, 17.36.aac
+    196 306 721 B -- cdate 2021-12-13T09:46+00 -- mdate 2021-12-13T09:46+00 -- /2021/9 Dec, 20.11​barks m silence.aac
+     23 669 361 B -- cdate 2021-07-23T13:54+00 -- mdate 2021-07-23T13:54+00 -- /2021/9 Jun, 18.19 barksalot.aac
+      3 412 471 B -- cdate 2021-05-09T04:37+00 -- mdate 2021-05-09T04:37+00 -- /2021/9 May, 14.35 hundar i regn.aac
+     84 337 268 B -- cdate 2021-05-09T05:23+00 -- mdate 2021-05-09T05:23+00 -- /2021/9 May, 14.38 dogs in rain .aac
+      4 842 840 B -- cdate 2021-05-09T10:01+00 -- mdate 2021-05-09T10:01+00 -- /2021/9 May, 19.56 hundar i regnet .aac
+     35 628 870 B -- cdate 2022-07-21T23:06+00 -- mdate 2022-07-21T23:06+00 -- /2022/1 Apr, 16.32​ Yap.aac
+     38 981 340 B -- cdate 2022-07-21T23:10+00 -- mdate 2022-07-21T23:10+00 -- /2022/1 Apr, 17.17​ bark bark.aac
+    123 725 511 B -- cdate 2022-07-21T23:16+00 -- mdate 2022-07-21T23:16+00 -- /2022/1 Apr, 17.39​ barktown in beginning.aac
+     88 744 928 B -- cdate 2022-01-02T02:21+00 -- mdate 2022-01-02T02:21+00 -- /2022/1 Jan, 12.31​ gnyl i början, vet ej senare.aac
+    138 425 066 B -- cdate 2022-01-02T02:23+00 -- mdate 2022-01-02T02:23+00 -- /2022/1 Jan, 17.49​ barktown n work.aac
+    114 412 252 B -- cdate 2022-02-24T01:06+00 -- mdate 2022-02-24T01:06+00 -- /2022/10 Feb, 13.27​ yap yap.aac
+    572 557 129 B -- cdate 2022-02-24T03:26+00 -- mdate 2022-02-24T03:26+00 -- /2022/10 Feb, 14.46​ bark bark bark.aac
+     70 787 387 B -- cdate 2022-07-01T11:09+00 -- mdate 2022-07-01T11:09+00 -- /2022/10 Mar, 17.21​ barky bark.aac
+    105 947 284 B -- cdate 2022-07-01T11:39+00 -- mdate 2022-07-01T11:39+00 -- /2022/10 Mar, 18.02​ barktown from loft.aac
+    157 632 283 B -- cdate 2022-02-24T03:36+00 -- mdate 2022-02-24T03:36+00 -- /2022/11 Feb, 08.46​ yaps at beginning.aac
+     84 358 648 B -- cdate 2022-02-24T03:41+00 -- mdate 2022-02-24T03:41+00 -- /2022/11 Feb, 10.12​ bark.aac
+    123 238 606 B -- cdate 2022-02-24T03:45+00 -- mdate 2022-02-24T03:45+00 -- /2022/11 Feb, 13.40​ maybe barks, cut end.aac
+     66 272 829 B -- cdate 2022-02-24T08:04+00 -- mdate 2022-02-24T08:04+00 -- /2022/11 Feb, 15.25​ bark bark.aac
+    201 219 216 B -- cdate 2022-01-12T09:46+00 -- mdate 2022-01-12T09:46+00 -- /2022/11 Jan, 11.25​ barks at first not later.aac
+    199 197 114 B -- cdate 2022-01-24T00:11+00 -- mdate 2022-01-24T00:11+00 -- /2022/11 Jan, 18.23​ bark bark .aac
+    249 600 712 B -- cdate 2022-07-01T11:41+00 -- mdate 2022-07-01T11:41+00 -- /2022/11 Mar, 17.28​ barkoff deluxe.aac
+     33 490 904 B -- cdate 2022-01-24T00:31+00 -- mdate 2022-01-24T00:31+00 -- /2022/12 Jan, 11.46​ barks.aac
+    228 490 016 B -- cdate 2022-01-24T00:32+00 -- mdate 2022-01-24T00:32+00 -- /2022/12 Jan, 15.28​ bark bark work batk.aac
+    202 689 586 B -- cdate 2022-01-24T00:36+00 -- mdate 2022-01-24T00:36+00 -- /2022/12 Jan, 17.27​ some barks.aac
+    124 114 483 B -- cdate 2022-07-11T23:08+00 -- mdate 2022-07-11T23:08+00 -- /2022/12 Mar, 18.50​ barky bark.aac
+    126 902 116 B -- cdate 2022-02-24T08:16+00 -- mdate 2022-02-24T08:16+00 -- /2022/13 Feb, 14.15​ barks.aac
+    146 434 855 B -- cdate 2022-02-24T08:24+00 -- mdate 2022-02-24T08:24+00 -- /2022/13 Feb, 15.28​ barky.aac
+    154 172 915 B -- cdate 2022-02-24T08:52+00 -- mdate 2022-02-24T08:52+00 -- /2022/13 Feb, 17.51​ bark bark.aac
+    164 187 598 B -- cdate 2022-01-24T00:39+00 -- mdate 2022-01-24T00:39+00 -- /2022/13 Jan, 17.52​ barks at first. not later.aac
+     34 719 200 B -- cdate 2022-07-02T04:18+00 -- mdate 2022-07-02T04:18+00 -- /2022/13 Mar, 10.53​ bark bark.aac
+     15 223 703 B -- cdate 2022-07-02T04:19+00 -- mdate 2022-07-02T04:19+00 -- /2022/13 Mar, 15.49​ barks when Dan walks past.aac
+    102 963 096 B -- cdate 2022-07-02T04:19+00 -- mdate 2022-07-02T04:19+00 -- /2022/13 Mar, 18.14​ barktown.aac
+    132 930 492 B -- cdate 2022-02-24T08:59+00 -- mdate 2022-02-24T08:59+00 -- /2022/14 Feb, 10.42​ bark.aac
+    142 027 195 B -- cdate 2022-07-02T04:21+00 -- mdate 2022-07-02T04:21+00 -- /2022/14 Mar, 16.31​ barktown.aac
+    292 887 641 B -- cdate 2022-02-24T09:09+00 -- mdate 2022-02-24T09:09+00 -- /2022/15 Feb, 09.15​ bark.aac
+     81 164 112 B -- cdate 2022-02-24T09:24+00 -- mdate 2022-02-24T09:24+00 -- /2022/15 Feb, 12.15​ bark n chop.aac
+    539 565 545 B -- cdate 2022-02-24T09:52+00 -- mdate 2022-02-24T09:52+00 -- /2022/15 Feb, 15.06​ noisy neighbors.aac
+    101 147 204 B -- cdate 2022-07-02T04:24+00 -- mdate 2022-07-02T04:24+00 -- /2022/15 Mar, 14.50​ yap.aac
+     15 027 148 B -- cdate 2022-02-24T09:48+00 -- mdate 2022-02-24T09:48+00 -- /2022/16 Feb, 19.47​ yap attack.aac
+    360 588 769 B -- cdate 2022-01-24T00:54+00 -- mdate 2022-01-24T00:54+00 -- /2022/16 Jan, 17.22​ barktown first. later episodes.aac
+     97 406 452 B -- cdate 2022-07-02T04:46+00 -- mdate 2022-07-02T04:46+00 -- /2022/16 Mar, 10.42​ barky.aac
+    215 698 768 B -- cdate 2022-07-02T04:49+00 -- mdate 2022-07-02T04:49+00 -- /2022/16 Mar, 13.54​ barks at times from loft(1).aac
+    215 698 768 B -- cdate 2022-07-11T23:10+00 -- mdate 2022-07-11T23:10+00 -- /2022/16 Mar, 13.54​ barks at times from loft.aac
+     44 020 045 B -- cdate 2022-07-11T23:16+00 -- mdate 2022-07-11T23:16+00 -- /2022/16 Mar, 16.56​ some barks from doorstep.aac
+    377 093 872 B -- cdate 2022-02-24T10:05+00 -- mdate 2022-02-24T10:05+00 -- /2022/17 Feb, 15.09​ bark bark.aac
+    148 941 104 B -- cdate 2022-07-11T23:20+00 -- mdate 2022-07-11T23:20+00 -- /2022/17 Mar, 15.56​ barktown.aac
+     13 450 570 B -- cdate 2022-02-24T22:59+00 -- mdate 2022-02-24T22:59+00 -- /2022/18 Feb, 18.04​ inside kitchen barks.aac
+    133 342 913 B -- cdate 2022-02-24T22:59+00 -- mdate 2022-02-24T22:59+00 -- /2022/18 Feb, 18.13​ barktown wr first.aac
+    103 954 147 B -- cdate 2022-02-24T23:07+00 -- mdate 2022-02-24T23:07+00 -- /2022/19 Feb, 21.28​ barks attack in beginning.aac
+     51 266 372 B -- cdate 2022-07-22T09:43+00 -- mdate 2022-07-22T09:43+00 -- /2022/2 Apr, 09.17​ barks.aac
+    292 691 086 B -- cdate 2022-07-22T09:45+00 -- mdate 2022-07-22T09:45+00 -- /2022/2 Apr, 17.48​ deer Anders quiet layer barktown .aac
+    146 783 826 B -- cdate 2022-02-19T02:38+00 -- mdate 2022-02-19T02:38+00 -- /2022/2 Feb, 19.29​ early barks unsure later.aac
+    112 259 113 B -- cdate 2022-01-02T12:56+00 -- mdate 2022-01-02T12:56+00 -- /2022/2 Jan, 18.24​ barks at beginning.aac
+     70 534 969 B -- cdate 2022-01-02T13:00+00 -- mdate 2022-01-02T13:00+00 -- /2022/2 Jan, 22.16​ late barks heard kitchen.aac
+     84 268 302 B -- cdate 2022-01-07T10:00+00 -- mdate 2022-01-07T10:00+00 -- /2022/2 Jan, 23.05​late night barkoff in the rain.aac
+      4 365 591 B -- cdate 2022-03-02T12:20+00 -- mdate 2022-03-02T12:20+00 -- /2022/2 Mar, 07.35​ yaps from kitchen.aac
+    254 169 064 B -- cdate 2022-03-03T09:18+00 -- mdate 2022-03-03T09:18+00 -- /2022/2 Mar, 17.26​ barky bark bark.aac
+    208 264 161 B -- cdate 2022-03-03T09:15+00 -- mdate 2022-03-03T09:15+00 -- /2022/2 Mar, 19.38​ bark question mark.aac
+    125 016 567 B -- cdate 2022-02-24T23:17+00 -- mdate 2022-02-24T23:17+00 -- /2022/20 Feb, 12.01​ sunny barktown carpets.aac
+    332 850 376 B -- cdate 2022-02-24T23:27+00 -- mdate 2022-02-24T23:27+00 -- /2022/20 Feb, 14.57​ 1 chop 2 bark 3 silent.aac
+     58 461 665 B -- cdate 2022-07-11T23:29+00 -- mdate 2022-07-11T23:29+00 -- /2022/20 Mar, 11.46​ yaps heard from inside Dan_s house.aac
+     34 181 983 B -- cdate 2022-07-14T06:55+00 -- mdate 2022-07-14T06:55+00 -- /2022/20 Mar, 12.56​ yaps and barks.aac
+    127 230 397 B -- cdate 2022-07-11T23:38+00 -- mdate 2022-07-11T23:38+00 -- /2022/20 Mar, 16.39​ bark bark yap.aac
+     24 120 403 B -- cdate 2022-07-21T12:19+00 -- mdate 2022-07-21T12:19+00 -- /2022/20 Mar, 19.14​ barktown.aac
+    236 424 632 B -- cdate 2022-02-24T23:36+00 -- mdate 2022-02-24T23:36+00 -- /2022/22 Feb, 18.16​ bsrl bark bark.aac
+    233 532 169 B -- cdate 2022-02-25T00:22+00 -- mdate 2022-02-25T00:22+00 -- /2022/22 Feb, 20.19​ bark bark question msrk.aac
+     89 152 521 B -- cdate 2022-07-11T23:52+00 -- mdate 2022-07-11T23:52+00 -- /2022/22 Mar, 16.16​ yaps silence yap attack at end.aac
+     76 737 831 B -- cdate 2022-07-11T23:55+00 -- mdate 2022-07-11T23:55+00 -- /2022/22 Mar, 18.08​ bark bark.aac
+     28 685 306 B -- cdate 2022-07-14T06:56+00 -- mdate 2022-07-14T06:56+00 -- /2022/22 Mar, 20.00​ barktown.aac
+    107 722 486 B -- cdate 2022-07-12T00:02+00 -- mdate 2022-07-12T00:02+00 -- /2022/22 Mar, 20.26​ more barks Dan not home.aac
+    168 464 878 B -- cdate 2022-01-24T00:58+00 -- mdate 2022-01-24T00:58+00 -- /2022/23 Jan, 11.46​ bark bark bark.aac
+     77 313 703 B -- cdate 2022-07-12T00:08+00 -- mdate 2022-07-12T00:08+00 -- /2022/23 Mar, 19.07​ Barks.aac
+     46 480 086 B -- cdate 2022-02-25T00:23+00 -- mdate 2022-02-25T00:23+00 -- /2022/24 Feb, 09.10​ barks.aac
+     46 053 872 B -- cdate 2022-02-28T08:40+00 -- mdate 2022-02-28T08:40+00 -- /2022/24 Feb, 11.48​ bark perhaps.aac
+    250 921 425 B -- cdate 2022-02-28T09:07+00 -- mdate 2022-02-28T09:07+00 -- /2022/24 Feb, 15.45​ barks at times.aac
+     30 030 846 B -- cdate 2022-07-14T06:57+00 -- mdate 2022-07-14T06:57+00 -- /2022/24 Mar, 09.52​ yaps from doorstep.aac
+     30 392 231 B -- cdate 2022-07-14T06:58+00 -- mdate 2022-07-14T06:58+00 -- /2022/24 Mar, 13.48​ yaps from doorstep.aac
+    153 243 244 B -- cdate 2022-07-14T07:00+00 -- mdate 2022-07-14T07:00+00 -- /2022/24 Mar, 18.40​ barktown.aac
+      9 204 292 B -- cdate 2022-02-28T11:31+00 -- mdate 2022-02-28T11:31+00 -- /2022/25 Feb, 08.51​ morning barks inside kitchen.aac
+    153 320 487 B -- cdate 2022-02-28T21:44+00 -- mdate 2022-02-28T21:44+00 -- /2022/25 Feb, 15.18​ two barkoffs and Anders in between.aac
+    165 093 097 B -- cdate 2022-01-31T01:16+00 -- mdate 2022-01-31T01:16+00 -- /2022/25 Jan, 18.54​ barksalot.aac
+     45 639 382 B -- cdate 2022-02-28T22:11+00 -- mdate 2022-02-28T22:11+00 -- /2022/26 Feb, 15.46​ beginning bark.aac
+     44 147 633 B -- cdate 2022-02-28T22:45+00 -- mdate 2022-02-28T22:45+00 -- /2022/26 Feb, 16.11​ middle bark.aac
+     22 054 161 B -- cdate 2022-03-01T21:40+00 -- mdate 2022-03-01T21:40+00 -- /2022/26 Feb, 17.32​ yaps.aac
+    121 301 333 B -- cdate 2022-03-01T21:48+00 -- mdate 2022-03-01T21:48+00 -- /2022/26 Feb, 18.01​ barktown.aac
+    110 494 255 B -- cdate 2022-01-31T01:17+00 -- mdate 2022-01-31T01:17+00 -- /2022/26 Jan, 19.25​ barky bark bark.aac
+    308 020 996 B -- cdate 2022-07-14T07:02+00 -- mdate 2022-07-14T07:02+00 -- /2022/26 Mar, 17.05​ barktown delux.aac
+    108 041 112 B -- cdate 2022-03-01T23:59+00 -- mdate 2022-03-01T23:59+00 -- /2022/27 Feb, 10.12​ yaps at first.aac
+     41 210 343 B -- cdate 2022-03-02T00:04+00 -- mdate 2022-03-02T00:04+00 -- /2022/27 Feb, 14.38​ yaps n barkattack.aac
+     15 638 192 B -- cdate 2022-03-02T00:10+00 -- mdate 2022-03-02T00:10+00 -- /2022/27 Feb, 15.01​ bark at end.aac
+      3 830 409 B -- cdate 2022-03-02T00:11+00 -- mdate 2022-03-02T00:11+00 -- /2022/27 Feb, 17.24​ yap attack inside kitchen.aac
+     65 686 613 B -- cdate 2022-07-14T07:05+00 -- mdate 2022-07-14T07:05+00 -- /2022/27 Mar, 13.30​ barktown(1).aac
+     65 686 613 B -- cdate 2022-07-21T22:46+00 -- mdate 2022-07-21T22:46+00 -- /2022/27 Mar, 13.30​ barktown.aac
+    178 429 871 B -- cdate 2022-07-21T22:48+00 -- mdate 2022-07-21T22:48+00 -- /2022/27 Mar, 14.08​ barktown continue.aac
+    166 837 264 B -- cdate 2022-07-21T22:52+00 -- mdate 2022-07-21T22:52+00 -- /2022/27 Mar, 15.53​ bark bark bark.aac
+    244 517 869 B -- cdate 2022-07-21T22:55+00 -- mdate 2022-07-21T22:55+00 -- /2022/27 Mar, 17.22​ barks at beginning kitchen party.aac
+     27 517 701 B -- cdate 2022-03-02T00:12+00 -- mdate 2022-03-02T00:12+00 -- /2022/28 Feb, 10.28​ yaps.aac
+     59 992 725 B -- cdate 2022-03-02T00:13+00 -- mdate 2022-03-02T00:13+00 -- /2022/28 Feb, 15.03​ barks.aac
+    102 594 124 B -- cdate 2022-07-21T22:58+00 -- mdate 2022-07-21T22:58+00 -- /2022/28 Mar, 12.34​ couple of barks in the wind.aac
+     81 181 354 B -- cdate 2022-07-21T22:59+00 -- mdate 2022-07-21T22:59+00 -- /2022/29 Mar, 09.54​ barks in beginning.aac
+     64 987 291 B -- cdate 2022-07-21T23:01+00 -- mdate 2022-07-21T23:01+00 -- /2022/29 Mar, 19.31​ bark work bark.aac
+     26 659 066 B -- cdate 2022-07-22T23:27+00 -- mdate 2022-07-22T23:27+00 -- /2022/3 Apr, 10.34​ yape.aac
+     68 300 449 B -- cdate 2022-07-22T09:51+00 -- mdate 2022-07-22T09:51+00 -- /2022/3 Apr, 10.54​ yap.aac
+     40 385 501 B -- cdate 2022-07-22T09:56+00 -- mdate 2022-07-22T09:56+00 -- /2022/3 Apr, 14.10​ barkattack as Dan comes home.aac
+     37 905 460 B -- cdate 2022-07-22T10:01+00 -- mdate 2022-07-22T10:01+00 -- /2022/3 Apr, 14.59​ bark bark.aac
+     22 529 342 B -- cdate 2022-07-22T23:31+00 -- mdate 2022-07-22T23:31+00 -- /2022/3 Apr, 15.48​ bark yap.aac
+    112 674 982 B -- cdate 2022-07-22T23:46+00 -- mdate 2022-07-22T23:46+00 -- /2022/3 Apr, 17.06​ barktown.aac
+    126 446 246 B -- cdate 2022-07-22T23:55+00 -- mdate 2022-07-22T23:55+00 -- /2022/3 Apr, 19.50​ bark bark question.aac
+     52 366 391 B -- cdate 2022-02-20T09:31+00 -- mdate 2022-02-20T09:31+00 -- /2022/3 Feb, 10.13​ yaps into car at first.aac
+    162 518 571 B -- cdate 2022-01-07T10:07+00 -- mdate 2022-01-07T10:07+00 -- /2022/3 Jan, 00.04​ barks maybe.aac
+    271 981 775 B -- cdate 2022-01-07T10:39+00 -- mdate 2022-01-07T10:39+00 -- /2022/3 Jan, 11.00​ gnyl hör o där, fågel läte med.aac
+    287 169 614 B -- cdate 2022-01-07T11:04+00 -- mdate 2022-01-07T11:04+00 -- /2022/3 Jan, 15.46​ barks perhaps.aac
+     68 280 449 B -- cdate 2022-01-07T12:17+00 -- mdate 2022-01-07T12:17+00 -- /2022/3 Jan, 18.15​ barks when neighbors come home.aac
+     66 949 392 B -- cdate 2022-03-03T09:05+00 -- mdate 2022-03-03T09:05+00 -- /2022/3 Mar, 12.21​ couple yaps and saw.aac
+     26 955 622 B -- cdate 2022-03-03T09:07+00 -- mdate 2022-03-03T09:07+00 -- /2022/3 Mar, 14.17​ yaps.aac
+     20 561 920 B -- cdate 2022-03-03T08:58+00 -- mdate 2022-03-03T08:58+00 -- /2022/3 Mar, 16.01​ barktown until 16.28(1).aac
+     20 561 920 B -- cdate 2022-03-03T09:00+00 -- mdate 2022-03-03T09:00+00 -- /2022/3 Mar, 16.01​ barktown until 16.28.aac
+        128 968 B -- cdate 2022-03-03T08:58+00 -- mdate 2022-03-03T08:58+00 -- /2022/3 Mar, 16.37 till.aac
+        200 694 B -- cdate 2022-03-03T08:58+00 -- mdate 2022-03-03T08:58+00 -- /2022/3 Mar, 16.50​ bark.aac
+        977 257 B -- cdate 2022-03-03T08:57+00 -- mdate 2022-03-03T08:57+00 -- /2022/3 Mar, 16.55​ barky horsy.aac
+        340 006 B -- cdate 2022-03-03T08:55+00 -- mdate 2022-03-03T08:55+00 -- /2022/3 Mar, 16.58​ still barky.aac
+     57 010 606 B -- cdate 2022-03-03T08:55+00 -- mdate 2022-03-03T08:55+00 -- /2022/3 Mar, 16.59​ barky bark.aac
+         93 105 B -- cdate 2022-03-03T08:54+00 -- mdate 2022-03-03T08:54+00 -- /2022/3 Mar, 17.34​ barky.aac
+     34 935 755 B -- cdate 2022-03-03T08:51+00 -- mdate 2022-03-03T08:51+00 -- /2022/3 Mar, 17.37​ barktown.aac
+     32 192 951 B -- cdate 2022-03-03T08:49+00 -- mdate 2022-03-03T08:49+00 -- /2022/3 Mar, 17.57​ barktown continue.aac
+     45 233 168 B -- cdate 2022-03-03T08:44+00 -- mdate 2022-03-03T08:44+00 -- /2022/3 Mar, 18.16​ barks from loft .aac
+        111 037 B -- cdate 2022-03-03T08:54+00 -- mdate 2022-03-03T08:54+00 -- /2022/3 Mar, 18.54​ bark bark.aac
+     99 269 241 B -- cdate 2022-01-31T01:19+00 -- mdate 2022-01-31T01:19+00 -- /2022/30 Jan, 20.17​ barktown.aac
+     33 944 704 B -- cdate 2022-07-21T23:02+00 -- mdate 2022-07-21T23:02+00 -- /2022/30 Mar, 16.53​ bark bark.aac
+    184 727 907 B -- cdate 2022-07-21T23:02+00 -- mdate 2022-07-21T23:02+00 -- /2022/30 Mar, 18.15​ bark bark bark.aac
+    250 798 663 B -- cdate 2022-01-02T02:07+00 -- mdate 2022-01-02T02:07+00 -- /2022/31 Dec, 12.12​ yaps at first. not later.aac
+    177 278 127 B -- cdate 2022-01-02T02:15+00 -- mdate 2022-01-02T02:15+00 -- /2022/31 Dec, 14.36​ quiet but noise at end.aac
+    156 748 130 B -- cdate 2022-01-02T02:17+00 -- mdate 2022-01-02T02:17+00 -- /2022/31 Dec, 16.41​ uncertain, bird and bark end.aac
+    241 893 687 B -- cdate 2022-01-02T02:20+00 -- mdate 2022-01-02T02:20+00 -- /2022/31 Dec, 18.04​ barks at first not sure l8.aac
+    166 827 609 B -- cdate 2022-02-17T08:50+00 -- mdate 2022-02-17T08:50+00 -- /2022/31 Jan, 15.41​ whining at start, unsure later.aac
+    218 702 956 B -- cdate 2022-02-17T08:58+00 -- mdate 2022-02-17T08:58+00 -- /2022/31 Jan, 17.08​bark at first and half way.aac
+    226 389 981 B -- cdate 2022-02-17T09:01+00 -- mdate 2022-02-17T09:01+00 -- /2022/31 Jan, 19.03​ some bark at first and in middle.aac
+     51 340 856 B -- cdate 2022-07-23T00:43+00 -- mdate 2022-07-23T00:43+00 -- /2022/4 Apr, 10.35​ barks into calm.aac
+     58 799 642 B -- cdate 2022-02-20T22:41+00 -- mdate 2022-02-20T22:41+00 -- /2022/4 Feb, 13.08​ barky from kitchen.aac
+    230 180 389 B -- cdate 2022-02-20T23:02+00 -- mdate 2022-02-20T23:02+00 -- /2022/4 Feb, 13.54​ rainy barks.aac
+    437 574 880 B -- cdate 2022-02-20T23:25+00 -- mdate 2022-02-20T23:25+00 -- /2022/4 Feb, 15.57​ vstks at first unsure later.aac
+      1 760 030 B -- cdate 2022-01-07T12:26+00 -- mdate 2022-01-07T12:26+00 -- /2022/4 Jan, 11.15​ yelps.aac
+    256 806 350 B -- cdate 2022-01-07T12:29+00 -- mdate 2022-01-07T12:29+00 -- /2022/4 Jan, 11.43​ continuing barks sunny.aac
+     81 762 053 B -- cdate 2022-01-07T12:34+00 -- mdate 2022-01-07T12:34+00 -- /2022/4 Jan, 14.00​ bark bark.aac
+    113 392 235 B -- cdate 2022-03-04T08:19+00 -- mdate 2022-03-04T08:19+00 -- /2022/4 Mar, 17.12​ gnyl och skäll.aac
+    184 942 393 B -- cdate 2022-03-04T10:26+00 -- mdate 2022-03-04T10:26+00 -- /2022/4 Mar, 18.47​ bark.. bark .. question.aac
+    513 630 630 B -- cdate 2022-02-24T00:02+00 -- mdate 2022-02-24T00:02+00 -- /2022/5 Feb, 11.38​ bark paus bark bark bark.aac
+    384 993 314 B -- cdate 2022-02-24T00:07+00 -- mdate 2022-02-24T00:07+00 -- /2022/5 Feb, 16.03​ continuing barks in beginning.aac
+         60 001 B -- cdate 2022-03-05T06:08+00 -- mdate 2022-03-05T06:08+00 -- /2022/5 Mar, 11.32 gnyl.aac
+     53 429 857 B -- cdate 2022-03-05T06:06+00 -- mdate 2022-03-05T06:06+00 -- /2022/5 Mar, 15.37​ barktown.aac
+     54 288 492 B -- cdate 2022-03-05T07:45+00 -- mdate 2022-03-05T07:45+00 -- /2022/5 Mar, 16.09​ barktown continue.aac
+         69 656 B -- cdate 2022-03-05T07:50+00 -- mdate 2022-03-05T07:50+00 -- /2022/5 Mar, 17.30​ barks still going(1).aac
+         69 656 B -- cdate 2022-03-06T05:00+00 -- mdate 2022-03-06T05:00+00 -- /2022/5 Mar, 17.30​ barks still going.aac
+        102 071 B -- cdate 2022-03-06T05:05+00 -- mdate 2022-03-06T05:05+00 -- /2022/5 Mar, 18.21​ still barking.aac
+         75 864 B -- cdate 2022-03-06T05:05+00 -- mdate 2022-03-06T05:05+00 -- /2022/5 Mar, 18.53​ still barking .aac
+        413 111 B -- cdate 2022-03-06T05:05+00 -- mdate 2022-03-06T05:05+00 -- /2022/5 Mar, 19.39​ barking from upstairs.aac
+      1 935 205 B -- cdate 2022-03-06T05:05+00 -- mdate 2022-03-06T05:05+00 -- /2022/5 Mar, 19.59​ continuing barks.aac
+    298 972 570 B -- cdate 2022-02-24T00:27+00 -- mdate 2022-02-24T00:27+00 -- /2022/6 Feb, 16.48​ some barks.aac
+    298 813 257 B -- cdate 2022-01-07T13:43+00 -- mdate 2022-01-07T13:43+00 -- /2022/6 Jan, 09.53​ barks.aac
+    275 739 079 B -- cdate 2022-01-08T01:03+00 -- mdate 2022-01-08T01:03+00 -- /2022/6 Jan, 16.04​ barkoff first .aac
+         79 311 B -- cdate 2022-03-06T05:06+00 -- mdate 2022-03-06T05:06+00 -- /2022/6 Mar, 11.45 gnyl och skäll .aac
+         60 001 B -- cdate 2022-03-06T05:06+00 -- mdate 2022-03-06T05:06+00 -- /2022/6 Mar, 13.35 barky.aac
+      3 749 718 B -- cdate 2022-03-06T05:06+00 -- mdate 2022-03-06T05:06+00 -- /2022/6 Mar, 13.45​ barks from inside greenhouse.aac
+      3 177 985 B -- cdate 2022-03-06T05:07+00 -- mdate 2022-03-06T05:07+00 -- /2022/6 Mar, 13.48​ barks from inside greenhouse 2.aac
+      6 537 351 B -- cdate 2022-03-06T05:07+00 -- mdate 2022-03-06T05:07+00 -- /2022/6 Mar, 13.51​barks from inside greenhouse 3.aac
+     19 394 117 B -- cdate 2022-03-06T05:08+00 -- mdate 2022-03-06T05:08+00 -- /2022/6 Mar, 14.03​ more barks inside greenhouse.aac
+     22 727 966 B -- cdate 2022-03-06T05:09+00 -- mdate 2022-03-06T05:09+00 -- /2022/6 Mar, 14.20​ barktown.aac
+         59 312 B -- cdate 2022-03-06T05:10+00 -- mdate 2022-03-06T05:10+00 -- /2022/6 Mar, 14.50 still barking.aac
+      8 447 038 B -- cdate 2022-03-06T05:10+00 -- mdate 2022-03-06T05:10+00 -- /2022/6 Mar, 14.55​ barks from inside of kitchen.aac
+     33 300 556 B -- cdate 2022-03-07T01:53+00 -- mdate 2022-03-07T01:53+00 -- /2022/6 Mar, 21.32​ gnyl.aac
+    159 209 551 B -- cdate 2022-02-24T00:42+00 -- mdate 2022-02-24T00:42+00 -- /2022/7 Feb, 18.29​ barktown.aac
+    173 484 271 B -- cdate 2022-01-08T01:07+00 -- mdate 2022-01-08T01:07+00 -- /2022/7 Jan, 16.13​ barktown yelps alot.aac
+    184 987 222 B -- cdate 2022-01-08T01:10+00 -- mdate 2022-01-08T01:10+00 -- /2022/7 Jan, 18.19​ more barks.aac
+     40 293 776 B -- cdate 2022-03-07T01:56+00 -- mdate 2022-03-07T01:56+00 -- /2022/7 Mar, 11.29​ yapp and bark.aac
+     23 029 351 B -- cdate 2022-03-07T02:53+00 -- mdate 2022-03-07T02:53+00 -- /2022/7 Mar, 12.12​ yap attack to the max Dan leaves(1).aac
+     23 029 351 B -- cdate 2022-03-08T05:23+00 -- mdate 2022-03-08T05:23+00 -- /2022/7 Mar, 12.12​ yap attack to the max Dan leaves.aac
+    100 477 537 B -- cdate 2022-02-24T00:45+00 -- mdate 2022-02-24T00:45+00 -- /2022/8 Feb, 15.24​ gnyl i början .aac
+     14 163 685 B -- cdate 2022-02-24T00:53+00 -- mdate 2022-02-24T00:53+00 -- /2022/8 Feb, 16.50​ bark attack.aac
+    276 656 416 B -- cdate 2022-02-24T00:57+00 -- mdate 2022-02-24T00:57+00 -- /2022/8 Feb, 18.12​ bsrk bark.aac
+    250 016 581 B -- cdate 2022-01-12T09:30+00 -- mdate 2022-01-12T09:30+00 -- /2022/8 Jan, 17.44​ bark at beg at least.aac
+     92 496 025 B -- cdate 2022-03-08T05:24+00 -- mdate 2022-03-08T05:24+00 -- /2022/8 Mar, 12.18​ barks before and later.aac
+      4 601 457 B -- cdate 2022-03-08T05:54+00 -- mdate 2022-03-08T05:54+00 -- /2022/8 Mar, 13.10​ barking at people.aac
+     40 352 397 B -- cdate 2022-03-08T06:23+00 -- mdate 2022-03-08T06:23+00 -- /2022/8 Mar, 15.01​ horsey bark bark and more.aac
+     40 211 016 B -- cdate 2022-03-08T06:24+00 -- mdate 2022-03-08T06:24+00 -- /2022/8 Mar, 15.31​ barktown and Dan comes home.aac
+     50 671 880 B -- cdate 2022-03-08T06:25+00 -- mdate 2022-03-08T06:25+00 -- /2022/8 Mar, 15.55​ more barks.aac
+     78 650 277 B -- cdate 2022-03-08T09:15+00 -- mdate 2022-03-08T09:15+00 -- /2022/8 Mar, 16.30​ bark bark bark.aac
+     66 788 010 B -- cdate 2022-03-08T09:20+00 -- mdate 2022-03-08T09:20+00 -- /2022/8 Mar, 17.19​ barktown Dan around.aac
+     44 101 425 B -- cdate 2022-03-08T09:43+00 -- mdate 2022-03-08T09:43+00 -- /2022/8 Mar, 17.53​ bark.aac
+         64 829 B -- cdate 2022-03-08T08:45+00 -- mdate 2022-03-08T08:45+00 -- /2022/8 Mar, 18.29​ barks.aac
+         72 416 B -- cdate 2022-03-08T10:36+00 -- mdate 2022-03-08T10:36+00 -- /2022/8 Mar, 19.15​ gnyl.aac
+    411 203 406 B -- cdate 2022-01-12T09:34+00 -- mdate 2022-01-12T09:34+00 -- /2022/9 Jan, 16.46​ barks at first not later.aac
+     49 619 491 B -- cdate 2022-07-01T10:30+00 -- mdate 2022-07-01T10:30+00 -- /2022/9 Mar, 15.49​ bark bark.aac
+     75 265 393 B -- cdate 2022-07-01T10:31+00 -- mdate 2022-07-01T10:31+00 -- /2022/9 Mar, 16.18​ pre barks maybe later.aac
+     26 119 746 B -- cdate 2022-07-01T10:42+00 -- mdate 2022-07-01T10:42+00 -- /2022/9 Mar, 17.13​ barks at beginning.aac
+     64 594 870 B -- cdate 2022-07-01T10:53+00 -- mdate 2022-07-01T10:53+00 -- /2022/9 Mar, 17.54​ barks from living room.aac
+    101 824 456 B -- cdate 2022-07-01T10:58+00 -- mdate 2022-07-01T10:58+00 -- /2022/9 Mar, 18.37​ bark bark.aac
+     53 111 231 B -- cdate 2022-07-01T11:01+00 -- mdate 2022-07-01T11:01+00 -- /2022/9 Mar, 19.31​ bark.aac
