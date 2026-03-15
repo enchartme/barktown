@@ -222,7 +222,7 @@
   .year-chart-wrap {
     flex: 1;
     min-width: 0;
-    padding: 6px 0;
+    padding: 6px 0 0;
     position: relative;
   }
 
@@ -239,7 +239,7 @@
   .year-chart {
     display: block;
     width: 100%;
-    height: 60px;
+    height: 72px;
   }
 
   /* ── Caption ── */

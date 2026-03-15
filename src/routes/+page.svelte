@@ -41,7 +41,7 @@
   let showPanel  = $state(false);
 
   /** Toggle the overview bar-chart panel. */
-  let showOverview = $state(false);
+  let showOverview = $state(true);
 
   /** Visible time domain (hours). Controls which slice of the 24h track is shown. */
   let domain = $state({ startHour: 9, endHour: 20 });
