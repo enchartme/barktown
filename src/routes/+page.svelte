@@ -3,6 +3,7 @@
   import DiaryTimeline    from '$lib/components/DiaryTimeline.svelte';
   import AudioPlayerPanel from '$lib/components/AudioPlayerPanel.svelte';
   import OverviewPanel    from '$lib/components/OverviewPanel.svelte';
+  import GoblinPiStatus   from '$lib/components/GoblinPiStatus.svelte';
   import { groupByDate, ASSET_BASE } from '$lib/utils.js';
 
   // Svelte 5 runes
@@ -134,6 +135,8 @@
         </button>
       {/each}
     </div>
+
+    <GoblinPiStatus />
   </header>
 
   <main class="diary-main">
