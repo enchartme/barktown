@@ -1,12 +1,17 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
+  import { ASSET_BASE, downsampleWaveform, waveformNorm, formatDuration } from '$lib/utils.js';
 
   const BASE_URL       = 'https://goblinpi.tail523149.ts.net';
   const STATUS_URL     = `${BASE_URL}/status`;
+  const SAMPLES_INDEX  = `${ASSET_BASE}/training-samples-index.json`;
   const POLL_OPEN_MS   = 1_000;
   const POLL_CLOSED_MS = 10_000;
 
   const LABELS = ['bark', 'yap', 'background', 'wind', 'homestead', 'traffic'];
+  const ALL_LABELS = ['all', ...LABELS];
+  const SAMPLE_BARS = 300;
+  const VW = 600; const VH = 48;
 
   /** @type {any} */
   let status      = $state(null);
@@ -26,13 +31,131 @@
   let recordPollId;
   let controlBusy     = $state(false);
 
+  // ── Samples tab state ─────────────────────────────────────────────────────
+  /** @type {any[]} */
+  let samples         = $state([]);
+  let samplesLoading  = $state(false);
+  let samplesError    = $state('');
+  let filterLabel     = $state('all');
+  /** @type {any} */
+  let activeSample    = $state(null);
+  /** @type {HTMLAudioElement|null} */
+  let sampleAudioEl   = $state(null);
+  let samplePlaying   = $state(false);
+  let sampleTime      = $state(0);
+  let sampleDuration  = $state(0);
+  /** @type {{ mins: number[], maxs: number[], norm: number }|null} */
+  let sampleWave      = $state(null);
+  let sampleWaveLoading = $state(false);
+  /** @type {Map<string,any>} */
+  const waveCache     = new Map();
+
+  const filteredSamples = $derived(
+    filterLabel === 'all' ? samples : samples.filter(s => s.label === filterLabel)
+  );
+
+  const playheadX = $derived(
+    sampleDuration > 0 ? (sampleTime / sampleDuration) * VW : 0
+  );
+
+  const sampleBars = $derived(() => {
+    if (!sampleWave) return [];
+    const { mins, maxs, norm } = sampleWave;
+    const count = mins.length;
+    if (!count) return [];
+    const barW = VW / count;
+    const cy   = VH / 2;
+    // Auto-scale so the loudest bar always fills the full height,
+    // matching the behaviour of AudioPlayerPanel.
+    let visualPeak = 0;
+    for (let i = 0; i < count; i++) {
+      const v = maxs[i] / norm;
+      if (v > visualPeak) visualPeak = v;
+    }
+    const yScale = visualPeak > 0 ? 1 / visualPeak : 1;
+    return mins.map((lo, i) => {
+      const hi   = maxs[i];
+      const yTop = cy - (hi / norm) * yScale * cy;
+      const yBot = cy - (lo / norm) * yScale * cy;
+      return { x: i * barW, y: yTop, w: Math.max(0.5, barW - 0.5), h: Math.max(1, yBot - yTop) };
+    });
+  });
+
+  async function fetchSamples() {
+    samplesLoading = true;
+    samplesError   = '';
+    try {
+      const res = await fetch(SAMPLES_INDEX, { signal: AbortSignal.timeout(8000) });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      // Sort newest first
+      samples = [...data].sort((a, b) => b.datetimeLocal.localeCompare(a.datetimeLocal));
+    } catch (e) {
+      samplesError = e?.message ?? 'Failed to load';
+    } finally {
+      samplesLoading = false;
+    }
+  }
+
+  async function selectSample(sample) {
+    // Stop current audio
+    if (sampleAudioEl && samplePlaying) sampleAudioEl.pause();
+    samplePlaying  = false;
+    sampleTime     = 0;
+    sampleDuration = 0;
+    sampleWave     = null;
+    activeSample   = sample;
+
+    // Load waveform
+    if (sample.waveformPath) {
+      const cached = waveCache.get(sample.waveformPath);
+      if (cached && cached !== 'error') {
+        sampleWave = cached;
+      } else if (cached !== 'error') {
+        sampleWaveLoading = true;
+        try {
+          const res = await fetch(`${ASSET_BASE}/${sample.waveformPath}`, { signal: AbortSignal.timeout(6000) });
+          if (!res.ok) throw new Error();
+          const json = await res.json();
+          const norm = waveformNorm(json.bits ?? 8);
+          const ds   = downsampleWaveform(json.data, SAMPLE_BARS);
+          const result = { mins: ds.mins, maxs: ds.maxs, norm };
+          waveCache.set(sample.waveformPath, result);
+          sampleWave = result;
+        } catch (_e) {
+          waveCache.set(sample.waveformPath, 'error');
+        } finally {
+          sampleWaveLoading = false;
+        }
+      }
+    }
+  }
+
+  function sampleAudioSrc(sample) {
+    return `${ASSET_BASE}/${encodeURIComponent(sample.audioPath).replace(/%2F/g, '/')}`;
+  }
+
+  async function toggleSamplePlay() {
+    if (!sampleAudioEl) return;
+    if (samplePlaying) sampleAudioEl.pause();
+    else await sampleAudioEl.play().catch(() => {});
+  }
+
+  /** @param {MouseEvent & { currentTarget: SVGSVGElement }} e */
+  function seekSample(e) {
+    if (!sampleAudioEl || !sampleDuration) return;
+    const rect  = e.currentTarget.getBoundingClientRect();
+    const ratio = (e.clientX - rect.left) / rect.width;
+    sampleAudioEl.currentTime = Math.max(0, Math.min(1, ratio)) * sampleDuration;
+  }
+
   async function fetchStatus() {
     try {
       const res = await fetch(STATUS_URL, { signal: AbortSignal.timeout(5000) });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       status      = await res.json();
       fetchFailed = false;
-    } catch {
+    } catch (_e) {
       fetchFailed = true;
       status      = null;
     }
@@ -61,6 +184,9 @@
     if (showPopup && activeTab === 'manual') {
       fetchRecordStatus();
       recordPollId = setInterval(fetchRecordStatus, 1500);
+    }
+    if (showPopup && activeTab === 'samples' && samples.length === 0 && !samplesLoading) {
+      fetchSamples();
     }
   });
 
@@ -277,7 +403,7 @@
     try {
       const res = await fetch(`${BASE_URL}/record/status`, { signal: AbortSignal.timeout(3000) });
       if (res.ok) recordStatus = await res.json();
-    } catch { /* silently ignore — status shown via status tab */ }
+    } catch (_e) { /* silently ignore — status shown via status tab */ }
   }
 
   async function startRecording() {
@@ -293,14 +419,14 @@
       const data = await res.json();
       if (!data.ok) recordMessage = data.error ?? 'Failed to start';
       else await fetchRecordStatus();
-    } catch { recordMessage = 'Could not reach goblinpi'; }
+    } catch (_e) { recordMessage = 'Could not reach goblinpi'; }
   }
 
   async function stopRecording() {
     try {
       await fetch(`${BASE_URL}/record/stop`, { method: 'POST', signal: AbortSignal.timeout(5000) });
       await fetchRecordStatus();
-    } catch { recordMessage = 'Could not reach goblinpi'; }
+    } catch (_e) { recordMessage = 'Could not reach goblinpi'; }
   }
 
   async function labelRecording() {
@@ -313,11 +439,17 @@
         signal: AbortSignal.timeout(10000),
       });
       let data;
-      try { data = await res.json(); } catch { data = null; }
+      try { data = await res.json(); } catch (_e) { data = null; }
       if (!res.ok || !data) {
         recordMessage = data?.error ?? `Server error ${res.status}`;
       } else {
-        recordMessage = data.ok ? `Saved as ${data.label}` : (data.error ?? 'Save failed');
+        if (data.ok) {
+          recordMessage = data.destination === 'local'
+            ? `Saved locally: ${data.label}`
+            : `Uploaded to Masmopi: ${data.filename ?? data.label}`;
+        } else {
+          recordMessage = data.error ?? 'Save failed';
+        }
         selectedLabel = '';
         await fetchRecordStatus();
       }
@@ -332,7 +464,7 @@
       recordMessage = '';
       selectedLabel = '';
       await fetchRecordStatus();
-    } catch { recordMessage = 'Could not reach goblinpi'; }
+    } catch (_e) { recordMessage = 'Could not reach goblinpi'; }
   }
 
   async function executeControl() {
@@ -352,7 +484,7 @@
       controlMessage = data.ok
         ? (action === 'reboot' ? 'Rebooting… (back in ~30 s)' : 'Shutting down…')
         : (data.error ?? 'Failed');
-    } catch { controlMessage = 'Could not reach goblinpi'; }
+    } catch (_e) { controlMessage = 'Could not reach goblinpi'; }
     controlBusy = false;
   }
 
@@ -372,6 +504,7 @@
 
 {#if showPopup}
   <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+  <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
   <div class="status-backdrop" onclick={() => (showPopup = false)}></div>
 
   <div class="status-popup" role="dialog" aria-modal="true" aria-label="goblinpi status">
@@ -388,6 +521,7 @@
     <div class="tab-bar">
       <button class="tab-btn" class:active={activeTab === 'status'}  onclick={() => (activeTab = 'status')}>Status</button>
       <button class="tab-btn" class:active={activeTab === 'manual'}  onclick={() => (activeTab = 'manual')}>Manual</button>
+      <button class="tab-btn" class:active={activeTab === 'samples'} onclick={() => (activeTab = 'samples')}>Samples</button>
     </div>
 
     {#if activeTab === 'status'}
@@ -423,9 +557,11 @@
         </div>
       {/if}
 
-    {:else}
+    {:else if activeTab === 'manual'}
       <!-- Manual tab -->
       <div class="popup-body manual-body">
+
+
 
         <!-- Record section -->
         <div class="manual-section">
@@ -480,7 +616,7 @@
           {#if !confirmAction}
             <div class="control-row">
               <button class="action-btn" onclick={() => { confirmAction = 'reboot'; controlMessage = ''; }}>
-                Restart
+                Restart Goblin
               </button>
               <button class="action-btn danger-btn" onclick={() => { confirmAction = 'halt'; controlMessage = ''; }}>
                 Shut down
@@ -504,7 +640,109 @@
         </div>
 
       </div>
+    {:else if activeTab === 'samples'}
+      <!-- Samples tab -->
+      <div class="popup-body samples-body">
+
+        <!-- Filter pills -->
+        <div class="samples-filter">
+          {#each ALL_LABELS as lbl}
+            <button
+              class="filter-pill"
+              class:active={filterLabel === lbl}
+              onclick={() => (filterLabel = lbl)}
+            >{lbl}</button>
+          {/each}
+          <button class="filter-pill reload-pill" onclick={fetchSamples} title="Reload">
+            {samplesLoading ? '…' : '↺'}
+          </button>
+        </div>
+
+        <!-- List -->
+        {#if samplesError}
+          <div class="samples-msg samples-err">{samplesError}</div>
+        {:else if samplesLoading && samples.length === 0}
+          <div class="samples-msg">Loading…</div>
+        {:else if filteredSamples.length === 0}
+          <div class="samples-msg">No samples{filterLabel !== 'all' ? ` for "${filterLabel}"` : ''}.</div>
+        {:else}
+          <div class="samples-list">
+            {#each filteredSamples as sample (sample.id)}
+              <button
+                class="sample-row"
+                class:playing={activeSample?.id === sample.id}
+                onclick={() => selectSample(sample)}
+              >
+                <span class="sample-label-pill sample-label--{sample.label}">{sample.label}</span>
+                <span class="sample-name">{sample.datetimeLocal.replace('T', ' ').slice(0, 16)}</span>
+                <span class="sample-dur">{formatDuration(sample.durationSec)}</span>
+              </button>
+            {/each}
+          </div>
+        {/if}
+
+        <!-- Mini player -->
+        {#if activeSample}
+          <div class="mini-player">
+            <audio
+              bind:this={sampleAudioEl}
+              src={sampleAudioSrc(activeSample)}
+              onplay={() => (samplePlaying = true)}
+              onpause={() => (samplePlaying = false)}
+              onended={() => { samplePlaying = false; sampleTime = 0; }}
+              ontimeupdate={() => { if (sampleAudioEl) sampleTime = sampleAudioEl.currentTime; }}
+              onloadedmetadata={() => { if (sampleAudioEl) sampleDuration = sampleAudioEl.duration || activeSample.durationSec; }}
+            ></audio>
+
+            <div class="mini-player-header">
+              <button class="play-pause-btn" onclick={toggleSamplePlay}>
+                {samplePlaying ? '⏸' : '▶'}
+              </button>
+              <span class="mini-label">
+                <span class="sample-label-pill sample-label--{activeSample.label}">{activeSample.label}</span>
+                {activeSample.datetimeLocal.replace('T', ' ').slice(0, 19)}
+              </span>
+              <span class="mini-time">
+                {formatDuration(sampleTime)} / {formatDuration(activeSample.durationSec)}
+              </span>
+            </div>
+
+            <svg
+              class="mini-wave"
+              viewBox="0 0 {VW} {VH}"
+              preserveAspectRatio="none"
+              onclick={seekSample}
+              onkeydown={(e) => {
+                if (!sampleAudioEl || !sampleDuration) return;
+                if (e.key === 'ArrowRight') { e.preventDefault(); sampleAudioEl.currentTime = Math.min(sampleDuration, sampleTime + 2); }
+                if (e.key === 'ArrowLeft')  { e.preventDefault(); sampleAudioEl.currentTime = Math.max(0, sampleTime - 2); }
+              }}
+              role="slider"
+              aria-label="Seek"
+              aria-valuenow={Math.round(sampleTime)}
+              aria-valuemin={0}
+              aria-valuemax={Math.round(sampleDuration || 0)}
+              tabindex="0"
+            >
+              {#if sampleWave}
+                {#each sampleBars() as bar}
+                  <rect x={bar.x} y={bar.y} width={bar.w} height={bar.h} fill="#4a7cdc" opacity="0.65" />
+                {/each}
+                <rect x="0" y="0" width={playheadX} height={VH} fill="#1a1a1a" opacity="0.18" />
+                <line x1={playheadX} y1="0" x2={playheadX} y2={VH} stroke="#1a1a1a" stroke-width="1.5" />
+              {:else}
+                <line x1="0" y1={VH/2} x2={VW} y2={VH/2} stroke={sampleWaveLoading ? '#c0d0f0' : '#e0e0e0'} stroke-width="1" />
+                {#if !sampleWaveLoading}
+                  <line x1={playheadX} y1="0" x2={playheadX} y2={VH} stroke="#1a1a1a" stroke-width="1.5" />
+                {/if}
+              {/if}
+            </svg>
+          </div>
+        {/if}
+
+      </div>
     {/if}
+
   </div>
 {/if}
 
@@ -698,24 +936,30 @@
     padding: 0.6rem 0.9rem 1rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.6rem;
   }
 
   .manual-section {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    margin-top: 0;
+  }
+
+  .manual-section:not(:first-child) {
+    margin-top: 1.4rem;
+    padding-top: 0.2rem;
   }
 
   .manual-section-title {
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     font-weight: 700;
-    letter-spacing: 0.1em;
-    color: #fff;
-    background: #1a1a1a;
-    padding: 0.25rem 0.7rem;
-    border-radius: 3px;
-    align-self: flex-start;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #999;
+    border-bottom: 1px solid #e8e8e4;
+    padding-bottom: 0.3rem;
+    margin-bottom: 0.1rem;
   }
 
   /* ── Record controls ── */
@@ -830,5 +1074,162 @@
     background: #f7f7f5;
     border-radius: 3px;
     border-left: 3px solid #ccc;
+  }
+
+  /* ── Samples tab ── */
+  .samples-body {
+    padding: 0.5rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .samples-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    padding: 0 0.9rem 0.5rem;
+    border-bottom: 1px solid #f0f0ec;
+  }
+
+  .filter-pill {
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 0.2rem 0.55rem;
+    border: 1px solid #d8d8d4;
+    border-radius: 10px;
+    background: #f5f5f2;
+    color: #666;
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+  }
+  .filter-pill:hover { background: #eaeae6; color: #333; }
+  .filter-pill.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .reload-pill { border-style: dashed; }
+
+  .samples-msg {
+    padding: 1rem 0.9rem;
+    font-size: 0.78rem;
+    color: #999;
+  }
+  .samples-err { color: #c0392b; }
+
+  .samples-list {
+    overflow-y: auto;
+  }
+
+  .sample-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.32rem 0.9rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+    border-bottom: 1px solid #f4f4f0;
+    text-align: left;
+    transition: background 0.1s;
+  }
+  .sample-row:hover { background: #f7f7f4; }
+  .sample-row.playing { background: #eef3fc; }
+
+  .sample-label-pill {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.1rem 0.4rem;
+    border-radius: 8px;
+    flex-shrink: 0;
+    color: #fff;
+  }
+  .sample-label--bark       { background: #e74c3c; }
+  .sample-label--yap        { background: #e67e22; }
+  .sample-label--background { background: #27ae60; }
+  .sample-label--wind       { background: #2980b9; }
+  .sample-label--homestead  { background: #8e44ad; }
+  .sample-label--traffic    { background: #7f8c8d; }
+
+  .sample-name {
+    flex: 1;
+    font-size: 0.74rem;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sample-dur {
+    font-size: 0.68rem;
+    color: #aaa;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Mini player ── */
+  .mini-player {
+    border-top: 1px solid #e8e8e4;
+    padding: 0.5rem 0.9rem 0.6rem;
+    background: #fafaf8;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex-shrink: 0;
+  }
+
+  .mini-player-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .play-pause-btn {
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: inherit;
+  }
+  .play-pause-btn:hover { opacity: 0.75; }
+
+  .mini-label {
+    flex: 1;
+    font-size: 0.72rem;
+    color: #444;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mini-time {
+    font-size: 0.68rem;
+    color: #888;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+
+  .mini-wave {
+    width: 100%;
+    height: 48px;
+    display: block;
+    cursor: pointer;
+    border-radius: 3px;
+    overflow: visible;
   }
 </style>
