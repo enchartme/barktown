@@ -136,6 +136,8 @@
       {/each}
     </div>
 
+    <a class="nav-link" href="/training">Training →</a>
+
     <GoblinPiStatus />
   </header>
 
@@ -247,6 +249,17 @@
   }
   .zoom-btn:hover   { background: #f0f0ec; }
   .zoom-btn.active  { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+  .nav-link {
+    font-size: 0.78rem;
+    color: #555;
+    text-decoration: none;
+    white-space: nowrap;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    transition: background 0.1s, color 0.1s;
+  }
+  .nav-link:hover { background: #f0f0ec; color: #1a1a1a; }
 
   /* ── Main ── */
   .diary-main {
