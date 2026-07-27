@@ -5,7 +5,15 @@
   // no-auth trust model as GoblinPiStatus.svelte. Audio/waveform bytes are
   // still served from the public S3 bucket (ASSET_BASE); only sample/
   // annotation metadata goes through this API.
-  const API_BASE = 'https://goblinpi.tail523149.ts.net:8090';
+  //
+  // Plain http:// (not https://) — server.mjs (Fastify) has no TLS of its
+  // own on port 8090, unlike goblinpi's status daemon which sits behind a
+  // TLS-terminating proxy on 443. This works fine from a plain-http dev
+  // page (localhost:5173), but will be blocked as mixed content once
+  // barktown is loaded over https:// — see barktown-ingest/README.md for
+  // how to put this behind Tailscale Serve (TLS) before relying on it from
+  // the deployed site.
+  const API_BASE = 'http://goblinpi.tail523149.ts.net:8090';
 
   const LABELS     = ['bark', 'yap', 'background', 'wind', 'homestead', 'traffic', 'gunshot'];
   const ALL_LABELS = ['all', ...LABELS];
