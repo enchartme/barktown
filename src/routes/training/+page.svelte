@@ -276,11 +276,11 @@
   function onWindowMouseUp() {
     if (!dragMode) return;
     const mode = dragMode;
-    dragMode   = null;
 
     if (mode === 'brush') {
       const a = Math.min(dragStartSec, dragCurrentSec);
       const b = Math.max(dragStartSec, dragCurrentSec);
+      dragMode = null;
       if (b - a < BRUSH_MIN_SEC) {
         if (audioEl) audioEl.currentTime = a;
       } else {
@@ -291,10 +291,13 @@
       return;
     }
 
+    // Compute the final bounds while dragMode is still set — previewBounds()
+    // returns the *unchanged* original bounds once dragMode is cleared.
     const ann = annotations.find(a => a.id === dragAnnId);
-    if (!ann) return;
-    const { startSec, endSec } = previewBounds(ann);
-    commitAnnotationBounds(ann, startSec, endSec);
+    const bounds = ann ? previewBounds(ann) : null;
+    dragMode = null;
+    if (!ann || !bounds) return;
+    commitAnnotationBounds(ann, bounds.startSec, bounds.endSec);
   }
 
   // ── Annotation mutations ────────────────────────────────────────────────────
