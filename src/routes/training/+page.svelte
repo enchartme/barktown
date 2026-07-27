@@ -8,14 +8,6 @@
   //
   // masmopi (Pi 5, ingestion + API host), NOT goblinpi (Pi 3B+, mic capture
   // only — goblinpi just uploads to masmopi and has no ingest API of its own).
-  //
-  // Plain http:// (not https://) — server.mjs (Fastify) has no TLS of its
-  // own on port 8090, unlike goblinpi's status daemon which sits behind a
-  // TLS-terminating proxy on 443. This works fine from a plain-http dev
-  // page (localhost:5173), but will be blocked as mixed content once
-  // barktown is loaded over https:// — see barktown-ingest/README.md for
-  // how to put this behind Tailscale Serve (TLS) before relying on it from
-  // the deployed site.
   const API_BASE = 'http://masmopi.tail523149.ts.net:8090';
 
   const LABELS     = ['bark', 'yap', 'background', 'wind', 'homestead', 'traffic', 'gunshot'];
