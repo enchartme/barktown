@@ -719,7 +719,7 @@
 <div class="app">
   <header class="site-header">
     <h1>🐕 Training samples</h1>
-    <a class="back-link" href="/">‹ Diary</a>
+    <a class="back-link" href="/">‹ Back to the diary</a>
   </header>
 
   <div class="training-body">
@@ -918,7 +918,7 @@
               onclick={startSampleWideNote}
               title={hasSampleWideNote ? 'This sample already has a sample-wide note' : ''}
             >
-              + Sample note
+              + Add a note
             </button>
           </div>
 
@@ -973,7 +973,7 @@
                 <button class="filter-pill" class:active={pendingLabel === lbl} onclick={() => (pendingLabel = lbl)}>{lbl}</button>
               {/each}
             </div>
-            <button class="action-btn" onclick={commitFragment}>Add fragment</button>
+            <button class="action-btn" onclick={commitFragment}>Save fragment (↵)</button>
             <div class="note-row">
               <input class="note-input" placeholder="…or add a time-coded note" bind:value={pendingNoteText} />
               <button class="action-btn" disabled={!pendingNoteText.trim()} onclick={commitNote}>Add note</button>

@@ -136,7 +136,7 @@
       {/each}
     </div>
 
-    <a class="nav-link" href="/training">Training →</a>
+    <a class="nav-link" href="/training">Samples</a>
 
     <GoblinPiStatus />
   </header>
