@@ -290,10 +290,17 @@
     duration       = sample.durationSec || 0;
     selected       = sample;
     selectedAnnId  = null;
+    editingNoteId  = null;
+    addingSampleNote = false;
     pending        = null;
     dragMode       = null;
     mutationError  = '';
     waveData       = null;
+    // Clear immediately, not just on fetch completion -- otherwise
+    // selectedSampleWideNote briefly reflects the *previous* sample's
+    // annotations (fetchAnnotations hasn't resolved yet) while `selected`
+    // already points at the new one, flashing the wrong note in the sidebar.
+    annotations    = [];
     await Promise.all([loadWaveform(sample.waveformPath), fetchAnnotations(sample.id)]);
   }
 
