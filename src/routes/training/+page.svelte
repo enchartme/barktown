@@ -403,6 +403,27 @@
     annotations      = [];
   }
 
+  /** Arrow up/down: move selection to the previous/next item in the
+   * (possibly filtered) sidebar list. Reuses selectSample, which already
+   * discards any unsaved pending fragment / in-progress note edit as part
+   * of its normal cleanup. No wraparound past either end of the list. */
+  function selectAdjacentSample(delta) {
+    const list = filteredSamples;
+    if (!list.length) return;
+    if (!selected) {
+      selectSample(delta > 0 ? list[0] : list[list.length - 1]);
+      return;
+    }
+    const idx = list.findIndex(s => s.id === selected.id);
+    if (idx === -1) {
+      selectSample(delta > 0 ? list[0] : list[list.length - 1]);
+      return;
+    }
+    const nextIdx = idx + delta;
+    if (nextIdx < 0 || nextIdx >= list.length) return;
+    selectSample(list[nextIdx]);
+  }
+
   function audioSrc(sample) {
     return `${ASSET_BASE}/${encodeURIComponent(sample.audioPath).replace(/%2F/g, '/')}`;
   }
@@ -744,6 +765,10 @@
     if (!inField && e.key === ' ') {
       e.preventDefault();
       togglePlay();
+    }
+    if (!inField && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+      e.preventDefault();
+      selectAdjacentSample(e.key === 'ArrowDown' ? 1 : -1);
     }
     if (!inField && audioEl && duration) {
       if (e.key === 'ArrowRight') { e.preventDefault(); audioEl.currentTime = Math.min(duration, currentTime + 2); }
