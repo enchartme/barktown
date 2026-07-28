@@ -695,7 +695,7 @@
               class:playing={selected?.id === sample.id}
               onclick={() => selectSample(sample)}
             >
-              <span class="sample-label-pill sample-label--{sample.label}">{sample.label}</span>
+              <span class="sample-label-pill sample-label--{sample.label}" title={sample.label}>{sample.label.slice(0, 3)}</span>
               <span class="sample-name">
                 <span class="sample-name-main">{formatSampleDatetime(sample.datetimeLocal)}</span>
                 {#if notePreview}<span class="sample-note-preview">{notePreview}</span>{/if}
@@ -1058,6 +1058,13 @@
     border-radius: 8px;
     flex-shrink: 0;
     color: #fff;
+  }
+  /* Sidebar list rows show only a 3-letter abbreviation (see template) --
+     fix the width so pills line up consistently instead of ragged widths. */
+  .sample-row .sample-label-pill {
+    display: inline-block;
+    width: 1.9rem;
+    text-align: center;
   }
   .sample-label--bark       { background: #e74c3c; }
   .sample-label--yap        { background: #e67e22; }
