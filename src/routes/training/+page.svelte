@@ -811,12 +811,15 @@
         <div class="samples-msg">No samples{filterLabel !== 'all' ? ` for "${filterLabel}"` : ''}.</div>
       {:else}
         <div class="samples-list">
-          {#each filteredSamples as sample (sample.id)}
+          {#each filteredSamples as sample, i (sample.id)}
             {@const notePreview = selected?.id === sample.id ? selectedSampleWideNote?.label : sampleNotes.get(sample.id)}
             {@const fragBlocks = sampleFragments.get(sample.id) ?? []}
+            {@const sampleDay = formatSampleDatetime(sample.datetimeLocal).slice(0, 10)}
+            {@const prevDay = i > 0 ? formatSampleDatetime(filteredSamples[i - 1].datetimeLocal).slice(0, 10) : null}
             <button
               class="sample-row"
               class:playing={selected?.id === sample.id}
+              class:day-start={i > 0 && sampleDay !== prevDay}
               onclick={() => toggleSample(sample)}
             >
               <span class="sample-label-pill sample-label--{sample.label}" title={sample.label}>{sample.label.slice(0, 3)}</span>
@@ -1237,6 +1240,8 @@
   }
   .sample-row:hover { background: #f7f7f4; }
   .sample-row.playing { background: #eef3fc; }
+  /* Visual gap between days -- roughly one row's height. */
+  .sample-row.day-start { margin-top: 2.4rem; }
 
   .sample-frag-strip {
     position: absolute;
