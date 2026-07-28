@@ -18,6 +18,19 @@
   };
   const NOTE_COLOR = '#f1c40f';
 
+  // Clip guidelines from barktown-goblin/docs/training-data.md -- kept in
+  // sync manually, shown alongside the counts in the corpus summary.
+  const LABEL_GUIDELINES = {
+    bark:       { duration: '1\u20133 s', occupancy: '50\u201380 %' },
+    yap:        { duration: '1\u20133 s', occupancy: '50\u201380 %' },
+    wrongdog:   { duration: '1\u20133 s', occupancy: '50\u201380 %' },
+    gunshot:    { duration: '1\u20133 s', occupancy: '50\u201380 %' },
+    background: { duration: '3\u20135 s', occupancy: 'n/a' },
+    wind:       { duration: '3\u20135 s', occupancy: 'n/a' },
+    traffic:    { duration: '3\u20135 s', occupancy: 'n/a' },
+    homestead:  { duration: '3\u20135 s', occupancy: 'n/a' }
+  };
+
   // Virtual SVG dimensions for the waveform editor (viewBox units).
   const VW = 1000;
   const VH = 140;
@@ -763,13 +776,16 @@
           <h2 class="corpus-summary-title">Corpus summary</h2>
           <table class="corpus-table">
             <thead>
-              <tr><th>Label</th><th>Samples</th><th>Fragments</th></tr>
+              <tr><th>Label</th><th>Duration</th><th>Occupancy</th><th>Samples</th><th>Fragments</th></tr>
             </thead>
             <tbody>
               {#each LABELS as lbl}
                 {@const fragCount = fragmentCountsByLabel.get(lbl) ?? 0}
+                {@const guide = LABEL_GUIDELINES[lbl]}
                 <tr>
                   <td><span class="sample-label-pill sample-label--{lbl}">{lbl}</span></td>
+                  <td class="corpus-guideline">{guide?.duration ?? '\u2014'}</td>
+                  <td class="corpus-guideline">{guide?.occupancy ?? '\u2014'}</td>
                   <td>{sampleCountsByLabel.get(lbl) ?? 0}</td>
                   <td
                     class="corpus-frag-count"
@@ -1048,7 +1064,7 @@
     .samples-pane { width: 100%; position: static; max-height: 40vh; border-right: none; border-bottom: 1px solid #e0e0dc; }
   }
 
-  .corpus-summary { padding: 2rem 1.5rem; max-width: 30rem; }
+  .corpus-summary { padding: 2rem 1.5rem; max-width: 34rem; }
   .corpus-summary-hint { color: #999; font-size: 0.9rem; margin: 0 0 1.5rem; }
   .corpus-summary-title { font-size: 1rem; margin: 0 0 0.75rem; }
 
@@ -1069,6 +1085,7 @@
   }
   .corpus-table th:not(:first-child), .corpus-table td:not(:first-child) { text-align: right; }
 
+  .corpus-guideline { color: #999; white-space: nowrap; }
   .corpus-frag-count { font-weight: 700; }
   .corpus-low  { color: #c0392b; }
   .corpus-mid  { color: #b8860b; }
