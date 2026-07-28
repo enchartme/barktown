@@ -8,7 +8,7 @@
   const POLL_OPEN_MS   = 1_000;
   const POLL_CLOSED_MS = 10_000;
 
-  const LABELS = ['bark', 'yap', 'background', 'wind', 'homestead', 'traffic', 'gunshot'];
+  const LABELS = ['bark', 'yap', 'background', 'wind', 'homestead', 'traffic', 'gunshot', 'wrongdog'];
   const ALL_LABELS = ['all', ...LABELS];
   const SAMPLE_BARS = 300;
   const VW = 600; const VH = 48;
@@ -1148,6 +1148,7 @@
   }
   .sample-label--bark       { background: #e74c3c; }
   .sample-label--yap        { background: #e67e22; }
+  .sample-label--wrongdog   { background: #ddff00; }
   .sample-label--background { background: #27ae60; }
   .sample-label--wind       { background: #2980b9; }
   .sample-label--homestead  { background: #8e44ad; }

@@ -10,11 +10,11 @@
   // only — goblinpi just uploads to masmopi and has no ingest API of its own).
   const API_BASE = 'http://masmopi.tail523149.ts.net:8090';
 
-  const LABELS     = ['bark', 'yap', 'background', 'wind', 'homestead', 'traffic', 'gunshot'];
+  const LABELS     = ['bark', 'yap', 'background', 'wind', 'homestead', 'traffic', 'gunshot', 'wrongdog'];
   const ALL_LABELS = ['all', ...LABELS];
   const LABEL_COLORS = {
     bark: '#e74c3c', yap: '#e67e22', background: '#27ae60', wind: '#2980b9',
-    homestead: '#8e44ad', gunshot: '#333333', traffic: '#7f8c8d',
+    homestead: '#8e44ad', gunshot: '#333333', traffic: '#7f8c8d', wrongdog: '#8a8c00'
   };
   const NOTE_COLOR = '#f1c40f';
 
@@ -1054,6 +1054,7 @@
   }
   .sample-label--bark       { background: #e74c3c; }
   .sample-label--yap        { background: #e67e22; }
+  .sample-label--wrongdog   { background: #8a8c00; }
   .sample-label--background { background: #27ae60; }
   .sample-label--wind       { background: #2980b9; }
   .sample-label--homestead  { background: #8e44ad; }
