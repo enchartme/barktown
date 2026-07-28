@@ -56,25 +56,40 @@
     }
   }
 
-  /** Best-effort snapshot of every sample's sample-wide note, for the sidebar preview. */
-  async function fetchSampleWideNotes() {
+  /** Best-effort bulk snapshot for sidebar decorations: each sample's
+   * sample-wide note text, and its fragment-coverage strip (start/end as
+   * fractions of the sample's duration). Refreshed on load / reload and kept
+   * current via local mutation syncs (setSampleNotePreview /
+   * syncSampleFragmentsFromAnnotations) so the sidebar doesn't go stale while
+   * you work on the currently selected sample. */
+  async function fetchSidebarAnnotationSummary() {
     try {
       const res = await fetch(`${API_BASE}/api/annotations`, { signal: AbortSignal.timeout(8000) });
       if (!res.ok) return;
       const rows = await res.json();
-      const map = new Map();
+      const notes = new Map();
+      const frags = new Map();
       for (const r of rows) {
-        if (r.source === 'note' && r.startSec === 0 && r.endSec === 0) map.set(r.sampleId, r.label);
+        if (r.source === 'note') {
+          if (r.startSec === 0 && r.endSec === 0) notes.set(r.sampleId, r.label);
+          continue;
+        }
+        const dur = r.sampleDurationSec;
+        if (!dur) continue;
+        const list = frags.get(r.sampleId) ?? [];
+        list.push({ startFrac: r.startSec / dur, endFrac: r.endSec / dur, label: r.label });
+        frags.set(r.sampleId, list);
       }
-      sampleNotes = map;
+      sampleNotes     = notes;
+      sampleFragments = frags;
     } catch (_e) {
-      // non-critical — sidebar just won't show a preview until the next reload
+      // non-critical — sidebar decorations just won't show until the next reload
     }
   }
 
   function reloadSidebar() {
     fetchSamples();
-    fetchSampleWideNotes();
+    fetchSidebarAnnotationSummary();
   }
 
   /** Keep the sidebar's bulk-fetched note-preview map in sync with local
@@ -85,6 +100,20 @@
     if (label == null) map.delete(sampleId);
     else map.set(sampleId, label);
     sampleNotes = map;
+  }
+
+  /** Keep the sidebar's fragment-coverage strip for the currently selected
+   * sample in sync with local fragment mutations, same idea as
+   * setSampleNotePreview. */
+  function syncSampleFragmentsFromAnnotations() {
+    if (!selected?.durationSec) return;
+    const dur = selected.durationSec;
+    const frags = annotations
+      .filter(a => a.source !== 'note')
+      .map(a => ({ startFrac: a.startSec / dur, endFrac: a.endSec / dur, label: a.label }));
+    const map = new Map(sampleFragments);
+    map.set(selected.id, frags);
+    sampleFragments = map;
   }
 
   // ── Player / selection state ───────────────────────────────────────────────
@@ -121,6 +150,12 @@
   // note is instead read live from `annotations` (see selectedSampleWideNote).
   /** @type {Map<string, string>} */
   let sampleNotes = $state(new Map());
+
+  // sampleId -> fragment list ({startFrac, endFrac, label}), for the sidebar's
+  // mini coverage strip. Same bulk-snapshot-plus-local-sync approach as
+  // sampleNotes above.
+  /** @type {Map<string, Array<{startFrac:number, endFrac:number, label:string}>>} */
+  let sampleFragments = $state(new Map());
 
   // ── Brush / drag state ─────────────────────────────────────────────────────
   /** @type {'brush'|'resize-start'|'resize-end'|'move'|null} */
@@ -190,7 +225,9 @@
   const renderFragments = $derived(
     annotations.filter(a => a.source !== 'note').map(a => ({ ...a, ...previewBounds(a) }))
   );
-  const renderNotes = $derived(annotations.filter(a => a.source === 'note'));
+  // Sample-wide notes (startSec === endSec === 0) have no meaningful position
+  // on the timeline, so they're only shown in the Notes panel, not marked here.
+  const renderNotes = $derived(annotations.filter(a => a.source === 'note' && !isSampleWideNote(a)));
 
   // A note is "sample-wide" if its time code is 0ms — no separate flag in
   // the data model, just a convention enforced client-side.
@@ -237,6 +274,7 @@
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       annotations = await res.json();
+      syncSampleFragmentsFromAnnotations();
     } catch (e) {
       annotationsError = e?.message ?? 'Failed to load annotations';
       annotations = [];
@@ -335,7 +373,7 @@
         if (audioEl) audioEl.currentTime = a;
       } else {
         pending         = { startSec: a, endSec: b };
-        pendingLabel    = LABELS[0];
+        pendingLabel    = selected?.label ?? LABELS[0];
         pendingNoteText = '';
       }
       return;
@@ -364,6 +402,7 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? `HTTP ${res.status}`);
       annotations = annotations.map(a => a.id === ann.id ? data : a).sort((a, b) => a.startSec - b.startSec);
+      syncSampleFragmentsFromAnnotations();
     } catch (e) {
       mutationError = e?.message ?? 'Failed to update annotation';
     }
@@ -382,6 +421,7 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? `HTTP ${res.status}`);
       annotations = [...annotations, data].sort((a, b) => a.startSec - b.startSec);
+      syncSampleFragmentsFromAnnotations();
       pending = null;
     } catch (e) {
       mutationError = e?.message ?? 'Failed to add fragment';
@@ -435,6 +475,7 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? `HTTP ${res.status}`);
       annotations = annotations.map(a => a.id === ann.id ? data : a);
+      syncSampleFragmentsFromAnnotations();
     } catch (e) {
       mutationError = e?.message ?? 'Failed to update annotation';
     }
@@ -520,6 +561,7 @@
       if (selectedAnnId === ann.id) selectedAnnId = null;
       if (editingNoteId === ann.id) editingNoteId = null;
       if (isSampleWideNote(ann)) setSampleNotePreview(ann.sampleId, null);
+      else syncSampleFragmentsFromAnnotations();
     } catch (e) {
       mutationError = e?.message ?? 'Failed to delete annotation';
     }
@@ -589,6 +631,14 @@
       e.preventDefault();
       deleteSelectedAnnotation();
     }
+    if (!inField && e.key === 'Enter' && pending) {
+      e.preventDefault();
+      commitFragment();
+    }
+    if (!inField && e.key === ' ') {
+      e.preventDefault();
+      togglePlay();
+    }
     if (!inField && audioEl && duration) {
       if (e.key === 'ArrowRight') { e.preventDefault(); audioEl.currentTime = Math.min(duration, currentTime + 2); }
       if (e.key === 'ArrowLeft')  { e.preventDefault(); audioEl.currentTime = Math.max(0, currentTime - 2); }
@@ -596,7 +646,7 @@
   }
 
   fetchSamples();
-  fetchSampleWideNotes();
+  fetchSidebarAnnotationSummary();
 </script>
 
 <svelte:head>
@@ -632,6 +682,7 @@
         <div class="samples-list">
           {#each filteredSamples as sample (sample.id)}
             {@const notePreview = selected?.id === sample.id ? selectedSampleWideNote?.label : sampleNotes.get(sample.id)}
+            {@const fragBlocks = sampleFragments.get(sample.id) ?? []}
             <button
               class="sample-row"
               class:playing={selected?.id === sample.id}
@@ -643,6 +694,16 @@
                 {#if notePreview}<span class="sample-note-preview">{notePreview}</span>{/if}
               </span>
               <span class="sample-dur">{formatDuration(sample.durationSec)}</span>
+              {#if fragBlocks.length}
+                <span class="sample-frag-strip">
+                  {#each fragBlocks as frag, i (i)}
+                    <span
+                      class="sample-frag-block"
+                      style="left:{(frag.startFrac * 100).toFixed(2)}%; width:{Math.max(0.6, (frag.endFrac - frag.startFrac) * 100).toFixed(2)}%; background:{fragmentColor(frag.label)}"
+                    ></span>
+                  {/each}
+                </span>
+              {/if}
             </button>
           {/each}
         </div>
@@ -962,9 +1023,24 @@
     border-bottom: 1px solid #f4f4f0;
     text-align: left;
     transition: background 0.1s;
+    position: relative;
   }
   .sample-row:hover { background: #f7f7f4; }
   .sample-row.playing { background: #eef3fc; }
+
+  .sample-frag-strip {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+  }
+  .sample-frag-block {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    opacity: 0.85;
+  }
 
   .sample-label-pill {
     font-size: 0.6rem;
