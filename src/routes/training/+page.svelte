@@ -41,6 +41,22 @@
     filterLabel === 'all' ? samples : samples.filter(s => s.label === filterLabel)
   );
 
+  // Corpus-wide counts per label, for the summary shown when nothing is
+  // selected -- lets you check progress against the benchmarks in
+  // docs/training-data.md (30–50 min viable, 100+ better, per class).
+  const sampleCountsByLabel = $derived.by(() => {
+    const counts = new Map();
+    for (const s of samples) counts.set(s.label, (counts.get(s.label) ?? 0) + 1);
+    return counts;
+  });
+  const fragmentCountsByLabel = $derived.by(() => {
+    const counts = new Map();
+    for (const list of sampleFragments.values()) {
+      for (const f of list) counts.set(f.label, (counts.get(f.label) ?? 0) + 1);
+    }
+    return counts;
+  });
+
   async function fetchSamples() {
     samplesLoading = true;
     samplesError   = '';
@@ -302,6 +318,29 @@
     // already points at the new one, flashing the wrong note in the sidebar.
     annotations    = [];
     await Promise.all([loadWaveform(sample.waveformPath), fetchAnnotations(sample.id)]);
+  }
+
+  /** Clicking the already-selected sample's row deselects it (back to the
+   * corpus summary), rather than doing nothing. */
+  function toggleSample(sample) {
+    if (selected?.id === sample.id) deselectSample();
+    else selectSample(sample);
+  }
+
+  function deselectSample() {
+    if (audioEl && isPlaying) audioEl.pause();
+    isPlaying        = false;
+    currentTime      = 0;
+    duration         = 0;
+    selected         = null;
+    selectedAnnId    = null;
+    editingNoteId    = null;
+    addingSampleNote = false;
+    pending          = null;
+    dragMode         = null;
+    mutationError    = '';
+    waveData         = null;
+    annotations      = [];
   }
 
   function audioSrc(sample) {
@@ -693,7 +732,7 @@
             <button
               class="sample-row"
               class:playing={selected?.id === sample.id}
-              onclick={() => selectSample(sample)}
+              onclick={() => toggleSample(sample)}
             >
               <span class="sample-label-pill sample-label--{sample.label}" title={sample.label}>{sample.label.slice(0, 3)}</span>
               <span class="sample-name">
@@ -719,7 +758,34 @@
 
     <main class="editor-pane">
       {#if !selected}
-        <div class="empty-editor">Select a sample on the left to play, annotate, or edit it.</div>
+        <div class="corpus-summary">
+          <p class="corpus-summary-hint">Select a sample on the left to play, annotate, or edit it.</p>
+          <h2 class="corpus-summary-title">Corpus summary</h2>
+          <table class="corpus-table">
+            <thead>
+              <tr><th>Label</th><th>Samples</th><th>Fragments</th></tr>
+            </thead>
+            <tbody>
+              {#each LABELS as lbl}
+                {@const fragCount = fragmentCountsByLabel.get(lbl) ?? 0}
+                <tr>
+                  <td><span class="sample-label-pill sample-label--{lbl}">{lbl}</span></td>
+                  <td>{sampleCountsByLabel.get(lbl) ?? 0}</td>
+                  <td
+                    class="corpus-frag-count"
+                    class:corpus-low={fragCount < 30}
+                    class:corpus-mid={fragCount >= 30 && fragCount < 100}
+                    class:corpus-good={fragCount >= 100}
+                  >{fragCount}</td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+          <p class="corpus-summary-legend">
+            Fragments target (per docs/training-data.md): <span class="corpus-low">&lt;30 low</span> ·
+            <span class="corpus-mid">30–99 viable</span> · <span class="corpus-good">100+ good</span>
+          </p>
+        </div>
       {:else}
         <div class="editor-header">
           <span class="sample-label-pill sample-label--{selected.label}">{selected.label}</span>
@@ -982,7 +1048,33 @@
     .samples-pane { width: 100%; position: static; max-height: 40vh; border-right: none; border-bottom: 1px solid #e0e0dc; }
   }
 
-  .empty-editor { padding: 3rem 1rem; text-align: center; color: #999; font-size: 0.9rem; }
+  .corpus-summary { padding: 2rem 1.5rem; max-width: 30rem; }
+  .corpus-summary-hint { color: #999; font-size: 0.9rem; margin: 0 0 1.5rem; }
+  .corpus-summary-title { font-size: 1rem; margin: 0 0 0.75rem; }
+
+  .corpus-table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
+  .corpus-table th {
+    text-align: left;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #999;
+    padding: 0.3rem 0.5rem;
+    border-bottom: 1px solid #e0e0dc;
+  }
+  .corpus-table td {
+    padding: 0.35rem 0.5rem;
+    border-bottom: 1px solid #f0f0ec;
+    font-variant-numeric: tabular-nums;
+  }
+  .corpus-table th:not(:first-child), .corpus-table td:not(:first-child) { text-align: right; }
+
+  .corpus-frag-count { font-weight: 700; }
+  .corpus-low  { color: #c0392b; }
+  .corpus-mid  { color: #b8860b; }
+  .corpus-good { color: #27ae60; }
+
+  .corpus-summary-legend { font-size: 0.72rem; color: #999; margin-top: 1rem; }
 
   /* ── Filter pills / list (shared look with GoblinPiStatus samples tab) ── */
   .samples-filter {
