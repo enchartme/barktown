@@ -1,5 +1,5 @@
 <script>
-  import { ASSET_BASE, downsampleWaveform, waveformNorm, formatDuration } from '$lib/utils.js';
+  import { ASSET_BASE, downsampleWaveform, waveformNorm, formatDuration, formatSampleDatetime } from '$lib/utils.js';
 
   // The barktown-ingest CRUD API, reached directly over Tailscale — same
   // no-auth trust model as GoblinPiStatus.svelte. Audio/waveform bytes are
@@ -690,7 +690,7 @@
             >
               <span class="sample-label-pill sample-label--{sample.label}">{sample.label}</span>
               <span class="sample-name">
-                <span class="sample-name-main">{sample.datetimeLocal.replace('T', ' ').slice(0, 16)}</span>
+                <span class="sample-name-main">{formatSampleDatetime(sample.datetimeLocal)}</span>
                 {#if notePreview}<span class="sample-note-preview">{notePreview}</span>{/if}
               </span>
               <span class="sample-dur">{formatDuration(sample.durationSec)}</span>
@@ -716,7 +716,7 @@
       {:else}
         <div class="editor-header">
           <span class="sample-label-pill sample-label--{selected.label}">{selected.label}</span>
-          <span class="editor-title">{selected.datetimeLocal.replace('T', ' ').slice(0, 19)}</span>
+          <span class="editor-title">{formatSampleDatetime(selected.datetimeLocal, { seconds: true })}</span>
           <span class="editor-dur">{formatDuration(selected.durationSec)}</span>
 
           <label class="category-control">

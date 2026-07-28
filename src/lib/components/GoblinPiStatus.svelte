@@ -1,6 +1,6 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { ASSET_BASE, downsampleWaveform, waveformNorm, formatDuration } from '$lib/utils.js';
+  import { ASSET_BASE, downsampleWaveform, waveformNorm, formatDuration, formatSampleDatetime } from '$lib/utils.js';
 
   const BASE_URL       = 'https://goblinpi.tail523149.ts.net';
   const STATUS_URL     = `${BASE_URL}/status`;
@@ -674,7 +674,7 @@
                 onclick={() => selectSample(sample)}
               >
                 <span class="sample-label-pill sample-label--{sample.label}">{sample.label}</span>
-                <span class="sample-name">{sample.datetimeLocal.replace('T', ' ').slice(0, 16)}</span>
+                <span class="sample-name">{formatSampleDatetime(sample.datetimeLocal)}</span>
                 <span class="sample-dur">{formatDuration(sample.durationSec)}</span>
               </button>
             {/each}
@@ -700,7 +700,7 @@
               </button>
               <span class="mini-label">
                 <span class="sample-label-pill sample-label--{activeSample.label}">{activeSample.label}</span>
-                {activeSample.datetimeLocal.replace('T', ' ').slice(0, 19)}
+                {formatSampleDatetime(activeSample.datetimeLocal, { seconds: true })}
               </span>
               <span class="mini-time">
                 {formatDuration(sampleTime)} / {formatDuration(activeSample.durationSec)}
@@ -1148,7 +1148,7 @@
   }
   .sample-label--bark       { background: #e74c3c; }
   .sample-label--yap        { background: #e67e22; }
-  .sample-label--wrongdog   { background: #ddff00; }
+  .sample-label--wrongdog   { background: #8a8c00; }
   .sample-label--background { background: #27ae60; }
   .sample-label--wind       { background: #2980b9; }
   .sample-label--homestead  { background: #8e44ad; }

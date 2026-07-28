@@ -42,6 +42,31 @@ export function formatDuration(sec) {
 }
 
 /**
+ * Format a training sample's `datetimeLocal` field for display.
+ *
+ * Despite the field's name, these are naive "YYYY-MM-DDTHH:MM:SS" strings
+ * recorded from the Pi's system clock, which runs in UTC -- they are NOT
+ * already in the viewer's local time. This parses them as UTC and renders
+ * them in Sweden's local time (Europe/Stockholm, DST-aware: CET in winter,
+ * CEST in summer).
+ * @param {string} datetimeLocal  e.g. "2026-02-07T17:25:00" (a UTC instant)
+ * @param {{seconds?: boolean}} [opts]
+ * @returns {string}  e.g. "2026-02-07 18:25" (or "...:25:00" with seconds)
+ */
+export function formatSampleDatetime(datetimeLocal, { seconds = false } = {}) {
+  const utcDate = new Date(`${datetimeLocal}Z`);
+  const fmt = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Stockholm',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    hourCycle: 'h23',
+  });
+  const p = Object.fromEntries(fmt.formatToParts(utcDate).map(({ type, value }) => [type, value]));
+  const time = seconds ? `${p.hour}:${p.minute}:${p.second}` : `${p.hour}:${p.minute}`;
+  return `${p.year}-${p.month}-${p.day} ${time}`;
+}
+
+/**
  * Format a "YYYY-MM-DD" string for display.
  * Uses noon to sidestep DST edge-cases.
  * @param {string} dateStr
