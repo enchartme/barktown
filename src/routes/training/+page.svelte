@@ -77,6 +77,16 @@
     fetchSampleWideNotes();
   }
 
+  /** Keep the sidebar's bulk-fetched note-preview map in sync with local
+   * create/edit/delete, so a sample's preview doesn't go stale or vanish
+   * once you navigate away from it (without needing a manual reload). */
+  function setSampleNotePreview(sampleId, label) {
+    const map = new Map(sampleNotes);
+    if (label == null) map.delete(sampleId);
+    else map.set(sampleId, label);
+    sampleNotes = map;
+  }
+
   // ── Player / selection state ───────────────────────────────────────────────
   /** @type {any} */
   let selected       = $state(null);
@@ -454,6 +464,7 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? `HTTP ${res.status}`);
       annotations = annotations.map(a => a.id === annId ? data : a);
+      if (isSampleWideNote(data)) setSampleNotePreview(data.sampleId, data.label);
     } catch (e) {
       mutationError = e?.message ?? 'Failed to update note';
     }
@@ -488,6 +499,7 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? `HTTP ${res.status}`);
       annotations = [...annotations, data].sort((a, b) => a.startSec - b.startSec);
+      setSampleNotePreview(data.sampleId, data.label);
     } catch (e) {
       mutationError = e?.message ?? 'Failed to add sample note';
     }
@@ -507,6 +519,7 @@
       annotations = annotations.filter(a => a.id !== ann.id);
       if (selectedAnnId === ann.id) selectedAnnId = null;
       if (editingNoteId === ann.id) editingNoteId = null;
+      if (isSampleWideNote(ann)) setSampleNotePreview(ann.sampleId, null);
     } catch (e) {
       mutationError = e?.message ?? 'Failed to delete annotation';
     }
