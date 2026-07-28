@@ -56,6 +56,27 @@
     }
   }
 
+  /** Best-effort snapshot of every sample's sample-wide note, for the sidebar preview. */
+  async function fetchSampleWideNotes() {
+    try {
+      const res = await fetch(`${API_BASE}/api/annotations`, { signal: AbortSignal.timeout(8000) });
+      if (!res.ok) return;
+      const rows = await res.json();
+      const map = new Map();
+      for (const r of rows) {
+        if (r.source === 'note' && r.startSec === 0 && r.endSec === 0) map.set(r.sampleId, r.label);
+      }
+      sampleNotes = map;
+    } catch (_e) {
+      // non-critical — sidebar just won't show a preview until the next reload
+    }
+  }
+
+  function reloadSidebar() {
+    fetchSamples();
+    fetchSampleWideNotes();
+  }
+
   // ── Player / selection state ───────────────────────────────────────────────
   /** @type {any} */
   let selected       = $state(null);
@@ -79,8 +100,17 @@
   let annotationsError    = $state('');
   /** @type {number|null} */
   let selectedAnnId       = $state(null);
-  let editLabel           = $state(''); // buffer for editing a note's text
+  let editLabel           = $state(''); // buffer for inline-editing a note's text
+  let editingNoteId       = $state(/** @type {number|null} */ (null)); // note row currently in edit mode
+  let addingSampleNote    = $state(false); // drafting a new sample-wide note (unsaved)
+  let newSampleNoteText   = $state('');
   let mutationError       = $state('');
+
+  // sampleId -> sample-wide note text, for the sidebar preview. Best-effort
+  // snapshot from GET /api/annotations; the currently selected sample's own
+  // note is instead read live from `annotations` (see selectedSampleWideNote).
+  /** @type {Map<string, string>} */
+  let sampleNotes = $state(new Map());
 
   // ── Brush / drag state ─────────────────────────────────────────────────────
   /** @type {'brush'|'resize-start'|'resize-end'|'move'|null} */
@@ -151,6 +181,17 @@
     annotations.filter(a => a.source !== 'note').map(a => ({ ...a, ...previewBounds(a) }))
   );
   const renderNotes = $derived(annotations.filter(a => a.source === 'note'));
+
+  // A note is "sample-wide" if its time code is 0ms — no separate flag in
+  // the data model, just a convention enforced client-side.
+  function isSampleWideNote(a) {
+    return a.source === 'note' && a.startSec === 0 && a.endSec === 0;
+  }
+  const sortedNotes = $derived(
+    annotations.filter(a => a.source === 'note').slice().sort((a, b) => a.startSec - b.startSec)
+  );
+  const hasSampleWideNote = $derived(annotations.some(isSampleWideNote));
+  const selectedSampleWideNote = $derived(annotations.find(isSampleWideNote) ?? null);
 
   // ── Data loading ────────────────────────────────────────────────────────────
 
@@ -257,8 +298,7 @@
       }
     } else if (role === 'note-marker' && annId != null) {
       const ann = annotations.find(a => a.id === annId);
-      selectedAnnId = annId;
-      editLabel     = ann?.label ?? '';
+      if (ann) startEditNote(ann);
     } else {
       dragMode       = 'brush';
       dragStartSec   = sec;
@@ -366,6 +406,11 @@
     pendingNoteText = '';
   }
 
+  /** Svelte action: focus an input as soon as it's mounted (e.g. a freshly opened inline edit field). */
+  function autofocusAction(node) {
+    node.focus();
+  }
+
   async function relabelSelected(newLabel) {
     const ann = annotations.find(a => a.id === selectedAnnId);
     if (!ann) return;
@@ -380,19 +425,78 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? `HTTP ${res.status}`);
       annotations = annotations.map(a => a.id === ann.id ? data : a);
-      editLabel = data.label;
     } catch (e) {
       mutationError = e?.message ?? 'Failed to update annotation';
     }
   }
 
-  async function saveNoteText() {
-    if (!editLabel.trim()) return;
-    await relabelSelected(editLabel.trim());
+  // ── Note editing (inline, in the notes panel) ──────────────────────────────
+
+  function startEditNote(ann) {
+    selectedAnnId = ann.id;
+    editingNoteId = ann.id;
+    editLabel     = ann.label;
   }
 
-  async function deleteSelectedAnnotation() {
-    const ann = annotations.find(a => a.id === selectedAnnId);
+  async function saveNoteLabel(annId, text) {
+    const ann     = annotations.find(a => a.id === annId);
+    editingNoteId = null;
+    const trimmed = text.trim();
+    if (!ann || !trimmed || trimmed === ann.label) return;
+    mutationError = '';
+    try {
+      const res = await fetch(`${API_BASE}/api/annotations/${annId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ label: trimmed }),
+        signal: AbortSignal.timeout(8000),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error ?? `HTTP ${res.status}`);
+      annotations = annotations.map(a => a.id === annId ? data : a);
+    } catch (e) {
+      mutationError = e?.message ?? 'Failed to update note';
+    }
+  }
+
+  // ── Sample-wide note (time code 0ms) — no fragment/selection needed ───────
+
+  function startSampleWideNote() {
+    if (hasSampleWideNote || addingSampleNote || !selected) return;
+    addingSampleNote  = true;
+    newSampleNoteText = '';
+  }
+
+  function cancelSampleWideNoteDraft() {
+    addingSampleNote  = false;
+    newSampleNoteText = '';
+  }
+
+  async function commitSampleWideNote() {
+    if (!addingSampleNote) return;
+    const text = newSampleNoteText.trim();
+    addingSampleNote = false;
+    if (!text || !selected) return;
+    mutationError = '';
+    try {
+      const res = await fetch(`${API_BASE}/api/samples/${encodeURIComponent(selected.id)}/annotations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ startSec: 0, endSec: 0, label: text, source: 'note' }),
+        signal: AbortSignal.timeout(8000),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error ?? `HTTP ${res.status}`);
+      annotations = [...annotations, data].sort((a, b) => a.startSec - b.startSec);
+    } catch (e) {
+      mutationError = e?.message ?? 'Failed to add sample note';
+    }
+  }
+
+  // ── Deletion (any annotation, by id) ───────────────────────────────────────
+
+  async function deleteAnnotationById(annId) {
+    const ann = annotations.find(a => a.id === annId);
     if (!ann) return;
     mutationError = '';
     try {
@@ -400,11 +504,16 @@
         method: 'DELETE', signal: AbortSignal.timeout(8000),
       });
       if (!res.ok && res.status !== 204) throw new Error(`HTTP ${res.status}`);
-      annotations   = annotations.filter(a => a.id !== ann.id);
-      selectedAnnId = null;
+      annotations = annotations.filter(a => a.id !== ann.id);
+      if (selectedAnnId === ann.id) selectedAnnId = null;
+      if (editingNoteId === ann.id) editingNoteId = null;
     } catch (e) {
       mutationError = e?.message ?? 'Failed to delete annotation';
     }
+  }
+
+  async function deleteSelectedAnnotation() {
+    if (selectedAnnId != null) await deleteAnnotationById(selectedAnnId);
   }
 
   // ── Sample-level mutations ─────────────────────────────────────────────────
@@ -474,6 +583,7 @@
   }
 
   fetchSamples();
+  fetchSampleWideNotes();
 </script>
 
 <svelte:head>
@@ -494,7 +604,7 @@
         {#each ALL_LABELS as lbl}
           <button class="filter-pill" class:active={filterLabel === lbl} onclick={() => (filterLabel = lbl)}>{lbl}</button>
         {/each}
-        <button class="filter-pill reload-pill" onclick={fetchSamples} title="Reload">
+        <button class="filter-pill reload-pill" onclick={reloadSidebar} title="Reload">
           {samplesLoading ? '…' : '↺'}
         </button>
       </div>
@@ -508,13 +618,17 @@
       {:else}
         <div class="samples-list">
           {#each filteredSamples as sample (sample.id)}
+            {@const notePreview = selected?.id === sample.id ? selectedSampleWideNote?.label : sampleNotes.get(sample.id)}
             <button
               class="sample-row"
               class:playing={selected?.id === sample.id}
               onclick={() => selectSample(sample)}
             >
               <span class="sample-label-pill sample-label--{sample.label}">{sample.label}</span>
-              <span class="sample-name">{sample.datetimeLocal.replace('T', ' ').slice(0, 16)}</span>
+              <span class="sample-name">
+                <span class="sample-name-main">{sample.datetimeLocal.replace('T', ' ').slice(0, 16)}</span>
+                {#if notePreview}<span class="sample-note-preview">{notePreview}</span>{/if}
+              </span>
               <span class="sample-dur">{formatDuration(sample.durationSec)}</span>
             </button>
           {/each}
@@ -630,6 +744,62 @@
 
         {#if mutationError}<div class="error-msg">{mutationError}</div>{/if}
 
+        <div class="notes-panel">
+          <div class="notes-panel-header">
+            <span class="notes-panel-title">Notes</span>
+            <button
+              class="action-btn"
+              disabled={hasSampleWideNote || addingSampleNote}
+              onclick={startSampleWideNote}
+              title={hasSampleWideNote ? 'This sample already has a sample-wide note' : ''}
+            >
+              + Sample note
+            </button>
+          </div>
+
+          {#if addingSampleNote}
+            <div class="note-row-item">
+              <span class="note-time">Sample-wide</span>
+              <input
+                class="note-input"
+                placeholder="Note for the whole sample…"
+                bind:value={newSampleNoteText}
+                use:autofocusAction
+                onkeydown={(e) => {
+                  if (e.key === 'Enter') { e.preventDefault(); e.currentTarget.blur(); }
+                  if (e.key === 'Escape') { e.preventDefault(); cancelSampleWideNoteDraft(); e.currentTarget.blur(); }
+                }}
+                onblur={commitSampleWideNote}
+              />
+            </div>
+          {/if}
+
+          {#each sortedNotes as note (note.id)}
+            <div class="note-row-item" class:selected={selectedAnnId === note.id}>
+              <span class="note-time">{isSampleWideNote(note) ? 'Sample-wide' : formatDuration(note.startSec)}</span>
+              {#if editingNoteId === note.id}
+                <input
+                  class="note-input"
+                  bind:value={editLabel}
+                  use:autofocusAction
+                  onkeydown={(e) => {
+                    if (e.key === 'Enter') { e.preventDefault(); e.currentTarget.blur(); }
+                    if (e.key === 'Escape') { e.preventDefault(); editingNoteId = null; e.currentTarget.blur(); }
+                  }}
+                  onblur={() => { if (editingNoteId === note.id) saveNoteLabel(note.id, editLabel); }}
+                />
+              {:else}
+                <button class="note-text-btn" onclick={() => startEditNote(note)}>{note.label}</button>
+              {/if}
+              <button class="note-delete-btn" title="Delete note" onclick={() => deleteAnnotationById(note.id)}>×</button>
+            </div>
+          {/each}
+
+          {#if !addingSampleNote && sortedNotes.length === 0}
+            <div class="notes-empty">No notes yet.</div>
+          {/if}
+        </div>
+
         {#if pending}
           <div class="pending-toolbar">
             <span class="pending-range">{formatDuration(pending.startSec)} – {formatDuration(pending.endSec)} selected</span>
@@ -649,20 +819,14 @@
 
         {#if selectedAnnId != null}
           {@const ann = annotations.find(a => a.id === selectedAnnId)}
-          {#if ann}
+          {#if ann && ann.source !== 'note'}
             <div class="selection-toolbar">
-              {#if ann.source === 'note'}
-                <span class="ann-range">{formatDuration(ann.startSec)}</span>
-                <input class="note-input" bind:value={editLabel} />
-                <button class="action-btn" onclick={saveNoteText}>Save</button>
-              {:else}
-                <span class="ann-range">{formatDuration(ann.startSec)} – {formatDuration(ann.endSec)}</span>
-                <div class="pending-labels">
-                  {#each LABELS as lbl}
-                    <button class="filter-pill" class:active={ann.label === lbl} onclick={() => relabelSelected(lbl)}>{lbl}</button>
-                  {/each}
-                </div>
-              {/if}
+              <span class="ann-range">{formatDuration(ann.startSec)} – {formatDuration(ann.endSec)}</span>
+              <div class="pending-labels">
+                {#each LABELS as lbl}
+                  <button class="filter-pill" class:active={ann.label === lbl} onclick={() => relabelSelected(lbl)}>{lbl}</button>
+                {/each}
+              </div>
               <button class="danger-btn" onclick={deleteSelectedAnnotation}>Delete</button>
               <button class="action-btn" onclick={() => (selectedAnnId = null)}>Close</button>
             </div>
@@ -809,12 +973,25 @@
 
   .sample-name {
     flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+  }
+  .sample-name-main {
     font-size: 0.76rem;
     color: #333;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     font-variant-numeric: tabular-nums;
+  }
+  .sample-note-preview {
+    font-size: 0.64rem;
+    color: #a8860a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .sample-dur { font-size: 0.68rem; color: #aaa; flex-shrink: 0; font-variant-numeric: tabular-nums; }
 
@@ -953,4 +1130,73 @@
     border-radius: 4px;
     min-width: 200px;
   }
+
+  /* ── Notes panel ── */
+  .notes-panel {
+    margin-top: 0.6rem;
+    background: #fffef8;
+    border: 1px solid #e8e8e4;
+    border-radius: 6px;
+    padding: 0.5rem 0.7rem;
+  }
+  .notes-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    margin-bottom: 0.35rem;
+  }
+  .notes-panel-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #999;
+  }
+  .note-row-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid #f4f4ee;
+  }
+  .note-row-item:last-child { border-bottom: none; }
+  .note-row-item.selected { background: #fdf6d8; }
+  .note-row-item .note-input { flex: 1; min-width: 0; }
+  .note-time {
+    font-size: 0.68rem;
+    color: #a8860a;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    min-width: 5rem;
+  }
+  .note-text-btn {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 0.8rem;
+    color: #1a1a1a;
+    cursor: pointer;
+    padding: 0.15rem 0.3rem;
+    border-radius: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .note-text-btn:hover { background: #f4f4ee; }
+  .note-delete-btn {
+    background: none;
+    border: none;
+    color: #c0392b;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.1rem 0.3rem;
+    flex-shrink: 0;
+  }
+  .note-delete-btn:hover { opacity: 0.7; }
+  .notes-empty { font-size: 0.74rem; color: #aaa; padding: 0.2rem 0; }
 </style>
