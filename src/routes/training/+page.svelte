@@ -72,6 +72,51 @@
     return counts;
   });
 
+  // Fragment-duration histogram per label, binned in 0.5s buckets from 0s up
+  // to 5s, plus an overflow bucket for anything longer. Shown as a tiny bar
+  // chart (Datatype font) next to each label's counts.
+  const DURATION_BIN_SIZE  = 0.5;
+  const DURATION_BIN_COUNT = 10; // 0-0.5, 0.5-1, ... 4.5-5
+  function durationBinIndex(durationSec) {
+    if (durationSec >= DURATION_BIN_COUNT * DURATION_BIN_SIZE) return DURATION_BIN_COUNT;
+    return Math.max(0, Math.floor(durationSec / DURATION_BIN_SIZE));
+  }
+  const fragmentDurationBinsByLabel = $derived.by(() => {
+    const bins = new Map();
+    for (const list of sampleFragments.values()) {
+      for (const f of list) {
+        const arr = bins.get(f.label) ?? new Array(DURATION_BIN_COUNT + 1).fill(0);
+        arr[durationBinIndex(f.durationSec)]++;
+        bins.set(f.label, arr);
+      }
+    }
+    return bins;
+  });
+  // Shared domain across every label's chart: 0 to the largest bin count
+  // seen anywhere, so bar heights are comparable row to row.
+  const fragmentDurationGlobalMax = $derived.by(() => {
+    let max = 0;
+    for (const arr of fragmentDurationBinsByLabel.values()) {
+      for (const v of arr) if (v > max) max = v;
+    }
+    return max;
+  });
+  function fragmentDurationChart(lbl) {
+    const bins = fragmentDurationBinsByLabel.get(lbl) ?? new Array(DURATION_BIN_COUNT + 1).fill(0);
+    const max  = fragmentDurationGlobalMax;
+    const scaled = max > 0 ? bins.map(v => Math.round((v / max) * 100)) : bins.map(() => 0);
+    return `{b:${scaled.join(',')}}`;
+  }
+  function fragmentDurationTitle(lbl) {
+    const bins = fragmentDurationBinsByLabel.get(lbl) ?? new Array(DURATION_BIN_COUNT + 1).fill(0);
+    return bins
+      .map((count, i) => {
+        const label = i < DURATION_BIN_COUNT ? `${(i * DURATION_BIN_SIZE).toFixed(1)}-${((i + 1) * DURATION_BIN_SIZE).toFixed(1)}s` : '>5s';
+        return `${label}: ${count}`;
+      })
+      .join('\n');
+  }
+
   async function fetchSamples() {
     samplesLoading = true;
     samplesError   = '';
@@ -108,7 +153,7 @@
         const dur = r.sampleDurationSec;
         if (!dur) continue;
         const list = frags.get(r.sampleId) ?? [];
-        list.push({ startFrac: r.startSec / dur, endFrac: r.endSec / dur, label: r.label });
+        list.push({ startFrac: r.startSec / dur, endFrac: r.endSec / dur, durationSec: r.endSec - r.startSec, label: r.label });
         frags.set(r.sampleId, list);
       }
       sampleNotes     = notes;
@@ -141,7 +186,7 @@
     const dur = selected.durationSec;
     const frags = annotations
       .filter(a => a.source !== 'note')
-      .map(a => ({ startFrac: a.startSec / dur, endFrac: a.endSec / dur, label: a.label }));
+      .map(a => ({ startFrac: a.startSec / dur, endFrac: a.endSec / dur, durationSec: a.endSec - a.startSec, label: a.label }));
     const map = new Map(sampleFragments);
     map.set(selected.id, frags);
     sampleFragments = map;
@@ -778,7 +823,7 @@
           <h2 class="corpus-summary-title">Corpus summary</h2>
           <table class="corpus-table">
             <thead>
-              <tr><th>Label</th><th>Duration</th><th>Occupancy</th><th>Samples</th><th>Fragments</th></tr>
+              <tr><th>Label</th><th>Duration</th><th>Occupancy</th><th>Samples</th><th>Fragments</th><th>Durations</th></tr>
             </thead>
             <tbody>
               {#each LABELS as lbl}
@@ -795,6 +840,9 @@
                     class:corpus-mid={fragCount >= 30 && fragCount < 100}
                     class:corpus-good={fragCount >= 100}
                   >{fragCount}</td>
+                  <td class="corpus-chart-cell" title={fragmentDurationTitle(lbl)}>
+                    <span class="chart">{fragmentDurationChart(lbl)}</span>
+                  </td>
                 </tr>
               {/each}
             </tbody>
@@ -802,6 +850,9 @@
           <p class="corpus-summary-legend">
             Fragments target (per docs/training-data.md): <span class="corpus-low">&lt;30 low</span> ·
             <span class="corpus-mid">30–99 viable</span> · <span class="corpus-good">100+ good</span>
+          </p>
+          <p class="corpus-summary-legend">
+            Durations: 0–0.5s bins up to 5s, then one &gt;5s bucket — hover a chart for exact counts.
           </p>
         </div>
       {:else}
@@ -1094,6 +1145,22 @@
   .corpus-good { color: #27ae60; }
 
   .corpus-summary-legend { font-size: 0.72rem; color: #999; margin-top: 1rem; }
+
+  /* ── Duration histogram sparkline (Datatype font bar-chart ligatures) ── */
+  @font-face {
+    font-family: 'Datatype';
+    src: url('/Datatype.woff2') format('woff2');
+    font-display: swap;
+  }
+  .corpus-chart-cell { white-space: nowrap; }
+  .chart {
+    font-family: 'Datatype', sans-serif;
+    font-variation-settings: 'wdth' 15;
+    font-weight: 400;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: #4a7cdc;
+  }
 
   /* ── Filter pills / list (shared look with GoblinPiStatus samples tab) ── */
   .samples-filter {
