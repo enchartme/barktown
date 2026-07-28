@@ -11,7 +11,7 @@
   const API_BASE = 'http://masmopi.tail523149.ts.net:8090';
 
   const LABELS     = ['bark', 'yap', 'background', 'wind', 'homestead', 'traffic', 'gunshot', 'wrongdog'];
-  const ALL_LABELS = ['all', ...LABELS];
+  const ALL_LABELS = ['all', ...LABELS, 'unmarked'];
   const LABEL_COLORS = {
     bark: '#e74c3c', yap: '#e67e22', background: '#27ae60', wind: '#2980b9',
     homestead: '#8e44ad', gunshot: '#333333', traffic: '#7f8c8d', wrongdog: '#8a8c00'
@@ -51,7 +51,9 @@
   let filterLabel     = $state('all');
 
   const filteredSamples = $derived(
-    filterLabel === 'all' ? samples : samples.filter(s => s.label === filterLabel)
+    filterLabel === 'all'      ? samples :
+    filterLabel === 'unmarked' ? samples.filter(s => (sampleFragments.get(s.id) ?? []).length === 0) :
+    samples.filter(s => s.label === filterLabel)
   );
 
   // Corpus-wide counts per label, for the summary shown when nothing is
