@@ -1060,11 +1060,10 @@
     color: #fff;
   }
   /* Sidebar list rows show only a 3-letter abbreviation (see template) --
-     fix the width so pills line up consistently instead of ragged widths. */
+     monospace keeps every pill the same width without forcing a fixed
+     width/padding that looked ragged with proportional fonts. */
   .sample-row .sample-label-pill {
-    display: inline-block;
-    width: 1.9rem;
-    text-align: center;
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   }
   .sample-label--bark       { background: #e74c3c; }
   .sample-label--yap        { background: #e67e22; }
