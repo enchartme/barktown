@@ -340,7 +340,15 @@
   async function fetchRecordStatus() {
     try {
       const res = await fetch(`${BASE_URL}/record/status`, { signal: AbortSignal.timeout(3000) });
-      if (res.ok) recordStatus = await res.json();
+      if (res.ok) {
+        recordStatus = await res.json();
+        // Background recording worker failed after /record/start already
+        // returned ok:true (e.g. an audio device error) -- surface it here
+        // since it wasn't known at request time.
+        if (recordStatus?.state === 'IDLE' && recordStatus?.error) {
+          recordMessage = recordStatus.error;
+        }
+      }
     } catch (_e) { /* silently ignore — status shown via status tab */ }
   }
 
