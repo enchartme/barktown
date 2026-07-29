@@ -99,13 +99,33 @@
     return (Date.now() - new Date(s.pipeline.last_inference_ts).getTime()) < 10_000;
   }
 
+  // vcgencmd get_throttled bitmask decoder
+  const THROTTLE_BITS = [
+    [0x1,     'Under-voltage now'],
+    [0x2,     'Freq capped now'],
+    [0x4,     'Throttled now'],
+    [0x8,     'Soft temp limit now'],
+    [0x10000, 'Under-voltage since boot'],
+    [0x20000, 'Freq capped since boot'],
+    [0x40000, 'Throttled since boot'],
+    [0x80000, 'Soft temp limit since boot'],
+  ];
+  const THROTTLE_NOW_MASK = 0xf; // any of bits 0–3 = active problem right now
+
+  function fmtThrottled(v) {
+    if (v == null) return '—';
+    const n = typeof v === 'string' ? parseInt(v, 16) : Number(v);
+    if (isNaN(n) || n === 0) return 'none';
+    return THROTTLE_BITS.filter(([bit]) => n & bit).map(([, label]) => label).join(', ');
+  }
+
   function hasDanger(s) {
     if (!s) return false;
     return (
       (s.cpu?.percent_1s > 80) ||
       (s.cpu?.temp_c > 75) ||
       (s.disk?.sd_free_mb != null && s.disk.sd_free_mb < 500) ||
-      (s.ram?.used_mb > 450)
+      (s.ram?.used_mb > 800)
     );
   }
 
@@ -192,18 +212,26 @@
         return rangeLevel(value, [{max:50,level:'ok'},{max:80,level:'high'},{max:Infinity,level:'way_high'}]);
       case 'cpu.percent_peak_60s':
         return rangeLevel(value, [{max:70,level:'ok'},{max:90,level:'high'},{max:Infinity,level:'way_high'}]);
+      case 'cpu.throttled_bits': {
+        const n = typeof value === 'string' ? parseInt(value, 16) : Number(value);
+        if (isNaN(n) || n === 0) return 'ok';
+        return (n & THROTTLE_NOW_MASK) ? 'way_high' : 'high';
+      }
+
       case 'cpu.temp_c':
         return rangeLevel(value, [{max:60,level:'ok'},{max:75,level:'high'},{max:Infinity,level:'way_high'}]);
 
       case 'ram.used_mb':
       case 'ram.peak_60s_mb':
-        return rangeLevel(value, [{max:300,level:'ok'},{max:400,level:'high'},{max:Infinity,level:'way_high'}]);
+        return rangeLevel(value, [{max:500,level:'ok'},{max:800,level:'high'},{max:Infinity,level:'way_high'}]);
 
       case 'disk.sd_free_mb':
         return value > 2000 ? 'ok' : value > 500 ? 'low' : value > 200 ? 'high' : 'way_high';
 
-      case 'pipeline.last_inference_ts':
-        return (Date.now() - new Date(value).getTime()) < 10_000 ? 'way_high' : 'neutral';
+      case 'pipeline.last_inference_ts': {
+        const ageMs = Date.now() - new Date(value).getTime();
+        return ageMs < 15_000 ? 'ok' : ageMs < 60_000 ? 'high' : 'way_high';
+      }
 
       case 'counts_24h.uploads_failed':
         return value === 0 ? 'ok' : value < 5 ? 'high' : 'way_high';
@@ -229,13 +257,14 @@
     'cpu.percent_1s':             '< 50% ✓ · 50–80% high · > 80% danger',
     'cpu.percent_peak_60s':       '< 70% ✓ · 70–90% high · > 90% danger',
     'cpu.temp_c':                 '< 60°C ✓ · 60–75°C high · > 75°C danger',
-    'ram.used_mb':                '< 300 MB ✓ · 300–400 MB high · > 450 MB danger',
-    'ram.peak_60s_mb':            '< 300 MB ✓ · 300–400 MB high · > 450 MB danger',
+    'ram.used_mb':                '< 500 MB ✓ · 500–800 MB high · > 800 MB danger',
+    'ram.peak_60s_mb':            '< 500 MB ✓ · 500–800 MB high · > 800 MB danger',
     'disk.sd_free_mb':            '> 2 GB ✓ · 0.5–2 GB low · 0.2–0.5 GB high · < 200 MB danger',
     'net.online':                 'false = offline · true ✓',
     'net.masmopi_ok':             'false = upstream unreachable · true ✓',
     'alive':                      'false = process not alive · true ✓',
-    'pipeline.last_inference_ts': 'within 10 s → red dot',
+    'cpu.throttled_bits':          'none ✓ · bits 0–3 active now (red) · bits 16–19 since boot (amber)',
+    'pipeline.last_inference_ts': '< 15 s ✓ · 15–60 s notable · > 60 s stalled',
     'counts_24h.uploads_failed':  '0 ✓ · any > 0 is notable',
     'counts_24h.uploads_retried': '0 ✓ · any > 0 is notable',
   };
@@ -269,7 +298,7 @@
       { path: 'cpu.percent_1s',       label: 'CPU % now',      fmt: v => `${v.toFixed(1)} %` },
       { path: 'cpu.percent_peak_60s', label: 'CPU % peak 60s', fmt: v => `${v.toFixed(1)} %` },
       { path: 'cpu.temp_c',           label: 'Temp',           fmt: v => `${v.toFixed(1)} °C` },
-      { path: 'cpu.throttled_bits',   label: 'Throttled',      fmt: v => String(v) },
+      { path: 'cpu.throttled_bits',   label: 'Throttled',      fmt: fmtThrottled },
     ]},
     { title: 'RAM', rows: [
       { path: 'ram.used_mb',     label: 'RAM used',     fmt: v => `${v.toFixed(0)} MB` },
