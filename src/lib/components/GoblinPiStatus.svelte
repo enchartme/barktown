@@ -510,6 +510,18 @@
                 {/each}
               </tbody>
             {/each}
+            {#if status.monitor_config?.length}
+              <tbody>
+                <tr class="section-hdr"><td colspan="3">Monitor config</td></tr>
+                {#each status.monitor_config as row}
+                  <tr>
+                    <td class="td-label">{row.name}</td>
+                    <td class="td-value">{row.value != null ? row.value : '—'}</td>
+                    <td class="td-hint">{row.description}</td>
+                  </tr>
+                {/each}
+              </tbody>
+            {/if}
           </table>
         </div>
       {:else}
