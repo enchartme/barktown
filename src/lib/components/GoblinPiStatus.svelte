@@ -123,7 +123,7 @@
     if (v == null) return '—';
     const n = typeof v === 'string' ? parseInt(v, 16) : Number(v);
     if (isNaN(n) || n === 0) return 'none';
-    return THROTTLE_BITS.filter(([bit]) => n & bit).map(([, label]) => label).join(', ');
+    return THROTTLE_BITS.filter(([bit]) => n & bit).map(([, label]) => label).join('\n');
   }
 
   function hasDanger(s) {
@@ -771,6 +771,7 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 0.76rem;
+    table-layout: fixed;
   }
 
   .section-hdr td {
@@ -787,7 +788,7 @@
     padding: 0.27rem 0.5rem 0.27rem 0.9rem;
     color: #555;
     white-space: nowrap;
-    width: 34%;
+    width: 20%;
     border-bottom: 1px solid #f0f0ec;
   }
 
@@ -795,7 +796,8 @@
     padding: 0.27rem 0.5rem;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
-    white-space: nowrap;
+    white-space: pre-line;
+    width: 40%;
     border-bottom: 1px solid #f0f0ec;
   }
 
@@ -814,6 +816,7 @@
     color: #bbb;
     font-size: 0.62rem;
     line-height: 1.4;
+    width: 40%;
     border-bottom: 1px solid #f0f0ec;
   }
 
