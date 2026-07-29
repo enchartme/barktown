@@ -800,7 +800,7 @@
     padding: 0.27rem 0.5rem 0.27rem 0.9rem;
     color: #555;
     white-space: nowrap;
-    width: 20%;
+    width: 10%;
     border-bottom: 1px solid #f0f0ec;
   }
 
@@ -828,7 +828,7 @@
     color: #bbb;
     font-size: 0.62rem;
     line-height: 1.4;
-    width: 40%;
+    width: 50%;
     border-bottom: 1px solid #f0f0ec;
   }
 
