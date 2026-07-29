@@ -29,6 +29,13 @@
   let recordPollId;
   let controlBusy     = $state(false);
 
+  // ── Monitor control state ─────────────────────────────────────────────────
+  // bark-monitor.service and the on-demand recorder above both need
+  // exclusive access to the same USB mic, so only one can run at a time.
+  let monitorBusy     = $state(false);
+  let monitorMessage  = $state('');
+  const monitorActive = $derived(status?.monitor?.service_active ?? null);
+
   // ── Recent recordings (shown at the end of the Manual tab's record section) ─
   /** @type {any[]} */
   let samples         = $state([]);
@@ -419,6 +426,24 @@
     controlBusy = false;
   }
 
+  async function setMonitorRunning(running) {
+    if (monitorBusy) return;
+    monitorBusy = true;
+    monitorMessage = '';
+    try {
+      const res = await fetch(`${BASE_URL}/monitor/${running ? 'start' : 'stop'}`, {
+        method: 'POST',
+        signal: AbortSignal.timeout(8000),
+      });
+      const data = await res.json();
+      if (!data.ok) monitorMessage = data.error ?? 'Failed';
+      await fetchStatus();
+    } catch (_e) {
+      monitorMessage = 'Could not reach goblinpi';
+    }
+    monitorBusy = false;
+  }
+
   function handleKeydown(/** @type {KeyboardEvent} */ e) {
     if (e.key === 'Escape' && showPopup) showPopup = false;
   }
@@ -491,11 +516,43 @@
       <!-- Manual tab -->
       <div class="popup-body manual-body">
 
+        <!-- Bark monitor section -->
+        <div class="manual-section">
+          <div class="manual-section-title">BARK MONITOR</div>
 
+          <div class="monitor-row">
+            <span class="monitor-state">
+              {#if monitorActive === null}
+                Unknown
+              {:else if monitorActive}
+                <span class="monitor-dot"></span> Running
+              {:else}
+                Stopped
+              {/if}
+            </span>
+            {#if monitorActive}
+              <button class="action-btn danger-btn" disabled={monitorBusy} onclick={() => setMonitorRunning(false)}>
+                {monitorBusy ? 'Stopping…' : 'Stop monitor'}
+              </button>
+            {:else}
+              <button class="action-btn" disabled={monitorBusy} onclick={() => setMonitorRunning(true)}>
+                {monitorBusy ? 'Starting…' : 'Start monitor'}
+              </button>
+            {/if}
+          </div>
+
+          {#if monitorMessage}
+            <div class="feedback-msg">{monitorMessage}</div>
+          {/if}
+        </div>
 
         <!-- Record section -->
         <div class="manual-section">
           <div class="manual-section-title">RECORD A SAMPLE</div>
+
+          {#if monitorActive}
+            <div class="feedback-msg">Stop the bark monitor above first — it holds the microphone.</div>
+          {/if}
 
           {#if !recordStatus || recordStatus.state === 'IDLE' || recordStatus.state === 'LABELLED'}
             <div class="record-row">
@@ -506,7 +563,7 @@
                 <option value={20}>20 s</option>
                 <option value={30}>30 s</option>
               </select>
-              <button class="action-btn" onclick={startRecording}>Start recording</button>
+              <button class="action-btn" disabled={monitorActive === true} onclick={startRecording}>Start recording</button>
             </div>
 
           {:else if recordStatus.state === 'RECORDING'}
@@ -819,6 +876,31 @@
     gap: 0.5rem;
     align-items: center;
     flex-wrap: wrap;
+  }
+
+  .monitor-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .monitor-state {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #555;
+  }
+
+  .monitor-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #2ecc71;
+    flex-shrink: 0;
   }
 
   .duration-select {
