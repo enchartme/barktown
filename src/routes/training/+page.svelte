@@ -8,7 +8,7 @@
   //
   // masmopi (Pi 5, ingestion + API host), NOT goblinpi (Pi 3B+, mic capture
   // only — goblinpi just uploads to masmopi and has no ingest API of its own).
-  const API_BASE = 'http://masmopi.tail523149.ts.net:8090';
+  const API_BASE = 'https://masmopi.tail523149.ts.net';
 
   const LABELS     = ['bark', 'yap', 'background', 'wind', 'homestead', 'traffic', 'gunshot', 'wrongdog'];
   const ALL_LABELS = ['all', ...LABELS, 'unmarked'];
