@@ -392,7 +392,7 @@
         if (data.ok) {
           recordMessage = data.destination === 'local'
             ? `Saved locally: ${data.label}`
-            : `Uploaded to Masmopi: ${data.filename ?? data.label} (UTC time)`;
+            : `Uploaded to Masmopi: ${data.filename ?? data.label}`;
         } else {
           recordMessage = data.error ?? 'Save failed';
         }
