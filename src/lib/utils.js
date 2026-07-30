@@ -13,6 +13,12 @@
  */
 export const ASSET_BASE = 'https://s3.angiehjort.com/barktown';
 
+/**
+ * Base URL for the barktown-ingest REST API (server.mjs on masmopi).
+ * Reached over Tailscale — no auth, same trust model as GoblinPiStatus.
+ */
+export const API_BASE = 'https://masmopi.tail523149.ts.net';
+
 // ─── Time helpers ─────────────────────────────────────────────────────────────
 
 /**

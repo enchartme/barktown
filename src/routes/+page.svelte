@@ -4,7 +4,7 @@
   import AudioPlayerPanel from '$lib/components/AudioPlayerPanel.svelte';
   import OverviewPanel    from '$lib/components/OverviewPanel.svelte';
   import GoblinPiStatus   from '$lib/components/GoblinPiStatus.svelte';
-  import { groupByDate, ASSET_BASE } from '$lib/utils.js';
+  import { groupByDate, ASSET_BASE, API_BASE } from '$lib/utils.js';
 
   // Svelte 5 runes
   let { data } = $props();
@@ -77,10 +77,27 @@
     panelEntry = null;  // now safe to clear – component is gone from DOM
   }
 
-  // On mount: fetch index.json live from S3, then handle deep-link hash.
+  /**
+   * Delete a diary entry via the API, then remove it from the local list
+   * and close the panel.
+   * @param {import('$lib/types').Entry} entry
+   */
+  async function deleteEntry(entry) {
+    try {
+      const res = await fetch(`${API_BASE}/api/diary/${encodeURIComponent(entry.id)}`, { method: 'DELETE' });
+      if (!res.ok && res.status !== 204) throw new Error(`${res.status} ${res.statusText}`);
+    } catch (e) {
+      // Surface errors in the browser console; panel will still close.
+      console.error('Failed to delete entry:', e);
+    }
+    entries = entries.filter(e => e.id !== entry.id);
+    closePanel();
+  }
+
+  // On mount: fetch diary entries live from the API, then handle deep-link hash.
   onMount(async () => {
     try {
-      const res = await fetch(`${ASSET_BASE}/index.json`);
+      const res = await fetch(`${API_BASE}/api/diary`);
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
       entries = await res.json();
     } catch (e) {
@@ -169,6 +186,7 @@
     entry={panelEntry}
     onclose={closePanel}
     onclosed={handlePanelClosed}
+    ondelete={deleteEntry}
   />
 {/if}
 

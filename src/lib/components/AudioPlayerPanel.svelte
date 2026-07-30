@@ -7,9 +7,11 @@
    * @type {{
    *   entry: import('$lib/types').Entry;
    *   onclose: () => void;
+   *   onclosed?: () => void;
+   *   ondelete?: (entry: import('$lib/types').Entry) => void;
    * }}
    */
-  let { entry, onclose, onclosed } = $props();
+  let { entry, onclose, onclosed, ondelete } = $props();
 
   // ── Audio element reference ────────────────────────────────────────────────
   /** @type {HTMLAudioElement | null} */
@@ -209,6 +211,20 @@
     onclose();
   }
 
+  // Delete: pause, ask for confirmation, then call parent handler.
+  let deleteConfirm = $state(false);
+  function handleDeleteClick() {
+    if (audioEl && isPlaying) audioEl.pause();
+    deleteConfirm = true;
+  }
+  function handleDeleteConfirm() {
+    deleteConfirm = false;
+    ondelete?.(entry);
+  }
+  function handleDeleteCancel() {
+    deleteConfirm = false;
+  }
+
   function handlePlay()  { isPlaying = true; }
   function handlePause() { isPlaying = false; }
   function handleEnded() { isPlaying = false; currentTime = 0; }
@@ -298,6 +314,15 @@
       <span class="panel-dur">{formattedDur}</span>
     </div>
     <h2 class="panel-title">{displayLabel}</h2>
+    {#if deleteConfirm}
+      <span class="delete-confirm">
+        <span class="delete-confirm-text">Delete?</span>
+        <button class="delete-confirm-yes" onclick={handleDeleteConfirm} aria-label="Confirm delete">Yes</button>
+        <button class="delete-confirm-no"  onclick={handleDeleteCancel} aria-label="Cancel delete">No</button>
+      </span>
+    {:else if ondelete}
+      <button class="delete-btn" onclick={handleDeleteClick} aria-label="Delete entry" title="Delete this recording">🗑</button>
+    {/if}
     <button class="close-btn" onclick={handleClose} aria-label="Close player">✕</button>
   </div>
 
@@ -519,7 +544,7 @@
   .panel-title {
     position: absolute;
     left: 0;
-    right: 2.5rem;
+    right: 5.5rem;
     top: 1.5rem;
     margin: 0;
     font-size: 1rem;
@@ -542,6 +567,53 @@
     line-height: 1;
   }
   .close-btn:hover { background: #f0f0ec; color: #333; }
+
+  .delete-btn {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: #aaa;
+    cursor: pointer;
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    line-height: 1;
+    margin-left: auto;
+  }
+  .delete-btn:hover { background: #fdecea; color: #c0392b; }
+
+  .delete-confirm {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .delete-confirm-text {
+    font-size: 0.8rem;
+    color: #c0392b;
+    font-weight: 600;
+  }
+  .delete-confirm-yes {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .delete-confirm-yes:hover { background: #a93226; }
+  .delete-confirm-no {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    background: #f0f0ec;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .delete-confirm-no:hover { background: #e0e0dc; }
 
   /* ── Waveform area ── */
   .waveform-area {
