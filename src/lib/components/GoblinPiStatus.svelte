@@ -1,6 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { ASSET_BASE, formatDuration, formatSampleDatetime } from '$lib/utils.js';
+  import { SAMPLE_LABELS as LABELS, sampleLabelColor } from '$lib/sample-labels.js';
 
   const BASE_URL       = 'https://goblinpi.tail523149.ts.net';
   const STATUS_URL     = `${BASE_URL}/status`;
@@ -8,8 +9,6 @@
   const POLL_OPEN_MS   = 1_000;
   const POLL_CLOSED_MS = 10_000;
   const RECENT_SAMPLES_COUNT = 5;
-
-  const LABELS = ['bark', 'yap', 'background', 'wind', 'homestead', 'traffic', 'gunshot', 'wrongdog'];
 
   /** @type {any} */
   let status      = $state(null);
@@ -627,7 +626,7 @@
             {:else}
               {#each recentSamples as sample (sample.id)}
                 <div class="recent-recording-row">
-                  <span class="sample-label-pill sample-label--{sample.label}">{sample.label}</span>
+                  <span class="sample-label-pill" style:background={sampleLabelColor(sample.label)}>{sample.label}</span>
                   <span class="recent-recording-time">{formatSampleDatetime(sample.datetimeLocal)}</span>
                   <span class="recent-recording-dur">{formatDuration(sample.durationSec)}</span>
                 </div>
@@ -1070,15 +1069,6 @@
     flex-shrink: 0;
     color: #fff;
   }
-  .sample-label--bark       { background: #e74c3c; }
-  .sample-label--yap        { background: #e67e22; }
-  .sample-label--wrongdog   { background: #8a8c00; }
-  .sample-label--background { background: #27ae60; }
-  .sample-label--wind       { background: #2980b9; }
-  .sample-label--homestead  { background: #8e44ad; }
-  .sample-label--gunshot    { background: #333333; }
-  .sample-label--traffic    { background: #7f8c8d; }
-
   .recent-recording-time {
     flex: 1;
     font-size: 0.74rem;

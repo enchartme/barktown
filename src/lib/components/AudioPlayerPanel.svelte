@@ -1,6 +1,7 @@
 <script>
   import { onMount }       from 'svelte';
   import { formatDuration, formatDate, downsampleWaveform, waveformNorm, ASSET_BASE } from '$lib/utils.js';
+  import { SAMPLE_LABELS, sampleLabelColor } from '$lib/sample-labels.js';
   import { fly }           from 'svelte/transition';
 
   /**
@@ -13,8 +14,6 @@
    * }}
    */
   let { entry, onclose, onclosed, ondelete, onmovesample } = $props();
-
-  const SAMPLE_LABELS = ['bark', 'yap', 'background', 'wind', 'homestead', 'traffic', 'gunshot', 'wrongdog'];
 
   // ── Audio element reference ────────────────────────────────────────────────
   /** @type {HTMLAudioElement | null} */
@@ -535,7 +534,8 @@
     <div class="sample-labels" aria-label="Sample label">
       {#each SAMPLE_LABELS as label}
         <button
-          class="sample-label-pill sample-label--{label}"
+          class="sample-label-pill"
+          style:background={sampleLabelColor(label)}
           onclick={() => handleMoveToSample(label)}
           disabled={Boolean(movingLabel)}
           aria-label="Move to {label} samples"
@@ -755,15 +755,6 @@
   }
   .sample-label-pill:hover { filter: brightness(0.9); }
   .sample-label-pill:disabled { cursor: wait; opacity: 0.55; }
-  .sample-label--bark       { background: #e74c3c; }
-  .sample-label--yap        { background: #e67e22; }
-  .sample-label--wrongdog   { background: #8a8c00; }
-  .sample-label--background { background: #27ae60; }
-  .sample-label--wind       { background: #2980b9; }
-  .sample-label--homestead  { background: #8e44ad; }
-  .sample-label--gunshot    { background: #333333; }
-  .sample-label--traffic    { background: #7f8c8d; }
-
   .sample-picker-error {
     margin: 0.8rem 0 0;
     color: #c0392b;

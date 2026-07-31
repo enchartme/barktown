@@ -1,5 +1,6 @@
 <script>
   import { ASSET_BASE, downsampleWaveform, waveformNorm, formatDuration, formatSampleDatetime } from '$lib/utils.js';
+  import { SAMPLE_LABELS as LABELS, SAMPLE_LABEL_GUIDELINES as LABEL_GUIDELINES, sampleLabelColor } from '$lib/sample-labels.js';
 
   // The barktown-ingest CRUD API, reached directly over Tailscale — same
   // no-auth trust model as GoblinPiStatus.svelte. Audio/waveform bytes are
@@ -10,26 +11,8 @@
   // only — goblinpi just uploads to masmopi and has no ingest API of its own).
   const API_BASE = 'https://masmopi.tail523149.ts.net';
 
-  const LABELS     = ['bark', 'yap', 'background', 'wind', 'homestead', 'traffic', 'gunshot', 'wrongdog'];
   const ALL_LABELS = ['all', ...LABELS, 'unmarked'];
-  const LABEL_COLORS = {
-    bark: '#e74c3c', yap: '#e67e22', background: '#27ae60', wind: '#2980b9',
-    homestead: '#8e44ad', gunshot: '#333333', traffic: '#7f8c8d', wrongdog: '#8a8c00'
-  };
   const NOTE_COLOR = '#f1c40f';
-
-  // Clip guidelines from barktown-goblin/docs/training-data.md -- kept in
-  // sync manually, shown alongside the counts in the corpus summary.
-  const LABEL_GUIDELINES = {
-    bark:       { duration: '1\u20133 s', occupancy: '50\u201380 %' },
-    yap:        { duration: '1\u20133 s', occupancy: '50\u201380 %' },
-    wrongdog:   { duration: '1\u20133 s', occupancy: '50\u201380 %' },
-    gunshot:    { duration: '1\u20133 s', occupancy: '50\u201380 %' },
-    background: { duration: '3\u20135 s', occupancy: 'n/a' },
-    wind:       { duration: '3\u20135 s', occupancy: 'n/a' },
-    traffic:    { duration: '3\u20135 s', occupancy: 'n/a' },
-    homestead:  { duration: '3\u20135 s', occupancy: 'n/a' }
-  };
 
   // Virtual SVG dimensions for the waveform editor (viewBox units).
   const VW = 1000;
@@ -38,10 +21,6 @@
   // Drags shorter than this (in seconds) are treated as a plain seek click
   // rather than a fragment brush-selection.
   const BRUSH_MIN_SEC = 0.05;
-
-  function fragmentColor(label) {
-    return LABEL_COLORS[label] ?? '#4a7cdc';
-  }
 
   // ── Sample list state ──────────────────────────────────────────────────────
   /** @type {any[]} */
@@ -822,7 +801,7 @@
               class:day-start={i > 0 && sampleDay !== prevDay}
               onclick={() => toggleSample(sample)}
             >
-              <span class="sample-label-pill sample-label--{sample.label}" title={sample.label}>{sample.label.slice(0, 3)}</span>
+              <span class="sample-label-pill" style:background={sampleLabelColor(sample.label)} title={sample.label}>{sample.label.slice(0, 3)}</span>
               <span class="sample-name">
                 <span class="sample-name-main">{formatSampleDatetime(sample.datetimeLocal)}</span>
                 {#if notePreview}<span class="sample-note-preview">{notePreview}</span>{/if}
@@ -833,7 +812,7 @@
                   {#each fragBlocks as frag, i (i)}
                     <span
                       class="sample-frag-block"
-                      style="left:{(frag.startFrac * 100).toFixed(2)}%; width:{Math.max(0.6, (frag.endFrac - frag.startFrac) * 100).toFixed(2)}%; background:{fragmentColor(frag.label)}"
+                      style="left:{(frag.startFrac * 100).toFixed(2)}%; width:{Math.max(0.6, (frag.endFrac - frag.startFrac) * 100).toFixed(2)}%; background:{sampleLabelColor(frag.label)}"
                     ></span>
                   {/each}
                 </span>
@@ -858,7 +837,7 @@
                 {@const fragCount = fragmentCountsByLabel.get(lbl) ?? 0}
                 {@const guide = LABEL_GUIDELINES[lbl]}
                 <tr>
-                  <td><span class="sample-label-pill sample-label--{lbl}">{lbl}</span></td>
+                  <td><span class="sample-label-pill" style:background={sampleLabelColor(lbl)}>{lbl}</span></td>
                   <td class="corpus-guideline">{guide?.duration ?? '\u2014'}</td>
                   <td class="corpus-guideline">{guide?.occupancy ?? '\u2014'}</td>
                   <td>{sampleCountsByLabel.get(lbl) ?? 0}</td>
@@ -885,7 +864,7 @@
         </div>
       {:else}
         <div class="editor-header">
-          <span class="sample-label-pill sample-label--{selected.label}">{selected.label}</span>
+          <span class="sample-label-pill" style:background={sampleLabelColor(selected.label)}>{selected.label}</span>
           <span class="editor-title">{formatSampleDatetime(selected.datetimeLocal, { seconds: true })}</span>
           <span class="editor-dur">{formatDuration(selected.durationSec)}</span>
 
@@ -954,7 +933,7 @@
             <rect
               class="fragment-band"
               x={x} y="0" width={w} height={VH}
-              fill={fragmentColor(ann.label)}
+              fill={sampleLabelColor(ann.label)}
               opacity={selectedAnnId === ann.id ? 0.45 : 0.28}
               data-role="fragment-body"
               data-ann-id={ann.id}
@@ -1273,15 +1252,6 @@
   .sample-row .sample-label-pill {
     font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   }
-  .sample-label--bark       { background: #e74c3c; }
-  .sample-label--yap        { background: #e67e22; }
-  .sample-label--wrongdog   { background: #8a8c00; }
-  .sample-label--background { background: #27ae60; }
-  .sample-label--wind       { background: #2980b9; }
-  .sample-label--homestead  { background: #8e44ad; }
-  .sample-label--gunshot    { background: #333333; }
-  .sample-label--traffic    { background: #7f8c8d; }
-
   .sample-name {
     flex: 1;
     min-width: 0;
