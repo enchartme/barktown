@@ -5,6 +5,7 @@ const SAMPLE_LABEL_DEFINITIONS = Object.freeze([
   { name: 'wind',       color: '#2980b9', duration: '3\u20135 s', occupancy: 'n/a' },
   { name: 'homestead',  color: '#8e44ad', duration: '3\u20135 s', occupancy: 'n/a' },
   { name: 'traffic',    color: '#7f8c8d', duration: '3\u20135 s', occupancy: 'n/a' },
+  { name: 'wildlife',   color: '#2ea096', duration: '1\u20133 s', occupancy: '50\u201380 %' },
   { name: 'gunshot',    color: '#333333', duration: '1\u20133 s', occupancy: '50\u201380 %' },
   { name: 'wrongdog',   color: '#8a8c00', duration: '1\u20133 s', occupancy: '50\u201380 %' },
 ].map(Object.freeze));
