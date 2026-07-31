@@ -9,9 +9,12 @@
    *   onclose: () => void;
    *   onclosed?: () => void;
    *   ondelete?: (entry: import('$lib/types').Entry) => void;
+   *   onmovesample?: (entry: import('$lib/types').Entry, label: string) => Promise<void>;
    * }}
    */
-  let { entry, onclose, onclosed, ondelete } = $props();
+  let { entry, onclose, onclosed, ondelete, onmovesample } = $props();
+
+  const SAMPLE_LABELS = ['bark', 'yap', 'background', 'wind', 'homestead', 'traffic', 'gunshot', 'wrongdog'];
 
   // ── Audio element reference ────────────────────────────────────────────────
   /** @type {HTMLAudioElement | null} */
@@ -225,6 +228,38 @@
     deleteConfirm = false;
   }
 
+  // False-positive flow: use a separate compact dialog so the full label
+  // taxonomy remains easy to tap on a phone-sized screen.
+  let samplePickerOpen = $state(false);
+  let movingLabel      = $state('');
+  let moveError        = $state('');
+
+  function handleFalsePositiveClick() {
+    if (audioEl && isPlaying) audioEl.pause();
+    deleteConfirm = false;
+    moveError = '';
+    samplePickerOpen = true;
+  }
+
+  function closeSamplePicker() {
+    if (movingLabel) return;
+    samplePickerOpen = false;
+    moveError = '';
+  }
+
+  async function handleMoveToSample(label) {
+    if (!onmovesample || movingLabel) return;
+    movingLabel = label;
+    moveError = '';
+    try {
+      await onmovesample(entry, label);
+    } catch (e) {
+      moveError = e?.message ?? 'Could not move this recording.';
+    } finally {
+      movingLabel = '';
+    }
+  }
+
   function handlePlay()  { isPlaying = true; }
   function handlePause() { isPlaying = false; }
   function handleEnded() { isPlaying = false; currentTime = 0; }
@@ -262,7 +297,11 @@
 
   // ── Close on Escape ───────────────────────────────────────────────────────
   function handleGlobalKeydown(e) {
-    if (e.key === 'Escape') { handleClose(); return; }
+    if (e.key === 'Escape') {
+      if (samplePickerOpen) closeSamplePicker();
+      else handleClose();
+      return;
+    }
     if (e.key === ' ') {
       const tag = /** @type {HTMLElement} */ (e.target)?.tagName;
       // Don't hijack space when the user is typing in a text field, or when
@@ -320,8 +359,13 @@
         <button class="delete-confirm-yes" onclick={handleDeleteConfirm} aria-label="Confirm delete">Yes</button>
         <button class="delete-confirm-no"  onclick={handleDeleteCancel} aria-label="Cancel delete">No</button>
       </span>
-    {:else if ondelete}
-      <button class="delete-btn" onclick={handleDeleteClick} aria-label="Delete entry" title="Delete this recording">🗑</button>
+    {:else}
+      {#if onmovesample}
+        <button class="false-positive-btn" onclick={handleFalsePositiveClick} aria-label="Mark as false positive" title="Move this false positive to training samples">👎</button>
+      {/if}
+      {#if ondelete}
+        <button class="delete-btn" onclick={handleDeleteClick} aria-label="Delete entry" title="Delete this recording">🗑</button>
+      {/if}
     {/if}
     <button class="close-btn" onclick={handleClose} aria-label="Close player">✕</button>
   </div>
@@ -476,6 +520,32 @@
   ></audio>
 </div>
 
+{#if samplePickerOpen}
+  <button
+    class="sample-picker-backdrop"
+    onclick={closeSamplePicker}
+    aria-label="Close Move to samples dialog"
+    disabled={Boolean(movingLabel)}
+  ></button>
+  <div class="sample-picker" role="dialog" aria-modal="true" aria-labelledby="sample-picker-title">
+    <div class="sample-picker-header">
+      <h2 id="sample-picker-title">Move to samples</h2>
+      <button class="sample-picker-close" onclick={closeSamplePicker} aria-label="Close" disabled={Boolean(movingLabel)}>✕</button>
+    </div>
+    <div class="sample-labels" aria-label="Sample label">
+      {#each SAMPLE_LABELS as label}
+        <button
+          class="sample-label-pill sample-label--{label}"
+          onclick={() => handleMoveToSample(label)}
+          disabled={Boolean(movingLabel)}
+          aria-label="Move to {label} samples"
+        >{movingLabel === label ? 'Moving…' : label}</button>
+      {/each}
+    </div>
+    {#if moveError}<p class="sample-picker-error" role="alert">{moveError}</p>{/if}
+  </div>
+{/if}
+
 <style>
   /* ── Backdrop ── */
   .panel-backdrop {
@@ -568,7 +638,8 @@
   }
   .close-btn:hover { background: #f0f0ec; color: #333; }
 
-  .delete-btn {
+  .delete-btn,
+  .false-positive-btn {
     flex-shrink: 0;
     background: none;
     border: none;
@@ -578,9 +649,10 @@
     padding: 0.1rem 0.35rem;
     border-radius: 4px;
     line-height: 1;
-    margin-left: auto;
   }
+  .false-positive-btn { margin-left: auto; }
   .delete-btn:hover { background: #fdecea; color: #c0392b; }
+  .false-positive-btn:hover { background: #fff3cd; color: #6f5900; }
 
   .delete-confirm {
     display: flex;
@@ -614,6 +686,89 @@
     cursor: pointer;
   }
   .delete-confirm-no:hover { background: #e0e0dc; }
+
+  /* ── False-positive label picker ── */
+  .sample-picker-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 202;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: rgba(0,0,0,0.35);
+    cursor: default;
+  }
+
+  .sample-picker {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 203;
+    width: min(92vw, 420px);
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.22);
+    padding: 1rem;
+  }
+
+  .sample-picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+  }
+  .sample-picker-header h2 {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+  .sample-picker-close {
+    border: none;
+    border-radius: 4px;
+    background: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0.3rem;
+  }
+  .sample-picker-close:hover { background: #f0f0ec; color: #333; }
+
+  .sample-labels {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+  .sample-label-pill {
+    min-height: 2.4rem;
+    border: none;
+    border-radius: 999px;
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.45rem 0.75rem;
+    text-transform: uppercase;
+  }
+  .sample-label-pill:hover { filter: brightness(0.9); }
+  .sample-label-pill:disabled { cursor: wait; opacity: 0.55; }
+  .sample-label--bark       { background: #e74c3c; }
+  .sample-label--yap        { background: #e67e22; }
+  .sample-label--wrongdog   { background: #8a8c00; }
+  .sample-label--background { background: #27ae60; }
+  .sample-label--wind       { background: #2980b9; }
+  .sample-label--homestead  { background: #8e44ad; }
+  .sample-label--gunshot    { background: #333333; }
+  .sample-label--traffic    { background: #7f8c8d; }
+
+  .sample-picker-error {
+    margin: 0.8rem 0 0;
+    color: #c0392b;
+    font-size: 0.78rem;
+  }
 
   /* ── Waveform area ── */
   .waveform-area {
