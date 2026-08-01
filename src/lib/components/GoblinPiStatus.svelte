@@ -14,7 +14,7 @@
   let status      = $state(null);
   let fetchFailed = $state(false);
   let showPopup   = $state(false);
-  let activeTab   = $state('status');
+  let activeTab   = $state('monitor');
   let intervalId;
 
   // ── Manual tab state ──────────────────────────────────────────────────────
@@ -234,6 +234,16 @@
       case 'disk.sd_free_mb':
         return value > 2000 ? 'ok' : value > 500 ? 'low' : value > 200 ? 'high' : 'way_high';
 
+      case 'pipeline.assembler_state': {
+        const s = value;
+        if (s === 'ACTIVE_CONFIRMED') return 'way_high';
+        if (s === 'ACTIVE_CANDIDATE') return 'high';
+        return 'neutral';
+      }
+      case 'pipeline.max_score_10s':
+        if (value == null) return 'neutral';
+        return value >= 0.9 ? 'high' : value >= 0.4 ? 'ok' : 'neutral';
+
       case 'pipeline.last_inference_ts': {
         const ageMs = Date.now() - new Date(value).getTime();
         return ageMs < 15_000 ? 'ok' : ageMs < 60_000 ? 'high' : 'way_high';
@@ -271,11 +281,13 @@
     'alive':                      'false = process not alive · true ✓',
     'cpu.throttled_bits':          'none ✓ · bits 0–3 active now (red) · bits 16–19 since boot (amber)',
     'pipeline.last_inference_ts': '< 15 s ✓ · 15–60 s notable · > 60 s stalled',
+    'pipeline.assembler_state':   'IDLE · ACTIVE_CANDIDATE · ACTIVE_CONFIRMED · COOLDOWN',
+    'pipeline.max_score_10s':     'max classifier output in the last 10 s — above candidate_threshold = recent bark activity',
     'counts_24h.uploads_failed':  '0 ✓ · any > 0 is notable',
     'counts_24h.uploads_retried': '0 ✓ · any > 0 is notable',
   };
 
-  const SECTIONS = [
+  const HARDWARE_SECTIONS = [
     { title: 'System', rows: [
       { path: 'alive',         label: 'Alive',       fmt: v => v ? 'yes' : 'no' },
       { path: 'now',           label: 'Server time', fmt: v => new Date(v).toLocaleTimeString() },
@@ -294,22 +306,6 @@
       { path: 'audio.peak_now',          label: 'Peak now',      fmt: v => v.toFixed(4) },
       { path: 'audio.clip_rate_10s',     label: 'Clip rate 10s', fmt: v => v.toFixed(6) },
       { path: 'audio.xruns_last_hour',   label: 'XRuns/hour',    fmt: v => String(v) },
-    ]},
-    { title: 'Pipeline', rows: [
-      { path: 'pipeline.state',             label: 'State',          fmt: v => v ?? '—' },
-      { path: 'pipeline.model_version',     label: 'Model version',  fmt: v => v ?? '—' },
-      { path: 'pipeline.last_inference_ts', label: 'Last inference', fmt: v => v ? new Date(v).toLocaleTimeString() : '—' },
-    ]},
-    { title: 'Last bark event', rows: [
-      { path: 'pipeline.bark_monitor.bark_events_total',              label: 'Session total',  fmt: v => String(v) },
-      { path: 'pipeline.bark_monitor.last_bark_event.event_number',   label: 'Event #',        fmt: v => String(v) },
-      { path: 'pipeline.bark_monitor.last_bark_event.start_ts',       label: 'Time',           fmt: v => new Date(v * 1000).toLocaleTimeString() },
-      { path: 'pipeline.bark_monitor.last_bark_event.duration_s',     label: 'Duration',       fmt: v => `${v.toFixed(1)} s` },
-      { path: 'pipeline.bark_monitor.last_bark_event.peak_score',     label: 'Peak (C)',       fmt: v => v >= 1.0 ? 'C1' : `C${v.toFixed(2)}` },
-      { path: 'pipeline.bark_monitor.last_bark_event.hit_count',      label: 'Hits (W)',       fmt: v => String(v) },
-      { path: 'pipeline.bark_monitor.last_bark_event.density_bpm',    label: 'Density (D)',    fmt: v => `${v.toFixed(1)} bpm` },
-      { path: 'pipeline.bark_monitor.last_bark_event.loudness_ratio_max', label: 'Loudness La', fmt: v => v > 0 ? `${v.toFixed(1)}×` : '—' },
-      { path: 'pipeline.bark_monitor.last_bark_event.loudness_ratio_med', label: 'Loudness Lm', fmt: v => v > 0 ? `${v.toFixed(1)}×` : '—' },
     ]},
     { title: 'CPU', rows: [
       { path: 'cpu.percent_1s',       label: 'CPU % now',      fmt: v => `${v.toFixed(1)} %` },
@@ -330,6 +326,20 @@
       { path: 'net.local_ip',          label: 'Local IP',     fmt: v => String(v) },
       { path: 'net.tailscale_ip',      label: 'Tailscale IP', fmt: v => String(v) },
       { path: 'net.last_upload_probe', label: 'Last upload',  fmt: v => v ? new Date(v).toLocaleTimeString() : '—' },
+    ]},
+  ];
+
+  const MONITOR_SECTIONS = [
+    { title: 'Pipeline', rows: [
+      { path: 'pipeline.state',              label: 'Service state',   fmt: v => v ?? '—' },
+      { path: 'pipeline.assembler_state',    label: 'Assembler',       fmt: v => v ?? '—' },
+      { path: 'pipeline.max_score_10s',      label: 'Max score 10s',   fmt: v => v != null ? v.toFixed(3) : '—' },
+      { path: 'pipeline.model_version',      label: 'Model version',   fmt: v => v ?? '—' },
+      { path: 'pipeline.last_inference_ts',  label: 'Last inference',  fmt: v => v ? new Date(v).toLocaleTimeString() : '—' },
+      { path: 'pipeline.bark_events_1m',     label: 'Events last 1m',  fmt: v => String(v) },
+      { path: 'pipeline.bark_events_10m',    label: 'Events last 10m', fmt: v => String(v) },
+      { path: 'pipeline.bark_events_1h',     label: 'Events last 1h',  fmt: v => String(v) },
+      { path: 'pipeline.bark_events_today',  label: 'Events today',    fmt: v => String(v) },
     ]},
     { title: 'Counts 24h', rows: [
       { path: 'counts_24h.bark_candidates', label: 'Bark candidates', fmt: v => String(v) },
@@ -493,15 +503,16 @@
     </div>
 
     <div class="tab-bar">
-      <button class="tab-btn" class:active={activeTab === 'status'}  onclick={() => (activeTab = 'status')}>Status</button>
-      <button class="tab-btn" class:active={activeTab === 'manual'}  onclick={() => (activeTab = 'manual')}>Manual</button>
+      <button class="tab-btn" class:active={activeTab === 'hardware'} onclick={() => (activeTab = 'hardware')}>Hardware</button>
+      <button class="tab-btn" class:active={activeTab === 'monitor'}  onclick={() => (activeTab = 'monitor')}>Monitor</button>
+      <button class="tab-btn" class:active={activeTab === 'manual'}   onclick={() => (activeTab = 'manual')}>Manual</button>
     </div>
 
-    {#if activeTab === 'status'}
+    {#if activeTab === 'hardware' || activeTab === 'monitor'}
       {#if status}
         <div class="popup-body">
           <table class="status-table">
-            {#each SECTIONS as section}
+            {#each (activeTab === 'hardware' ? HARDWARE_SECTIONS : MONITOR_SECTIONS) as section}
               <tbody>
                 <tr class="section-hdr"><td colspan="3">{section.title}</td></tr>
                 {#each section.rows as row}
@@ -520,7 +531,7 @@
                 {/each}
               </tbody>
             {/each}
-            {#if status.monitor_config?.length}
+            {#if activeTab === 'monitor' && status.monitor_config?.length}
               <tbody>
                 <tr class="section-hdr"><td colspan="3">Monitor config</td></tr>
                 {#each status.monitor_config as row}
