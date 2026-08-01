@@ -300,6 +300,17 @@
       { path: 'pipeline.model_version',     label: 'Model version',  fmt: v => v ?? '—' },
       { path: 'pipeline.last_inference_ts', label: 'Last inference', fmt: v => v ? new Date(v).toLocaleTimeString() : '—' },
     ]},
+    { title: 'Last bark event', rows: [
+      { path: 'pipeline.bark_monitor.bark_events_total',              label: 'Session total',  fmt: v => String(v) },
+      { path: 'pipeline.bark_monitor.last_bark_event.event_number',   label: 'Event #',        fmt: v => String(v) },
+      { path: 'pipeline.bark_monitor.last_bark_event.start_ts',       label: 'Time',           fmt: v => new Date(v * 1000).toLocaleTimeString() },
+      { path: 'pipeline.bark_monitor.last_bark_event.duration_s',     label: 'Duration',       fmt: v => `${v.toFixed(1)} s` },
+      { path: 'pipeline.bark_monitor.last_bark_event.peak_score',     label: 'Peak (C)',       fmt: v => v >= 1.0 ? 'C1' : `C${v.toFixed(2)}` },
+      { path: 'pipeline.bark_monitor.last_bark_event.hit_count',      label: 'Hits (W)',       fmt: v => String(v) },
+      { path: 'pipeline.bark_monitor.last_bark_event.density_bpm',    label: 'Density (D)',    fmt: v => `${v.toFixed(1)} bpm` },
+      { path: 'pipeline.bark_monitor.last_bark_event.loudness_ratio_max', label: 'Loudness La', fmt: v => v > 0 ? `${v.toFixed(1)}×` : '—' },
+      { path: 'pipeline.bark_monitor.last_bark_event.loudness_ratio_med', label: 'Loudness Lm', fmt: v => v > 0 ? `${v.toFixed(1)}×` : '—' },
+    ]},
     { title: 'CPU', rows: [
       { path: 'cpu.percent_1s',       label: 'CPU % now',      fmt: v => `${v.toFixed(1)} %` },
       { path: 'cpu.percent_peak_60s', label: 'CPU % peak 60s', fmt: v => `${v.toFixed(1)} %` },
