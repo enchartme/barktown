@@ -419,7 +419,7 @@
         <button class="delete-confirm-no"  onclick={handleDeleteCancel} aria-label="Cancel delete">No</button>
       </span>
     {:else}
-      {#if onmovesample}
+      {#if onmovesample && !entry.sampleId}
         <button class="false-positive-btn" onclick={handleFalsePositiveClick} aria-label="Mark as false positive" title="Move this false positive to training samples">👎</button>
       {/if}
       {#if entry.sampleId}

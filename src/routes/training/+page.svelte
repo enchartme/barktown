@@ -104,6 +104,12 @@
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       samples = [...data].sort((a, b) => b.datetimeLocal.localeCompare(a.datetimeLocal));
+      // Deep-link: open the sample whose id matches the URL hash.
+      const hashId = window.location.hash.slice(1);
+      if (hashId && !selected) {
+        const target = samples.find(s => s.id === hashId);
+        if (target) selectSample(target);
+      }
     } catch (e) {
       samplesError = e?.name === 'TimeoutError' ? 'Timed out — on Tailscale?' : (e?.message ?? 'Failed to load');
     } finally {
@@ -384,11 +390,8 @@
     dragMode       = null;
     mutationError  = '';
     waveData       = null;
-    // Clear immediately, not just on fetch completion -- otherwise
-    // selectedSampleWideNote briefly reflects the *previous* sample's
-    // annotations (fetchAnnotations hasn't resolved yet) while `selected`
-    // already points at the new one, flashing the wrong note in the sidebar.
     annotations    = [];
+    history.replaceState(null, '', '#' + sample.id);
     await Promise.all([loadWaveform(sample.waveformPath), fetchAnnotations(sample.id)]);
   }
 
@@ -413,6 +416,7 @@
     mutationError    = '';
     waveData         = null;
     annotations      = [];
+    history.replaceState(null, '', location.pathname + location.search);
   }
 
   /** Arrow up/down: move selection to the previous/next item in the
@@ -807,13 +811,21 @@
 
   fetchSamples();
   fetchSidebarAnnotationSummary();
+
+  function handleHashChange() {
+    const id = window.location.hash.slice(1);
+    if (!id) { if (selected) deselectSample(); return; }
+    if (selected?.id === id) return;
+    const target = samples.find(s => s.id === id);
+    if (target) selectSample(target);
+  }
 </script>
 
 <svelte:head>
   <title>Barktown · Training samples</title>
 </svelte:head>
 
-<svelte:window onmousemove={onWindowMouseMove} onmouseup={onWindowMouseUp} onkeydown={handleKeydown} />
+<svelte:window onmousemove={onWindowMouseMove} onmouseup={onWindowMouseUp} onkeydown={handleKeydown} onhashchange={handleHashChange} />
 
 <div class="app">
   <header class="site-header">
