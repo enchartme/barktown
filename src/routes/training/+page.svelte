@@ -312,6 +312,14 @@
   const hasSampleWideNote = $derived(annotations.some(isSampleWideNote));
   const selectedSampleWideNote = $derived(annotations.find(isSampleWideNote) ?? null);
 
+  // Fragments whose startSec is at or beyond the sample's stored duration —
+  // these can't be exported and need to be cleaned up.
+  const outOfBoundsFragments = $derived(
+    selected
+      ? annotations.filter(a => a.source !== 'note' && a.startSec >= selected.durationSec)
+      : []
+  );
+
   // ── Data loading ────────────────────────────────────────────────────────────
 
   async function loadWaveform(path) {
@@ -1094,6 +1102,22 @@
             <div class="notes-empty">No notes yet.</div>
           {/if}
         </div>
+        {#if outOfBoundsFragments.length > 0}
+          <div class="oob-panel">
+            <div class="oob-panel-header">
+              <span class="oob-panel-title">Out-of-bounds fragments</span>
+              <span class="oob-panel-hint">These start beyond the sample's duration ({formatDuration(selected.durationSec)}) and will be skipped on export.</span>
+            </div>
+            {#each outOfBoundsFragments as ann (ann.id)}
+              <div class="oob-row">
+                <span class="sample-label-pill" style:background={sampleLabelColor(ann.label)}>{ann.label.slice(0, 3)}</span>
+                <span class="oob-range">{formatDuration(ann.startSec)} – {formatDuration(ann.endSec)}</span>
+                <button class="note-delete-btn" title="Delete fragment" onclick={() => deleteAnnotationById(ann.id)}>×</button>
+              </div>
+            {/each}
+          </div>
+        {/if}
+
         <div class="shortcuts-hint">Use shortcuts! [Space] Play/Pause · [Delete] Remove fragment · [↑][↓] or [Q][W] Navigate · [Enter] Apply · see also the hotkeys for every label</div>
 
         {#if pending}
@@ -1574,4 +1598,24 @@
   .note-delete-btn:hover { opacity: 0.7; }
   .notes-empty { font-size: 0.74rem; color: #aaa; padding: 0.2rem 0; }
   .shortcuts-hint { font-size: 0.72rem; color: #aaa; margin-top: 0.6rem; line-height: 1.5; }
+
+  /* ── Out-of-bounds fragments panel ── */
+  .oob-panel {
+    margin-top: 0.75rem;
+    border: 1px solid #f5c6cb;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    background: #fff8f8;
+  }
+  .oob-panel-header { margin-bottom: 0.4rem; }
+  .oob-panel-title { font-size: 0.78rem; font-weight: 600; color: #c0392b; margin-right: 0.5rem; }
+  .oob-panel-hint { font-size: 0.72rem; color: #a0402a; }
+  .oob-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.2rem 0;
+    font-size: 0.8rem;
+  }
+  .oob-range { flex: 1; font-variant-numeric: tabular-nums; color: #555; }
 </style>
