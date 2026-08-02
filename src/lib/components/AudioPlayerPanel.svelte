@@ -1,6 +1,6 @@
 <script>
   import { onMount }       from 'svelte';
-  import { formatDuration, formatDate, downsampleWaveform, waveformNorm, ASSET_BASE } from '$lib/utils.js';
+  import { formatDuration, formatDate, downsampleWaveform, waveformNorm, ASSET_BASE, API_BASE } from '$lib/utils.js';
   import { SAMPLE_LABELS, sampleLabelColor } from '$lib/sample-labels.js';
   import { fly }           from 'svelte/transition';
 
@@ -117,6 +117,28 @@
     currentTime = 0;
     duration    = 0;
     isPlaying   = false;
+  });
+
+  // ── Hit metadata (bark timestamps + confidence + loudness from goblin) ────
+  /**
+   * @type {{ timestamps: number[], confidences: number[], loudnesses: number[], paddingS: number } | null}
+   */
+  let hitMetadata = $state(null);
+
+  $effect(() => {
+    const id = entry.id;
+    hitMetadata = null;
+    if (!id) return;
+    fetch(`${API_BASE}/api/diary/${id}/hit-metadata`)
+      .then(r => {
+        if (r.status === 404) return null;
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then(data => {
+        if (entry.id === id && data) hitMetadata = data;
+      })
+      .catch(() => {}); // non-critical — silently ignore network errors
   });
 
   // ── Volume / gain ──────────────────────────────────────────────────────────
@@ -404,6 +426,33 @@
             fill={bar.x <= playheadX ? '#2255bb' : '#a0b8e8'}
           />
         {/each}
+
+        <!-- Hit markers: each confirmed bark hit from goblin inference -->
+        {#if hitMetadata && duration > 0}
+          {#each hitMetadata.timestamps as ts, i}
+            {@const hx = (ts / duration) * VW}
+            {@const conf = hitMetadata.confidences[i]}
+            {@const loud = hitMetadata.loudnesses[i]}
+            {@const alpha = 0.4 + conf * 0.5}
+            <g pointer-events="all">
+              <!-- Vertical tick line -->
+              <line
+                x1={hx} y1="0"
+                x2={hx} y2={VH}
+                stroke="rgba(230, 120, 0, {alpha})"
+                stroke-width="1.5"
+              />
+              <!-- Diamond marker at bottom -->
+              <polygon
+                points="{hx},{VH - 10} {hx - 4},{VH - 5} {hx},{VH} {hx + 4},{VH - 5}"
+                fill="rgb(230, 120, 0)"
+                opacity={alpha}
+              >
+                <title>Hit {i + 1}/{hitMetadata.timestamps.length} · confidence {Math.round(conf * 100)}% · loudness {loud.toFixed(1)}×</title>
+              </polygon>
+            </g>
+          {/each}
+        {/if}
 
         <!-- Playhead line -->
         {#if duration > 0}
