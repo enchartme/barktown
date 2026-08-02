@@ -1214,8 +1214,9 @@
     flex-shrink: 0;
     border-right: 1px solid #e0e0dc;
     background: #fff;
-    max-height: calc(100dvh - 49px);
-    overflow-y: auto;
+    height: calc(100dvh - 49px);
+    display: flex;
+    flex-direction: column;
     position: sticky;
     top: 49px;
   }
@@ -1228,7 +1229,7 @@
 
   @media (max-width: 760px) {
     .training-body { flex-direction: column; }
-    .samples-pane { width: 100%; position: static; max-height: 40vh; border-right: none; border-bottom: 1px solid #e0e0dc; }
+    .samples-pane { width: 100%; position: static; height: 40vh; border-right: none; border-bottom: 1px solid #e0e0dc; }
   }
 
   .corpus-summary { padding: 2rem 1.5rem; max-width: 34rem; }
@@ -1283,8 +1284,7 @@
     gap: 0.3rem;
     padding: 0.7rem 0.9rem;
     border-bottom: 1px solid #f0f0ec;
-    position: sticky;
-    top: 0;
+    flex-shrink: 0;
     background: #fff;
   }
 
@@ -1307,7 +1307,7 @@
   .samples-msg { padding: 1rem 0.9rem; font-size: 0.78rem; color: #999; }
   .samples-err { color: #c0392b; }
 
-  .samples-list { padding-bottom: 0.5rem; }
+  .samples-list { padding-bottom: 0.5rem; overflow-y: auto; flex: 1; }
 
   .sample-row {
     display: flex;
