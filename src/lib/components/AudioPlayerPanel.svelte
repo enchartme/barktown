@@ -422,6 +422,9 @@
       {#if onmovesample}
         <button class="false-positive-btn" onclick={handleFalsePositiveClick} aria-label="Mark as false positive" title="Move this false positive to training samples">👎</button>
       {/if}
+      {#if entry.sampleId}
+        <a class="cross-link-btn" href="/training#{entry.sampleId}" title="View linked training sample">🔬</a>
+      {/if}
       {#if ondelete}
         <button class="delete-btn" onclick={handleDeleteClick} aria-label="Delete entry" title="Delete this recording">🗑</button>
       {/if}
@@ -781,6 +784,13 @@
     line-height: 1;
   }
   .false-positive-btn { margin-left: 0; }
+  .cross-link-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 1rem; line-height: 1; padding: 0.2rem 0.3rem;
+    border-radius: 6px; text-decoration: none; color: inherit;
+    border: 1px solid transparent;
+  }
+  .cross-link-btn:hover { background: #e8f4ff; border-color: #b0d0f0; }
   .download-btn { margin-left: auto; }
   .download-btn:hover { background: #e8f4ff; color: #2255bb; }
   .download-btn:disabled { opacity: 0.5; cursor: default; }

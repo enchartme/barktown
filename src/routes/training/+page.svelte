@@ -192,6 +192,7 @@
   /** @type {{ mins: number[], maxs: number[], norm: number }|null} */
   let waveData        = $state(null);
   let waveLoading      = $state(false);
+  let regenLoading     = $state(false);
   /** @type {Map<string, any>} */
   const waveCache      = new Map();
   /** @type {SVGSVGElement|null} */
@@ -318,7 +319,8 @@
       if (!res.ok) throw new Error();
       const json  = await res.json();
       const norm  = waveformNorm(json.bits ?? 8);
-      const ds    = downsampleWaveform(json.data, BARS);
+      const totalBars = Math.floor(json.data.length / 2);
+      const ds    = downsampleWaveform(json.data, Math.min(6000, totalBars));
       const result = { mins: ds.mins, maxs: ds.maxs, norm };
       waveCache.set(path, result);
       waveData = result;
@@ -327,6 +329,27 @@
       waveData = null;
     } finally {
       waveLoading = false;
+    }
+  }
+
+  async function handleRegenWaveform(pps) {
+    if (!selected || regenLoading) return;
+    regenLoading = true;
+    try {
+      const res = await fetch(
+        `${API_BASE}/api/samples/${encodeURIComponent(selected.id)}/regenerate-waveform`,
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pixelsPerSecond: pps }) },
+      );
+      if (!res.ok) throw new Error(`${res.status}`);
+      const { waveformPath } = await res.json();
+      waveCache.delete(selected.waveformPath);
+      waveCache.delete(waveformPath);
+      selected = { ...selected, waveformPath };
+      await loadWaveform(waveformPath);
+    } catch (e) {
+      console.error('Waveform regen failed:', e);
+    } finally {
+      regenLoading = false;
     }
   }
 
@@ -894,6 +917,9 @@
           <span class="sample-label-pill" style:background={sampleLabelColor(selected.label)}>{selected.label}</span>
           <span class="editor-title">{formatSampleDatetime(selected.datetimeLocal, { seconds: true })}</span>
           <span class="editor-dur">{formatDuration(selected.durationSec)}</span>
+          {#if selected.diaryId}
+            <a class="cross-link-btn" href="/#{selected.diaryId}" title="View source diary entry">📖</a>
+          {/if}
 
           <label class="category-control">
             <span>Category</span>
@@ -934,6 +960,12 @@
           <button class="play-pause-btn" onclick={togglePlay}>{isPlaying ? '⏸' : '▶'}</button>
           <span class="mini-time">{formatDuration(currentTime)} / {formatDuration(duration)}</span>
           <span class="hint">Drag on the waveform to select a fragment · click a fragment to edit it · Delete removes the selection</span>
+          {#if selected}
+            <span class="regen-label">Resolution:</span>
+            <button class="regen-btn" onclick={() => handleRegenWaveform(20)}  disabled={regenLoading} title="20 px/s (default)">20/s</button>
+            <button class="regen-btn" onclick={() => handleRegenWaveform(50)}  disabled={regenLoading} title="50 px/s">50/s</button>
+            <button class="regen-btn" onclick={() => handleRegenWaveform(100)} disabled={regenLoading} title="100 px/s">100/s</button>
+          {/if}
         </div>
 
         <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -1319,6 +1351,12 @@
   }
   .editor-title { font-size: 0.85rem; font-weight: 600; }
   .editor-dur { font-size: 0.78rem; color: #888; font-variant-numeric: tabular-nums; }
+  .cross-link-btn {
+    font-size: 0.9rem; padding: 0.1rem 0.25rem; border-radius: 5px;
+    text-decoration: none; color: inherit; border: 1px solid transparent;
+    margin-left: 0.15rem;
+  }
+  .cross-link-btn:hover { background: #e8f4ff; border-color: #b0d0f0; }
 
   .category-control {
     display: flex;
@@ -1402,6 +1440,15 @@
   .play-pause-btn:hover { opacity: 0.8; }
   .mini-time { font-size: 0.74rem; color: #666; font-variant-numeric: tabular-nums; flex-shrink: 0; }
   .hint { font-size: 0.7rem; color: #aaa; }
+  .regen-label { font-size: 0.7rem; color: #aaa; margin-left: auto; }
+  .regen-btn {
+    font-size: 0.68rem; padding: 0.1rem 0.35rem;
+    border: 1px solid #c0c8d8; border-radius: 4px;
+    background: #f4f6fa; color: #445; cursor: pointer;
+    line-height: 1.4;
+  }
+  .regen-btn:hover:not(:disabled) { background: #e0e8f8; }
+  .regen-btn:disabled { opacity: 0.5; cursor: default; }
 
   .wave-editor {
     width: 100%;
