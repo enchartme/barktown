@@ -454,6 +454,25 @@
                 stroke="rgba(230, 120, 0, {tickAlpha})"
                 stroke-width="1.5"
               />
+              <!-- Labels: right-aligned to the tick, two lines at top -->
+              <text
+                x={hx - 3}
+                y="9"
+                font-size="7"
+                font-family="monospace"
+                text-anchor="end"
+                fill="rgba(200, 90, 0, {tickAlpha})"
+                pointer-events="none"
+              >C{conf.toFixed(2)}</text>
+              <text
+                x={hx - 3}
+                y="18"
+                font-size="7"
+                font-family="monospace"
+                text-anchor="end"
+                fill="rgba(200, 90, 0, {tickAlpha})"
+                pointer-events="none"
+              >L{loud.toFixed(1)}x</text>
               <!-- Diamond at bottom -->
               <polygon
                 points="{hx},{VH - 10} {hx - 4},{VH - 5} {hx},{VH} {hx + 4},{VH - 5}"
