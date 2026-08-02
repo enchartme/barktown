@@ -24,6 +24,16 @@
   let currentTime = $state(0);
   let duration    = $state(0);
 
+  // rAF-based playhead: sample audioEl.currentTime at ~60 fps while playing so
+  // the playhead moves smoothly. ontimeupdate (~4 Hz) stays as a seek fallback.
+  $effect(() => {
+    if (!isPlaying || !audioEl) return;
+    let id = 0;
+    const tick = () => { currentTime = audioEl.currentTime; id = requestAnimationFrame(tick); };
+    id = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(id);
+  });
+
   // ── Waveform data ──────────────────────────────────────────────────────────
   // Module-level cache shared with WaveformPreview (avoids second fetch when
   // the user opens the panel for an already-previewed entry).
