@@ -249,6 +249,30 @@
     deleteConfirm = false;
   }
 
+  // Download: fetch as blob (audio is cross-origin, so <a download> alone won't work).
+  let downloadLoading = $state(false);
+  async function handleDownload() {
+    if (downloadLoading) return;
+    downloadLoading = true;
+    try {
+      const res = await fetch(audioSrc);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = entry.filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    } catch (e) {
+      console.error('Download failed:', e);
+    } finally {
+      downloadLoading = false;
+    }
+  }
+
   // False-positive flow: use a separate compact dialog so the full label
   // taxonomy remains easy to tap on a phone-sized screen.
   let samplePickerOpen = $state(false);
@@ -388,6 +412,13 @@
         <button class="delete-btn" onclick={handleDeleteClick} aria-label="Delete entry" title="Delete this recording">🗑</button>
       {/if}
     {/if}
+    <button
+      class="download-btn"
+      onclick={handleDownload}
+      disabled={downloadLoading}
+      aria-label="Download recording"
+      title="Download audio file"
+    >{downloadLoading ? '⏳' : '📥'}</button>
     <button class="close-btn" onclick={handleClose} aria-label="Close player">✕</button>
   </div>
 
@@ -705,7 +736,6 @@
   }
 
   .close-btn {
-    margin-left: auto;
     flex-shrink: 0;
     background: none;
     border: none;
@@ -715,9 +745,11 @@
     padding: 0.1rem 0.35rem;
     border-radius: 4px;
     line-height: 1;
+    margin-left: 0.15rem;
   }
   .close-btn:hover { background: #f0f0ec; color: #333; }
 
+  .download-btn,
   .delete-btn,
   .false-positive-btn {
     flex-shrink: 0;
@@ -730,7 +762,10 @@
     border-radius: 4px;
     line-height: 1;
   }
-  .false-positive-btn { margin-left: auto; }
+  .false-positive-btn { margin-left: 0; }
+  .download-btn { margin-left: auto; }
+  .download-btn:hover { background: #e8f4ff; color: #2255bb; }
+  .download-btn:disabled { opacity: 0.5; cursor: default; }
   .delete-btn:hover { background: #fdecea; color: #c0392b; }
   .false-positive-btn:hover { background: #fff3cd; color: #6f5900; }
 
