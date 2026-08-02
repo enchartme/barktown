@@ -1,6 +1,6 @@
 <script>
   import { ASSET_BASE, downsampleWaveform, waveformNorm, formatDuration, formatSampleDatetime } from '$lib/utils.js';
-  import { SAMPLE_LABELS as LABELS, SAMPLE_LABEL_GUIDELINES as LABEL_GUIDELINES, sampleLabelColor } from '$lib/sample-labels.js';
+  import { SAMPLE_LABELS as LABELS, SAMPLE_LABEL_GUIDELINES as LABEL_GUIDELINES, sampleLabelColor, sampleLabelShortcut, LABEL_BY_SHORTCUT } from '$lib/sample-labels.js';
 
   // The barktown-ingest CRUD API, reached directly over Tailscale — same
   // no-auth trust model as GoblinPiStatus.svelte. Audio/waveform bytes are
@@ -755,13 +755,30 @@
       e.preventDefault();
       togglePlay();
     }
-    if (!inField && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+    if (!inField && (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'q' || e.key === 'w')) {
       e.preventDefault();
-      selectAdjacentSample(e.key === 'ArrowDown' ? 1 : -1);
+      selectAdjacentSample((e.key === 'ArrowDown' || e.key === 'w') ? 1 : -1);
     }
     if (!inField && audioEl && duration) {
       if (e.key === 'ArrowRight') { e.preventDefault(); audioEl.currentTime = Math.min(duration, currentTime + 2); }
       if (e.key === 'ArrowLeft')  { e.preventDefault(); audioEl.currentTime = Math.max(0, currentTime - 2); }
+    }
+    // Label shortcuts: classify a pending fragment or relabel the selected one.
+    if (!inField && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const labelForKey = LABEL_BY_SHORTCUT.get(e.key);
+      if (labelForKey) {
+        if (pending) {
+          e.preventDefault();
+          pendingLabel = labelForKey;
+          commitFragment();
+        } else if (selectedAnnId != null) {
+          const ann = annotations.find(a => a.id === selectedAnnId);
+          if (ann && ann.source !== 'note') {
+            e.preventDefault();
+            relabelSelected(labelForKey);
+          }
+        }
+      }
     }
   }
 
@@ -949,6 +966,7 @@
               data-ann-id={ann.id}
             ></rect>
             <text x={x + 3} y="12" class="fragment-label" data-role="fragment-body" data-ann-id={ann.id}>{ann.label}</text>
+            <text x={x + 3} y="22" class="fragment-label fragment-dur" data-role="fragment-body" data-ann-id={ann.id}>{(ann.endSec - ann.startSec).toFixed(1)}s</text>
             {#if selectedAnnId === ann.id}
               <rect class="frag-handle" x={x - 3} y="0" width="6" height={VH} data-role="handle-start" data-ann-id={ann.id}></rect>
               <rect class="frag-handle" x={x + w - 3} y="0" width="6" height={VH} data-role="handle-end" data-ann-id={ann.id}></rect>
@@ -1032,13 +1050,16 @@
             <div class="notes-empty">No notes yet.</div>
           {/if}
         </div>
+        <div class="shortcuts-hint">Use shortcuts! [Space] Play/Pause · [Delete] Remove fragment · [↑][↓] or [Q][W] Navigate · [Enter] Apply · see also the hotkeys for every label</div>
 
         {#if pending}
           <div class="pending-toolbar">
             <span class="pending-range">{formatDuration(pending.startSec)} – {formatDuration(pending.endSec)} selected</span>
             <div class="pending-labels">
               {#each LABELS as lbl}
-                <button class="filter-pill" class:active={pendingLabel === lbl} onclick={() => (pendingLabel = lbl)}>{lbl}</button>
+                {@const sc = sampleLabelShortcut(lbl)}
+                {@const idx = lbl.indexOf(sc)}
+                <button class="filter-pill" class:active={pendingLabel === lbl} onclick={() => (pendingLabel = lbl)}>{lbl.slice(0, idx)}<u>{sc}</u>{lbl.slice(idx + 1)}</button>
               {/each}
             </div>
             <button class="action-btn" onclick={commitFragment}>Save fragment (↵)</button>
@@ -1057,7 +1078,9 @@
               <span class="ann-range">{formatDuration(ann.startSec)} – {formatDuration(ann.endSec)}</span>
               <div class="pending-labels">
                 {#each LABELS as lbl}
-                  <button class="filter-pill" class:active={ann.label === lbl} onclick={() => relabelSelected(lbl)}>{lbl}</button>
+                  {@const sc = sampleLabelShortcut(lbl)}
+                  {@const idx = lbl.indexOf(sc)}
+                  <button class="filter-pill" class:active={ann.label === lbl} onclick={() => relabelSelected(lbl)}>{lbl.slice(0, idx)}<u>{sc}</u>{lbl.slice(idx + 1)}</button>
                 {/each}
               </div>
               <button class="danger-btn" onclick={deleteSelectedAnnotation}>Delete</button>
@@ -1392,6 +1415,7 @@
 
   .fragment-band { cursor: pointer; }
   .fragment-label { font-size: 9px; fill: #1a1a1a; pointer-events: none; }
+  .fragment-dur   { fill: rgba(0,0,0,0.5); }
   .frag-handle { fill: #1a1a1a; opacity: 0.35; cursor: ew-resize; }
 
   /* ── Toolbars ── */
@@ -1490,4 +1514,5 @@
   }
   .note-delete-btn:hover { opacity: 0.7; }
   .notes-empty { font-size: 0.74rem; color: #aaa; padding: 0.2rem 0; }
+  .shortcuts-hint { font-size: 0.72rem; color: #aaa; margin-top: 0.6rem; line-height: 1.5; }
 </style>
