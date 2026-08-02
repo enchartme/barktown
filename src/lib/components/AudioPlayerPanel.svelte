@@ -10,7 +10,7 @@
    *   onclose: () => void;
    *   onclosed?: () => void;
    *   ondelete?: (entry: import('$lib/types').Entry) => void;
-   *   onmovesample?: (entry: import('$lib/types').Entry, label: string) => Promise<void>;
+   *   onmovesample?: (entry: import('$lib/types').Entry, label: string, keepInDiary: boolean) => Promise<void>;
    * }}
    */
   let { entry, onclose, onclosed, ondelete, onmovesample } = $props();
@@ -288,6 +288,7 @@
   let samplePickerOpen = $state(false);
   let movingLabel      = $state('');
   let moveError        = $state('');
+  let keepInDiary      = $state(false);
 
   function handleFalsePositiveClick() {
     if (audioEl && isPlaying) audioEl.pause();
@@ -300,6 +301,7 @@
     if (movingLabel) return;
     samplePickerOpen = false;
     moveError = '';
+    keepInDiary = false;
   }
 
   async function handleMoveToSample(label) {
@@ -307,7 +309,7 @@
     movingLabel = label;
     moveError = '';
     try {
-      await onmovesample(entry, label);
+      await onmovesample(entry, label, keepInDiary);
     } catch (e) {
       moveError = e?.message ?? 'Could not move this recording.';
     } finally {
@@ -664,6 +666,10 @@
       {/each}
     </div>
     {#if moveError}<p class="sample-picker-error" role="alert">{moveError}</p>{/if}
+    <label class="keep-in-diary-label">
+      <input type="checkbox" bind:checked={keepInDiary} disabled={Boolean(movingLabel)} />
+      Keep in diary
+    </label>
   </div>
 {/if}
 
@@ -885,6 +891,18 @@
     color: #c0392b;
     font-size: 0.78rem;
   }
+
+  .keep-in-diary-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.9rem;
+    font-size: 0.82rem;
+    color: #555;
+    cursor: pointer;
+    user-select: none;
+  }
+  .keep-in-diary-label input { cursor: pointer; }
 
   /* ── Waveform area ── */
   .waveform-area {

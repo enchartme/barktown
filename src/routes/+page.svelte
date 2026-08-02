@@ -95,13 +95,13 @@
   }
 
   /** Convert a false-positive diary recording into a labeled training sample. */
-  async function moveEntryToSamples(entry, label) {
+  async function moveEntryToSamples(entry, label, keepInDiary = false) {
     const res = await fetch(
       `${API_BASE}/api/diary/${encodeURIComponent(entry.id)}/move-to-samples`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ label }),
+        body: JSON.stringify({ label, keepInDiary }),
       },
     );
     if (!res.ok) {
@@ -115,8 +115,10 @@
       throw new Error(message);
     }
 
-    entries = entries.filter(e => e.id !== entry.id);
-    closePanel();
+    if (!keepInDiary) {
+      entries = entries.filter(e => e.id !== entry.id);
+      closePanel();
+    }
   }
 
   // On mount: fetch diary entries live from the API, then handle deep-link hash.
