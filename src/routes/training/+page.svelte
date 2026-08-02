@@ -873,7 +873,10 @@
             >
               <span class="sample-label-pill" style:background={sampleLabelColor(sample.label)} title={sample.label}>{sample.label.slice(0, 3)}</span>
               <span class="sample-name">
-                <span class="sample-name-main">{formatSampleDatetime(sample.datetimeLocal)}</span>
+                <span class="sample-name-main">
+                  {formatSampleDatetime(sample.datetimeLocal)}
+                  {#if sample.diaryId}<span class="sample-diary-icon" title="Linked to diary entry">📖</span>{/if}
+                </span>
                 {#if notePreview}<span class="sample-note-preview">{notePreview}</span>{/if}
               </span>
               <span class="sample-dur">{formatDuration(sample.durationSec)}</span>
@@ -1367,6 +1370,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
     font-variant-numeric: tabular-nums;
+  }
+  .sample-diary-icon {
+    font-size: 0.65rem;
+    opacity: 0.6;
+    margin-left: 0.25rem;
+    vertical-align: middle;
   }
   .sample-note-preview {
     font-size: 0.64rem;
