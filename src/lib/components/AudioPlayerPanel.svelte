@@ -288,7 +288,7 @@
   let samplePickerOpen = $state(false);
   let movingLabel      = $state('');
   let moveError        = $state('');
-  let keepInDiary      = $state(false);
+  let keepInDiary      = $state(true);
 
   function handleFalsePositiveClick() {
     if (audioEl && isPlaying) audioEl.pause();
@@ -310,6 +310,8 @@
     moveError = '';
     try {
       await onmovesample(entry, label, keepInDiary);
+      samplePickerOpen = false;
+      keepInDiary = true;
     } catch (e) {
       moveError = e?.message ?? 'Could not move this recording.';
     } finally {
