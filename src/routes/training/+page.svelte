@@ -1,5 +1,5 @@
 <script>
-  import { ASSET_BASE, downsampleWaveform, waveformNorm, formatDuration, formatSampleDatetime } from '$lib/utils.js';
+  import { ASSET_BASE, downsampleWaveform, waveformNorm, formatDuration, formatSampleDatetime, formatDate } from '$lib/utils.js';
   import { SAMPLE_LABELS as LABELS, SAMPLE_LABEL_GUIDELINES as LABEL_GUIDELINES, sampleLabelColor, sampleLabelShortcut, LABEL_BY_SHORTCUT } from '$lib/sample-labels.js';
 
   // The barktown-ingest CRUD API, reached directly over Tailscale — same
@@ -863,18 +863,21 @@
           {#each filteredSamples as sample, i (sample.id)}
             {@const notePreview = selected?.id === sample.id ? selectedSampleWideNote?.label : sampleNotes.get(sample.id)}
             {@const fragBlocks = sampleFragments.get(sample.id) ?? []}
-            {@const sampleDay = formatSampleDatetime(sample.datetimeLocal).slice(0, 10)}
-            {@const prevDay = i > 0 ? formatSampleDatetime(filteredSamples[i - 1].datetimeLocal).slice(0, 10) : null}
+            {@const sampleDay = sample.datetimeLocal.slice(0, 10)}
+            {@const prevDay = i > 0 ? filteredSamples[i - 1].datetimeLocal.slice(0, 10) : null}
+            {@const sampleTime = sample.datetimeLocal.slice(11, 19)}
+            {#if sampleDay !== prevDay}
+              <div class="day-header">{formatDate(sampleDay)}</div>
+            {/if}
             <button
               class="sample-row"
               class:playing={selected?.id === sample.id}
-              class:day-start={i > 0 && sampleDay !== prevDay}
               onclick={() => toggleSample(sample)}
             >
               <span class="sample-label-pill" style:background={sampleLabelColor(sample.label)} title={sample.label}>{sample.label.slice(0, 3)}</span>
               <span class="sample-name">
                 <span class="sample-name-main">
-                  {formatSampleDatetime(sample.datetimeLocal)}
+                  {sampleTime}
                   {#if sample.diaryId}<span class="sample-diary-icon" title="Linked to diary entry">📖</span>{/if}
                 </span>
                 {#if notePreview}<span class="sample-note-preview">{notePreview}</span>{/if}
@@ -1323,8 +1326,18 @@
   }
   .sample-row:hover { background: #f7f7f4; }
   .sample-row.playing { background: #eef3fc; }
-  /* Visual gap between days -- roughly one row's height. */
-  .sample-row.day-start { margin-top: 2.4rem; }
+
+  .day-header {
+    padding: 0.45rem 0.9rem 0.2rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #222;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid #cccccc;
+    margin-top: 1.3rem;
+  }
+  .day-header:first-child { border-top: none; margin-top: 0; }
 
   .sample-frag-strip {
     position: absolute;
