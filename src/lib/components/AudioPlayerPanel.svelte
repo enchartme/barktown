@@ -121,7 +121,7 @@
 
   // ── Hit metadata (bark timestamps + confidence + loudness from goblin) ────
   /**
-   * @type {{ timestamps: number[], confidences: number[], loudnesses: number[], paddingS: number } | null}
+   * @type {{ timestamps: number[], confidences: number[], loudnesses: number[], paddingS: number, windowS: number } | null}
    */
   let hitMetadata = $state(null);
 
@@ -427,28 +427,40 @@
           />
         {/each}
 
-        <!-- Hit markers: each confirmed bark hit from goblin inference -->
+        <!-- Hit markers: each confirmed bark hit from goblin inference.
+             hx = end of the detection window (block_end_ts - clip_start_ts).
+             A faint band extends back by window_s to show the uncertainty range
+             — the bark happened somewhere inside the band, not necessarily at hx. -->
         {#if hitMetadata && duration > 0}
+          {@const winPx = (hitMetadata.windowS / duration) * VW}
           {#each hitMetadata.timestamps as ts, i}
             {@const hx = (ts / duration) * VW}
             {@const conf = hitMetadata.confidences[i]}
             {@const loud = hitMetadata.loudnesses[i]}
-            {@const alpha = 0.4 + conf * 0.5}
+            {@const tickAlpha = 0.45 + conf * 0.45}
             <g pointer-events="all">
-              <!-- Vertical tick line -->
+              <!-- Detection-window band: bark is somewhere inside here -->
+              <rect
+                x={Math.max(0, hx - winPx)}
+                y="0"
+                width={Math.min(hx, winPx)}
+                height={VH}
+                fill="rgba(230, 120, 0, 0.07)"
+              />
+              <!-- Tick at end of window -->
               <line
                 x1={hx} y1="0"
                 x2={hx} y2={VH}
-                stroke="rgba(230, 120, 0, {alpha})"
+                stroke="rgba(230, 120, 0, {tickAlpha})"
                 stroke-width="1.5"
               />
-              <!-- Diamond marker at bottom -->
+              <!-- Diamond at bottom -->
               <polygon
                 points="{hx},{VH - 10} {hx - 4},{VH - 5} {hx},{VH} {hx + 4},{VH - 5}"
                 fill="rgb(230, 120, 0)"
-                opacity={alpha}
+                opacity={tickAlpha}
               >
-                <title>Hit {i + 1}/{hitMetadata.timestamps.length} · confidence {Math.round(conf * 100)}% · loudness {loud.toFixed(1)}×</title>
+                <title>Hit {i + 1}/{hitMetadata.timestamps.length} · confidence {Math.round(conf * 100)}% · loudness {loud.toFixed(1)}× · bark is within the shaded band</title>
               </polygon>
             </g>
           {/each}
