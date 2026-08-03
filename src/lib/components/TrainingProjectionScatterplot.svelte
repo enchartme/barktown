@@ -5,6 +5,34 @@
   const GRID_SIZE = 12;
   const HIT_RADIUS = 8;
   const POINT_RADIUS = 2;
+  const QUALITY_COLOR_ENCODINGS = Object.freeze([
+    { value: 'classifierScore', label: 'Classifier score' },
+    { value: 'classifierError', label: 'Classifier error' },
+    { value: 'knnLabelDisagreement', label: 'KNN label mismatch' },
+    { value: 'knnBinaryDisagreement', label: 'KNN binary mismatch' },
+    { value: 'knnMeanDistance', label: 'KNN mean distance' },
+    { value: 'labelCentroidDistance', label: 'Centroid distance' },
+    { value: 'nearestDistance', label: 'Nearest distance' },
+    { value: 'suspicionScore', label: 'Suspicion score' },
+    { value: 'suspicionRank', label: 'Suspicion rank' },
+  ]);
+  const VIRIDIS_STOPS = [
+    [68, 1, 84],
+    [59, 82, 139],
+    [33, 145, 140],
+    [94, 201, 98],
+    [253, 231, 37],
+  ];
+  const VIRIDIS_LUT = Array.from({ length: 256 }, (_, index) => {
+    const t = index / 255;
+    const scaled = t * (VIRIDIS_STOPS.length - 1);
+    const left = Math.min(VIRIDIS_STOPS.length - 2, Math.floor(scaled));
+    const mix = scaled - left;
+    const a = VIRIDIS_STOPS[left];
+    const b = VIRIDIS_STOPS[left + 1];
+    const channel = (i) => Math.round(a[i] + (b[i] - a[i]) * mix);
+    return `rgb(${channel(0)}, ${channel(1)}, ${channel(2)})`;
+  });
 
   /** @type {any[] | null} */
   let cachedPoints = null;
@@ -160,6 +188,7 @@
   let interactionError = $state('');
   /** @type {any | null} */
   let hovered = $state(null);
+  let colorEncoding = $state('label');
   let tooltipX = $state(0);
   let tooltipY = $state(0);
   let plotWidth = 0;
@@ -178,6 +207,21 @@
   const sampleAudioById = $derived.by(() => new Map(
     samples.map((sample) => [sample.id, sample.audioPath]),
   ));
+  const numericColorDomain = $derived.by(() => {
+    if (colorEncoding === 'label') return null;
+    let min = Infinity;
+    let max = -Infinity;
+    for (const point of points) {
+      const value = point[colorEncoding];
+      if (!Number.isFinite(value)) continue;
+      if (value < min) min = value;
+      if (value > max) max = value;
+    }
+    return Number.isFinite(min) ? { min, max } : null;
+  });
+  const selectedEncodingLabel = $derived(
+    QUALITY_COLOR_ENCODINGS.find((encoding) => encoding.value === colorEncoding)?.label ?? 'Label'
+  );
 
   $effect(() => {
     const node = plotWrap;
@@ -194,10 +238,14 @@
     // redraws without changing the projection domain or point positions.
     const hoverId = hovered?.embeddingId;
     const filterLabel = activeLabel;
+    const encoding = colorEncoding;
+    const colorDomain = numericColorDomain;
     if (!plotWrap || !points.length) return;
     const frame = requestAnimationFrame(() => {
       void hoverId;
       void filterLabel;
+      void encoding;
+      void colorDomain;
       draw();
     });
     return () => cancelAnimationFrame(frame);
@@ -256,6 +304,15 @@
     return `${Math.floor(x / GRID_SIZE)},${Math.floor(y / GRID_SIZE)}`;
   }
 
+  function pointColor(point) {
+    if (colorEncoding === 'label') return sampleLabelColor(point.label);
+    const value = point[colorEncoding];
+    if (!Number.isFinite(value) || !numericColorDomain) return '#c8c8c2';
+    const span = numericColorDomain.max - numericColorDomain.min;
+    const t = span > 0 ? (value - numericColorDomain.min) / span : 0.5;
+    return VIRIDIS_LUT[Math.max(0, Math.min(255, Math.round(t * 255)))];
+  }
+
   function draw() {
     if (!canvas || !plotWrap || !points.length) return;
     const rect = plotWrap.getBoundingClientRect();
@@ -299,7 +356,7 @@
 
       ctx.beginPath();
       ctx.arc(sx, sy, POINT_RADIUS, 0, Math.PI * 2);
-      ctx.fillStyle = sampleLabelColor(point.label);
+      ctx.fillStyle = pointColor(point);
       ctx.globalAlpha = activeLabel && point.label !== activeLabel ? 0.16 : 1;
       ctx.fill();
     }
@@ -313,7 +370,7 @@
       ctx.fill();
       ctx.beginPath();
       ctx.arc(hovered.sx, hovered.sy, 5, 0, Math.PI * 2);
-      ctx.fillStyle = sampleLabelColor(hovered.label);
+      ctx.fillStyle = pointColor(hovered);
       ctx.globalAlpha = activeLabel && hovered.label !== activeLabel ? 0.35 : 1;
       ctx.fill();
       ctx.globalAlpha = 1;
@@ -326,6 +383,13 @@
 
   function percentage(value) {
     return Number.isFinite(value) ? `${Math.round(value * 100)}%` : '—';
+  }
+
+  function scaleEnd(value) {
+    if (!Number.isFinite(value)) return '—';
+    if (Number.isInteger(value) && Math.abs(value) >= 10) return value.toLocaleString();
+    if (Math.abs(value) >= 100) return Math.round(value).toLocaleString();
+    return Number(value.toPrecision(3)).toString();
   }
 
   function nearestPoint(x, y) {
@@ -428,8 +492,26 @@
         onpointerleave={handlePointerLeave}
         onclick={handleClick}
         role="img"
-        aria-label={`UMAP scatterplot with ${points.length} embedding windows, coloured by label`}
+        aria-label={`UMAP scatterplot with ${points.length} embedding windows, coloured by ${selectedEncodingLabel.toLowerCase()}`}
       ></canvas>
+      <div class="plot-color-overlay">
+        <label class="color-control">
+          <span>Color</span>
+          <select bind:value={colorEncoding}>
+            <option value="label">Label</option>
+            {#each QUALITY_COLOR_ENCODINGS as encoding}
+              <option value={encoding.value}>{encoding.label}</option>
+            {/each}
+          </select>
+        </label>
+        {#if colorEncoding !== 'label' && numericColorDomain}
+          <div class="continuous-legend" aria-label={`${selectedEncodingLabel} color scale`}>
+            <small>{scaleEnd(numericColorDomain.min)}</small>
+            <i></i>
+            <small>{scaleEnd(numericColorDomain.max)}</small>
+          </div>
+        {/if}
+      </div>
       {#if hovered}
         <div class="plot-tooltip" style:left={`${tooltipX}px`} style:top={`${tooltipY}px`}>
           <span class="tooltip-label" style:background={sampleLabelColor(hovered.label)}>{hovered.label}</span>
@@ -469,6 +551,47 @@
   }
   .projection-heading p { margin: 0; color: #777; font-size: 0.78rem; line-height: 1.45; }
   .point-count { color: #999; font-size: 0.72rem; white-space: nowrap; padding-top: 0.15rem; }
+  .plot-color-overlay {
+    position: absolute;
+    z-index: 3;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    max-width: calc(100% - 16px);
+    padding: 0.35rem 0.45rem;
+    border: 1px solid rgba(0, 0, 0, 0.13);
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  .color-control { display: inline-flex; align-items: center; gap: 0.35rem; color: #666; font-size: 0.72rem; }
+  .color-control select {
+    max-width: 12rem;
+    padding: 0.22rem 0.4rem;
+    border: 1px solid #d0d0ca;
+    border-radius: 4px;
+    background: #fff;
+    color: #222;
+    font: inherit;
+  }
+  .continuous-legend {
+    display: grid;
+    grid-template-columns: auto minmax(70px, 120px) auto;
+    align-items: center;
+    gap: 0.35rem;
+    color: #777;
+    font-size: 0.65rem;
+  }
+  .continuous-legend i {
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right, #440154, #3b528b, #21918c, #5ec962, #fde725);
+  }
+  .continuous-legend small { font-size: inherit; font-variant-numeric: tabular-nums; }
   .plot-wrap {
     position: relative;
     width: 100%;
