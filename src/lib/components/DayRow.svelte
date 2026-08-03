@@ -87,6 +87,43 @@
     return LANE_MARGIN + extra + laneIndex * FLAG_LANE_HEIGHT;
   }
 
+  // ── Current-time indicator (Stockholm) ──────────────────────────────────
+  const STOCKHOLM_TZ = 'Europe/Stockholm';
+
+  function getStockholmNow() {
+    const now = new Date();
+    const parts = new Intl.DateTimeFormat('sv-SE', {
+      timeZone: STOCKHOLM_TZ,
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit',
+    }).formatToParts(now);
+    const get = (type) => parts.find(p => p.type === type)?.value ?? '';
+    return {
+      date: `${get('year')}-${get('month')}-${get('day')}`,
+      minutes: parseInt(get('hour')) * 60 + parseInt(get('minute')),
+    };
+  }
+
+  /** Minutes-since-midnight in Stockholm, or null when this row is not today. */
+  let nowMinutes = $state(null);
+
+  $effect(() => {
+    const update = () => {
+      const { date: todayDate, minutes } = getStockholmNow();
+      nowMinutes = date === todayDate ? minutes : null;
+    };
+    update();
+    const id = setInterval(update, 60_000);
+    return () => clearInterval(id);
+  });
+
+  /** Left offset (%) for the now-line, or null if out of domain / not today. */
+  const nowLeftPct = $derived(
+    nowMinutes !== null && nowMinutes >= domainStartMin && nowMinutes <= domainEndMin
+      ? ((nowMinutes - domainStartMin) / domainWidthMin) * 100
+      : null
+  );
+
   // Formatted date label (used in title attribute)
   const dateLabel    = $derived(formatDate(date));
   // Month + day only, e.g. "Jan 7" (for mobile middle row)
@@ -191,6 +228,10 @@
       </div>
     {/each}
 
+    {#if nowLeftPct !== null}
+      <div class="now-line" style="left: {nowLeftPct}%;"></div>
+    {/if}
+
     </div>
   </div>
 </div>
@@ -274,6 +315,17 @@
     font-size: 0.6rem;
     color: #aaa;
     white-space: nowrap;
+  }
+
+  /* ── Current-time line ── */
+  .now-line {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: #000;
+    pointer-events: none;
+    z-index: 10;
   }
 
   /* ── Entry slot (positioning wrapper) ── */
