@@ -30,6 +30,12 @@
   let samplesLoading  = $state(false);
   let samplesError    = $state('');
   let filterLabel     = $state('all');
+  let hoveredCorpusLabel = $state(/** @type {string|null} */ (null));
+  let pinnedCorpusLabel = $state(/** @type {string|null} */ (null));
+  /** @type {Map<string, number>} */
+  let windowCountsByLabel = $state(new Map());
+
+  const activeCorpusLabel = $derived(hoveredCorpusLabel ?? pinnedCorpusLabel);
 
   const filteredSamples = $derived(
     filterLabel === 'all'      ? samples :
@@ -52,6 +58,14 @@
     }
     return counts;
   });
+
+  function toggleCorpusLabel(label) {
+    pinnedCorpusLabel = pinnedCorpusLabel === label ? null : label;
+  }
+
+  function updateWindowCounts(counts) {
+    windowCountsByLabel = new Map(counts);
+  }
 
   // Fragment-duration histogram per label, binned in 0.5s buckets from 0s up
   // to 5s, plus an overflow bucket for anything longer. Shown as a tiny bar
@@ -856,14 +870,14 @@
 </script>
 
 <svelte:head>
-  <title>Barktown · Training samples</title>
+  <title>Training corpus summary · Barktown</title>
 </svelte:head>
 
 <svelte:window onmousemove={onWindowMouseMove} onmouseup={onWindowMouseUp} onkeydown={handleKeydown} onhashchange={handleHashChange} />
 
 <div class="app">
   <header class="site-header">
-    <h1>🐕 Training samples</h1>
+    <span class="site-brand">🐕 Barktown</span>
     <a class="back-link" href="/">‹ Back to the diary</a>
   </header>
 
@@ -926,20 +940,35 @@
     </aside>
 
     <main class="editor-pane">
+      <h1 class="page-title">Training corpus summary</h1>
+
       {#if !selected}
         <div class="corpus-summary">
-          <p class="corpus-summary-hint">Select a sample on the left to play, annotate, or edit it.</p>
+          <TrainingProjectionScatterplot
+            {samples}
+            activeLabel={activeCorpusLabel}
+            onwindowcounts={updateWindowCounts}
+            onopen={openProjectionPoint}
+          />
+
           <div class="corpus-summary-copy">
-            <h2 class="corpus-summary-title">Corpus summary</h2>
             <table class="corpus-table">
               <thead>
-                <tr><th>Label</th><th>Duration</th><th>Occupancy</th><th>Samples</th><th>Fragments</th><th>Durations</th></tr>
+                <tr><th>Label</th><th>Duration</th><th>Occupancy</th><th>Samples</th><th>Fragments</th><th>Windows</th><th>Durations</th></tr>
               </thead>
               <tbody>
                 {#each LABELS as lbl}
                   {@const fragCount = fragmentCountsByLabel.get(lbl) ?? 0}
                   {@const guide = LABEL_GUIDELINES[lbl]}
-                  <tr>
+                  <!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
+                  <tr
+                    class:filter-active={activeCorpusLabel === lbl}
+                    class:filter-muted={activeCorpusLabel && activeCorpusLabel !== lbl}
+                    onpointerenter={() => (hoveredCorpusLabel = lbl)}
+                    onpointerleave={() => (hoveredCorpusLabel = null)}
+                    onclick={() => toggleCorpusLabel(lbl)}
+                    title={`Focus ${lbl}; click to ${pinnedCorpusLabel === lbl ? 'clear' : 'keep'} focus`}
+                  >
                     <td><span class="sample-label-pill" style:background={sampleLabelColor(lbl)}>{lbl}</span></td>
                     <td class="corpus-guideline">{guide?.duration ?? '\u2014'}</td>
                     <td class="corpus-guideline">{guide?.occupancy ?? '\u2014'}</td>
@@ -950,6 +979,7 @@
                       class:corpus-mid={fragCount >= 30 && fragCount < 100}
                       class:corpus-good={fragCount >= 100}
                     >{fragCount}</td>
+                    <td>{windowCountsByLabel.get(lbl)?.toLocaleString() ?? '—'}</td>
                     <td class="corpus-chart-cell" title={fragmentDurationTitle(lbl)}>
                       <span class="chart">{fragmentDurationChart(lbl)}</span>
                     </td>
@@ -965,7 +995,6 @@
               Durations: 0–0.5s bins up to 5s, then one &gt;5s bucket — hover a chart for exact counts.
             </p>
           </div>
-          <TrainingProjectionScatterplot {samples} onopen={openProjectionPoint} />
         </div>
       {:else}
         <button class="corpus-back-btn" onclick={deselectSample}>← Back to corpus overview</button>
@@ -1228,7 +1257,7 @@
     align-items: center;
     gap: 1rem;
   }
-  .site-header h1 { margin: 0; font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; }
+  .site-brand { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; }
   .back-link {
     font-size: 0.78rem;
     color: #555;
@@ -1263,16 +1292,19 @@
     padding: 1rem 1.2rem 2rem;
   }
 
+  .page-title {
+    margin: 0 0 0.35rem;
+    font-size: 1.35rem;
+    letter-spacing: -0.025em;
+  }
+
   @media (max-width: 760px) {
     .training-body { flex-direction: column; }
     .samples-pane { width: 100%; position: static; height: 40vh; border-right: none; border-bottom: 1px solid #e0e0dc; }
   }
 
-  .corpus-summary { padding: 2rem 1.5rem; width: 100%; max-width: 90rem; }
-  .corpus-summary-copy { max-width: 46rem; }
-  .corpus-summary-hint { color: #999; font-size: 0.9rem; margin: 0 0 1.5rem; }
-  .corpus-summary-title { font-size: 1rem; margin: 0 0 0.75rem; }
-
+  .corpus-summary { padding: 0 0.3rem 2rem; width: 100%; max-width: 90rem; }
+  .corpus-summary-copy { max-width: 52rem; margin-top: 1.5rem; }
   .corpus-table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
   .corpus-table th {
     text-align: left;
@@ -1289,6 +1321,11 @@
     font-variant-numeric: tabular-nums;
   }
   .corpus-table th:not(:first-child), .corpus-table td:not(:first-child) { text-align: right; }
+  .corpus-table tbody tr { cursor: pointer; transition: opacity 0.1s, background 0.1s; }
+  .corpus-table tbody tr:hover,
+  .corpus-table tbody tr.filter-active { background: #fff; }
+  .corpus-table tbody tr.filter-active { box-shadow: inset 3px 0 0 #555; }
+  .corpus-table tbody tr.filter-muted { opacity: 0.48; }
 
   .corpus-guideline { color: #999; white-space: nowrap; }
   .corpus-frag-count { font-weight: 700; }

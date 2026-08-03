@@ -68,6 +68,12 @@
     return cells;
   }
 
+  function optionalNumber(value) {
+    if (value == null || String(value).trim() === '') return null;
+    const number = Number(value);
+    return Number.isFinite(number) ? number : null;
+  }
+
   async function loadProjectionPoints() {
     if (cachedPoints) return cachedPoints;
     if (pointsRequest) return pointsRequest;
@@ -106,9 +112,19 @@
             windowEnd: Number(row[column.window_end_s]),
             recordingStart: Number(row[column.recording_window_start_s]),
             recordingEnd: Number(row[column.recording_window_end_s]),
-            annotationStart: Number(row[column.annotation_start_s]),
-            annotationEnd: Number(row[column.annotation_end_s]),
+            annotationStart: optionalNumber(row[column.annotation_start_s]),
+            annotationEnd: optionalNumber(row[column.annotation_end_s]),
             label: row[column.label],
+            trainOrValidation: row[column.train_or_validation],
+            classifierScore: optionalNumber(row[column.classifier_score]),
+            classifierError: optionalNumber(row[column.classifier_error]),
+            knnLabelDisagreement: optionalNumber(row[column.knn_label_disagreement]),
+            knnBinaryDisagreement: optionalNumber(row[column.knn_binary_disagreement]),
+            knnMeanDistance: optionalNumber(row[column.knn_mean_distance]),
+            labelCentroidDistance: optionalNumber(row[column.label_centroid_distance]),
+            nearestDistance: optionalNumber(row[column.nearest_distance]),
+            suspicionScore: optionalNumber(row[column.suspicion_score]),
+            suspicionRank: optionalNumber(row[column.suspicion_rank]),
             x,
             y,
           });
@@ -128,10 +144,10 @@
 
 <script>
   import { onMount } from 'svelte';
-  import { SAMPLE_LABELS, sampleLabelColor } from '$lib/sample-labels.js';
+  import { sampleLabelColor } from '$lib/sample-labels.js';
 
-  /** @type {{ samples?: any[], onopen?: (point: any) => Promise<string | void> | string | void }} */
-  let { samples = [], onopen = () => {} } = $props();
+  /** @type {{ samples?: any[], activeLabel?: string|null, onopen?: (point: any) => Promise<string | void> | string | void, onwindowcounts?: (counts: Map<string, number>) => void }} */
+  let { samples = [], activeLabel = null, onopen = () => {}, onwindowcounts = () => {} } = $props();
 
   /** @type {HTMLCanvasElement | null} */
   let canvas = $state(null);
@@ -144,8 +160,6 @@
   let interactionError = $state('');
   /** @type {any | null} */
   let hovered = $state(null);
-  let hoveredLegendLabel = $state(/** @type {string|null} */ (null));
-  let pinnedLegendLabel = $state(/** @type {string|null} */ (null));
   let tooltipX = $state(0);
   let tooltipY = $state(0);
   let plotWidth = 0;
@@ -161,15 +175,9 @@
   let previewStop = null;
   let previewToken = 0;
 
-  const labelCounts = $derived.by(() => {
-    const counts = new Map();
-    for (const point of points) counts.set(point.label, (counts.get(point.label) ?? 0) + 1);
-    return counts;
-  });
   const sampleAudioById = $derived.by(() => new Map(
     samples.map((sample) => [sample.id, sample.audioPath]),
   ));
-  const activeLegendLabel = $derived(hoveredLegendLabel ?? pinnedLegendLabel);
 
   $effect(() => {
     const node = plotWrap;
@@ -182,14 +190,14 @@
 
   $effect(() => {
     // Redraw only when the hovered identity changes; pointer movement within
-    // the same dot merely repositions the HTML tooltip. Legend focus also
+    // the same dot merely repositions the HTML tooltip. Table-row focus also
     // redraws without changing the projection domain or point positions.
     const hoverId = hovered?.embeddingId;
-    const legendLabel = activeLegendLabel;
+    const filterLabel = activeLabel;
     if (!plotWrap || !points.length) return;
     const frame = requestAnimationFrame(() => {
       void hoverId;
-      void legendLabel;
+      void filterLabel;
       draw();
     });
     return () => cancelAnimationFrame(frame);
@@ -292,7 +300,7 @@
       ctx.beginPath();
       ctx.arc(sx, sy, POINT_RADIUS, 0, Math.PI * 2);
       ctx.fillStyle = sampleLabelColor(point.label);
-      ctx.globalAlpha = activeLegendLabel && point.label !== activeLegendLabel ? 0.16 : 1;
+      ctx.globalAlpha = activeLabel && point.label !== activeLabel ? 0.16 : 1;
       ctx.fill();
     }
     ctx.globalAlpha = 1;
@@ -306,14 +314,18 @@
       ctx.beginPath();
       ctx.arc(hovered.sx, hovered.sy, 5, 0, Math.PI * 2);
       ctx.fillStyle = sampleLabelColor(hovered.label);
-      ctx.globalAlpha = activeLegendLabel && hovered.label !== activeLegendLabel ? 0.35 : 1;
+      ctx.globalAlpha = activeLabel && hovered.label !== activeLabel ? 0.35 : 1;
       ctx.fill();
       ctx.globalAlpha = 1;
     }
   }
 
-  function toggleLegendLabel(label) {
-    pinnedLegendLabel = pinnedLegendLabel === label ? null : label;
+  function metric(value, digits = 3) {
+    return Number.isFinite(value) ? value.toFixed(digits) : '—';
+  }
+
+  function percentage(value) {
+    return Number.isFinite(value) ? `${Math.round(value * 100)}%` : '—';
   }
 
   function nearestPoint(x, y) {
@@ -344,8 +356,8 @@
     if (!canvas) return;
     const { x, y } = pointerPosition(event);
     const next = nearestPoint(x, y);
-    tooltipX = Math.min(Math.max(8, x + 12), Math.max(8, plotWidth - 238));
-    tooltipY = Math.min(Math.max(8, y + 12), Math.max(8, plotHeight - 96));
+    tooltipX = Math.min(Math.max(8, x + 12), Math.max(8, plotWidth - 304));
+    tooltipY = Math.min(Math.max(8, y + 12), Math.max(8, plotHeight - 180));
     if (next?.embeddingId === hovered?.embeddingId) return;
     hovered = next;
     interactionError = '';
@@ -375,6 +387,9 @@
     loadProjectionPoints()
       .then((loaded) => {
         points = loaded;
+        const counts = new Map();
+        for (const point of loaded) counts.set(point.label, (counts.get(point.label) ?? 0) + 1);
+        onwindowcounts(counts);
         loading = false;
         requestAnimationFrame(draw);
       })
@@ -394,13 +409,10 @@
   });
 </script>
 
-<section class="projection" aria-labelledby="projection-title">
+<section class="projection" aria-label="Embedding projection">
   <div class="projection-heading">
-    <div>
-      <h3 id="projection-title">Embedding projection</h3>
-      <p>UMAP view of the exported training fragments. Hover a dot to hear its labelled fragment; click to open the parent recording at that moment.</p>
-    </div>
-    {#if points.length}<span class="point-count">{points.length.toLocaleString()} fragments</span>{/if}
+    <p>UMAP view of the exported embedding windows. Hover a window to hear its labelled audio; click to open the parent recording at that moment.</p>
+    {#if points.length}<span class="point-count">{points.length.toLocaleString()} windows</span>{/if}
   </div>
 
   {#if loading}
@@ -416,45 +428,37 @@
         onpointerleave={handlePointerLeave}
         onclick={handleClick}
         role="img"
-        aria-label={`UMAP scatterplot with ${points.length} audio fragments, coloured by label`}
+        aria-label={`UMAP scatterplot with ${points.length} embedding windows, coloured by label`}
       ></canvas>
       {#if hovered}
         <div class="plot-tooltip" style:left={`${tooltipX}px`} style:top={`${tooltipY}px`}>
           <span class="tooltip-label" style:background={sampleLabelColor(hovered.label)}>{hovered.label}</span>
           <strong>{hovered.originalRecording}</strong>
           <span>{hovered.recordingStart.toFixed(2)}–{hovered.recordingEnd.toFixed(2)} s in parent</span>
-          <span class="tooltip-id">{hovered.embeddingId}</span>
+          <div class="quality-grid">
+            <span class="quality-title">Quality criteria</span>
+            <span><small>Split</small><b>{hovered.trainOrValidation || '—'}</b></span>
+            <span><small>Classifier score</small><b>{metric(hovered.classifierScore)}</b></span>
+            <span><small>Classifier error</small><b>{metric(hovered.classifierError)}</b></span>
+            <span><small>KNN label mismatch</small><b>{percentage(hovered.knnLabelDisagreement)}</b></span>
+            <span><small>KNN binary mismatch</small><b>{percentage(hovered.knnBinaryDisagreement)}</b></span>
+            <span><small>KNN mean distance</small><b>{metric(hovered.knnMeanDistance, 4)}</b></span>
+            <span><small>Centroid distance</small><b>{metric(hovered.labelCentroidDistance, 4)}</b></span>
+            <span><small>Nearest distance</small><b>{metric(hovered.nearestDistance, 4)}</b></span>
+            <span><small>Suspicion score</small><b>{metric(hovered.suspicionScore)}</b></span>
+            <span><small>Suspicion rank</small><b>{Number.isFinite(hovered.suspicionRank) ? `#${hovered.suspicionRank}` : '—'}</b></span>
+          </div>
         </div>
       {/if}
     </div>
 
-    <div class="projection-legend" aria-label="Label focus filters">
-      {#each SAMPLE_LABELS as label}
-        {#if labelCounts.has(label)}
-          <button
-            class:active={activeLegendLabel === label}
-            class:pinned={pinnedLegendLabel === label}
-            aria-pressed={pinnedLegendLabel === label}
-            onpointerenter={() => (hoveredLegendLabel = label)}
-            onpointerleave={() => (hoveredLegendLabel = null)}
-            onclick={() => toggleLegendLabel(label)}
-            title={`Focus ${label}; click to ${pinnedLegendLabel === label ? 'clear' : 'keep'} focus`}
-          >
-            <i style:background={sampleLabelColor(label)}></i>{label}
-            <small>{labelCounts.get(label).toLocaleString()}</small>
-          </button>
-        {/if}
-      {/each}
-    </div>
     {#if interactionError}<div class="plot-message plot-error">{interactionError}</div>{/if}
   {/if}
 </section>
 
 <style>
   .projection {
-    margin-top: 2rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid #e0e0dc;
+    margin-top: 0.75rem;
   }
   .projection-heading {
     display: flex;
@@ -463,8 +467,7 @@
     gap: 1rem;
     margin-bottom: 0.7rem;
   }
-  .projection h3 { margin: 0; font-size: 1rem; }
-  .projection-heading p { margin: 0.25rem 0 0; color: #777; font-size: 0.78rem; line-height: 1.45; }
+  .projection-heading p { margin: 0; color: #777; font-size: 0.78rem; line-height: 1.45; }
   .point-count { color: #999; font-size: 0.72rem; white-space: nowrap; padding-top: 0.15rem; }
   .plot-wrap {
     position: relative;
@@ -483,7 +486,7 @@
   .plot-tooltip {
     position: absolute;
     z-index: 2;
-    width: 226px;
+    width: 292px;
     display: flex;
     flex-direction: column;
     gap: 0.22rem;
@@ -506,33 +509,26 @@
     letter-spacing: 0.03em;
     font-size: 0.58rem;
   }
-  .tooltip-id { color: #999; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .projection-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem 0.8rem;
-    margin-top: 0.6rem;
-    color: #555;
-    font-size: 0.7rem;
+  .quality-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem 0.65rem;
+    margin-top: 0.25rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid #e8e8e3;
   }
-  .projection-legend button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    padding: 0.18rem 0.35rem;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    cursor: pointer;
+  .quality-grid span { display: flex; align-items: baseline; justify-content: space-between; gap: 0.35rem; min-width: 0; }
+  .quality-grid .quality-title {
+    grid-column: 1 / -1;
+    display: block;
+    color: #777;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
-  .projection-legend button:hover,
-  .projection-legend button.active { background: #fff; border-color: #d8d8d2; }
-  .projection-legend button.pinned { border-color: #777; box-shadow: inset 0 -2px 0 #777; }
-  .projection-legend button:focus-visible { outline: 2px solid rgba(74, 124, 220, 0.35); outline-offset: 1px; }
-  .projection-legend i { width: 7px; height: 7px; border-radius: 50%; }
-  .projection-legend small { color: #aaa; font-size: inherit; font-variant-numeric: tabular-nums; }
+  .quality-grid small { color: #888; font-size: 0.6rem; white-space: nowrap; }
+  .quality-grid b { font-size: 0.64rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .plot-message {
     min-height: 180px;
     display: grid;
