@@ -1,6 +1,8 @@
 <script>
+  import { tick } from 'svelte';
   import { ASSET_BASE, downsampleWaveform, waveformNorm, formatDuration, formatSampleDatetime, formatDate } from '$lib/utils.js';
   import { SAMPLE_LABELS as LABELS, SAMPLE_LABEL_GUIDELINES as LABEL_GUIDELINES, sampleLabelColor, sampleLabelShortcut, LABEL_BY_SHORTCUT } from '$lib/sample-labels.js';
+  import TrainingProjectionScatterplot from '$lib/components/TrainingProjectionScatterplot.svelte';
 
   // The barktown-ingest CRUD API, reached directly over Tailscale — same
   // no-auth trust model as GoblinPiStatus.svelte. Audio/waveform bytes are
@@ -185,6 +187,7 @@
   let isPlaying       = $state(false);
   let currentTime     = $state(0);
   let duration        = $state(0);
+  let pendingSeekSec  = $state(/** @type {number|null} */ (null));
 
   // rAF-based playhead: sample audioEl.currentTime at ~60 fps while playing so
   // the playhead moves smoothly. ontimeupdate stays as a seek fallback.
@@ -385,11 +388,12 @@
     }
   }
 
-  async function selectSample(sample) {
+  async function selectSample(sample, seekSec = null) {
     if (audioEl && isPlaying) audioEl.pause();
     isPlaying      = false;
     currentTime    = 0;
     duration       = sample.durationSec || 0;
+    pendingSeekSec = seekSec;
     selected       = sample;
     selectedAnnId  = null;
     editingNoteId  = null;
@@ -415,6 +419,7 @@
     isPlaying        = false;
     currentTime      = 0;
     duration         = 0;
+    pendingSeekSec   = null;
     selected         = null;
     selectedAnnId    = null;
     editingNoteId    = null;
@@ -450,6 +455,27 @@
 
   function audioSrc(sample) {
     return `${ASSET_BASE}/${encodeURIComponent(sample.audioPath).replace(/%2F/g, '/')}`;
+  }
+
+  function applyPendingSeek() {
+    if (!audioEl || pendingSeekSec == null) return;
+    const maxTime = Number.isFinite(audioEl.duration) ? audioEl.duration : duration;
+    const seekSec = Math.max(0, Math.min(pendingSeekSec, maxTime || pendingSeekSec));
+    audioEl.currentTime = seekSec;
+    currentTime = seekSec;
+    pendingSeekSec = null;
+  }
+
+  /** Open a projection dot in the existing sample editor and seek the full
+   * recording to the analysis window represented by that dot. */
+  async function openProjectionPoint(point) {
+    const sample = samples.find((candidate) =>
+      candidate.audioPath === point.originalAudio || candidate.id === point.originalRecording
+    );
+    if (!sample) return `The parent recording “${point.originalRecording}” is not in the current sample list.`;
+    void selectSample(sample, point.recordingStart);
+    await tick();
+    if (audioEl?.readyState >= 1) applyPendingSeek();
   }
 
   async function togglePlay() {
@@ -903,42 +929,47 @@
       {#if !selected}
         <div class="corpus-summary">
           <p class="corpus-summary-hint">Select a sample on the left to play, annotate, or edit it.</p>
-          <h2 class="corpus-summary-title">Corpus summary</h2>
-          <table class="corpus-table">
-            <thead>
-              <tr><th>Label</th><th>Duration</th><th>Occupancy</th><th>Samples</th><th>Fragments</th><th>Durations</th></tr>
-            </thead>
-            <tbody>
-              {#each LABELS as lbl}
-                {@const fragCount = fragmentCountsByLabel.get(lbl) ?? 0}
-                {@const guide = LABEL_GUIDELINES[lbl]}
-                <tr>
-                  <td><span class="sample-label-pill" style:background={sampleLabelColor(lbl)}>{lbl}</span></td>
-                  <td class="corpus-guideline">{guide?.duration ?? '\u2014'}</td>
-                  <td class="corpus-guideline">{guide?.occupancy ?? '\u2014'}</td>
-                  <td>{sampleCountsByLabel.get(lbl) ?? 0}</td>
-                  <td
-                    class="corpus-frag-count"
-                    class:corpus-low={fragCount < 30}
-                    class:corpus-mid={fragCount >= 30 && fragCount < 100}
-                    class:corpus-good={fragCount >= 100}
-                  >{fragCount}</td>
-                  <td class="corpus-chart-cell" title={fragmentDurationTitle(lbl)}>
-                    <span class="chart">{fragmentDurationChart(lbl)}</span>
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-          <p class="corpus-summary-legend">
-            Fragments target (per docs/training-data.md): <span class="corpus-low">&lt;30 low</span> ·
-            <span class="corpus-mid">30–99 viable</span> · <span class="corpus-good">100+ good</span>
-          </p>
-          <p class="corpus-summary-legend">
-            Durations: 0–0.5s bins up to 5s, then one &gt;5s bucket — hover a chart for exact counts.
-          </p>
+          <div class="corpus-summary-copy">
+            <h2 class="corpus-summary-title">Corpus summary</h2>
+            <table class="corpus-table">
+              <thead>
+                <tr><th>Label</th><th>Duration</th><th>Occupancy</th><th>Samples</th><th>Fragments</th><th>Durations</th></tr>
+              </thead>
+              <tbody>
+                {#each LABELS as lbl}
+                  {@const fragCount = fragmentCountsByLabel.get(lbl) ?? 0}
+                  {@const guide = LABEL_GUIDELINES[lbl]}
+                  <tr>
+                    <td><span class="sample-label-pill" style:background={sampleLabelColor(lbl)}>{lbl}</span></td>
+                    <td class="corpus-guideline">{guide?.duration ?? '\u2014'}</td>
+                    <td class="corpus-guideline">{guide?.occupancy ?? '\u2014'}</td>
+                    <td>{sampleCountsByLabel.get(lbl) ?? 0}</td>
+                    <td
+                      class="corpus-frag-count"
+                      class:corpus-low={fragCount < 30}
+                      class:corpus-mid={fragCount >= 30 && fragCount < 100}
+                      class:corpus-good={fragCount >= 100}
+                    >{fragCount}</td>
+                    <td class="corpus-chart-cell" title={fragmentDurationTitle(lbl)}>
+                      <span class="chart">{fragmentDurationChart(lbl)}</span>
+                    </td>
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+            <p class="corpus-summary-legend">
+              Fragments target (per docs/training-data.md): <span class="corpus-low">&lt;30 low</span> ·
+              <span class="corpus-mid">30–99 viable</span> · <span class="corpus-good">100+ good</span>
+            </p>
+            <p class="corpus-summary-legend">
+              Durations: 0–0.5s bins up to 5s, then one &gt;5s bucket — hover a chart for exact counts.
+            </p>
+          </div>
+          <TrainingProjectionScatterplot {samples} onopen={openProjectionPoint} />
         </div>
       {:else}
+        <button class="corpus-back-btn" onclick={deselectSample}>← Back to corpus overview</button>
+
         <div class="editor-header">
           <span class="sample-label-pill" style:background={sampleLabelColor(selected.label)}>{selected.label}</span>
           <span class="editor-title">{formatSampleDatetime(selected.datetimeLocal, { seconds: true })}</span>
@@ -979,7 +1010,12 @@
           onpause={() => (isPlaying = false)}
           onended={() => (isPlaying = false)}
           ontimeupdate={() => { if (audioEl) currentTime = audioEl.currentTime; }}
-          onloadedmetadata={() => { if (audioEl) duration = audioEl.duration || selected.durationSec; }}
+          onloadedmetadata={() => {
+            if (audioEl) {
+              duration = audioEl.duration || selected.durationSec;
+              applyPendingSeek();
+            }
+          }}
         ></audio>
 
         <div class="player-controls">
@@ -1232,7 +1268,8 @@
     .samples-pane { width: 100%; position: static; height: 40vh; border-right: none; border-bottom: 1px solid #e0e0dc; }
   }
 
-  .corpus-summary { padding: 2rem 1.5rem; max-width: 34rem; }
+  .corpus-summary { padding: 2rem 1.5rem; width: 100%; max-width: 90rem; }
+  .corpus-summary-copy { max-width: 46rem; }
   .corpus-summary-hint { color: #999; font-size: 0.9rem; margin: 0 0 1.5rem; }
   .corpus-summary-title { font-size: 1rem; margin: 0 0 0.75rem; }
 
@@ -1260,6 +1297,25 @@
   .corpus-good { color: #27ae60; }
 
   .corpus-summary-legend { font-size: 0.72rem; color: #999; margin-top: 1rem; }
+
+  .corpus-back-btn {
+    display: block;
+    width: 100%;
+    margin: 0 0 1rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid #d4d4ce;
+    border-radius: 7px;
+    background: #fff;
+    color: #1a1a1a;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.1s, border-color 0.1s;
+  }
+  .corpus-back-btn:hover { background: #f0f0ec; border-color: #bdbdb6; }
+  .corpus-back-btn:focus-visible { outline: 3px solid rgba(74, 124, 220, 0.3); outline-offset: 2px; }
 
   /* ── Duration histogram sparkline (Datatype font bar-chart ligatures) ── */
   @font-face {
