@@ -467,6 +467,27 @@
     selectSample(list[nextIdx]);
   }
 
+  /** Fragments of the selected sample, in timeline order — the order arrow
+   * left/right navigation moves through. */
+  const sortedFragments = $derived(renderFragments.slice().sort((a, b) => a.startSec - b.startSec));
+
+  /** Arrow left/right: move focus to the previous/next fragment of the
+   * selected sample, so its label/boundaries can be edited. No wraparound;
+   * if nothing is focused yet, right picks the first fragment and left
+   * picks the last. */
+  function selectAdjacentFragment(delta) {
+    const list = sortedFragments;
+    if (!list.length) return;
+    const idx = list.findIndex(f => f.id === selectedAnnId);
+    if (idx === -1) {
+      selectedAnnId = (delta > 0 ? list[0] : list[list.length - 1]).id;
+      return;
+    }
+    const nextIdx = idx + delta;
+    if (nextIdx < 0 || nextIdx >= list.length) return;
+    selectedAnnId = list[nextIdx].id;
+  }
+
   function audioSrc(sample) {
     return `${ASSET_BASE}/${encodeURIComponent(sample.audioPath).replace(/%2F/g, '/')}`;
   }
@@ -834,9 +855,9 @@
       e.preventDefault();
       selectAdjacentSample((e.key === 'ArrowDown' || e.key === 'w') ? 1 : -1);
     }
-    if (!inField && audioEl && duration) {
-      if (e.key === 'ArrowRight') { e.preventDefault(); audioEl.currentTime = Math.min(duration, currentTime + 2); }
-      if (e.key === 'ArrowLeft')  { e.preventDefault(); audioEl.currentTime = Math.max(0, currentTime - 2); }
+    if (!inField && selected && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+      e.preventDefault();
+      selectAdjacentFragment(e.key === 'ArrowRight' ? 1 : -1);
     }
     // Label shortcuts: classify a pending fragment or relabel the selected one.
     if (!inField && !e.ctrlKey && !e.metaKey && !e.altKey) {
@@ -1189,7 +1210,7 @@
           </div>
         {/if}
 
-        <div class="shortcuts-hint">Use shortcuts! [Space] Play/Pause · [Delete] Remove fragment · [↑][↓] or [Q][W] Navigate · [Enter] Apply · see also the hotkeys for every label</div>
+        <div class="shortcuts-hint">Use shortcuts! [Space] Play/Pause · [Delete] Remove fragment · [↑][↓] or [Q][W] Navigate · [←][→] Focus fragment · [Enter] Apply · see also the hotkeys for every label</div>
 
         {#if pending}
           <div class="pending-toolbar">
