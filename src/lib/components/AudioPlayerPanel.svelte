@@ -364,6 +364,26 @@
     }
   }
 
+  // ── Re-analyze: re-score the archived source with YAMNet + classifier ────
+  let reanalyzeLoading = $state(false);
+  let reanalyzeError   = $state('');
+
+  async function handleReanalyzeClick() {
+    if (reanalyzeLoading) return;
+    reanalyzeLoading = true;
+    reanalyzeError = '';
+    try {
+      const res = await fetch(`${API_BASE}/api/diary/${entry.id}/reanalyze`, { method: 'POST' });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error ?? `HTTP ${res.status}`);
+      hitMetadata = data;
+    } catch (e) {
+      reanalyzeError = e?.message ?? 'Re-analysis failed.';
+    } finally {
+      reanalyzeLoading = false;
+    }
+  }
+
   function handlePlay()  { isPlaying = true; }
   function handlePause() { isPlaying = false; }
   function handleEnded() { isPlaying = false; currentTime = 0; }
@@ -467,6 +487,13 @@
       {#if onmovesample && !entry.sampleId}
         <button class="false-positive-btn" onclick={handleFalsePositiveClick} aria-label="Mark as false positive" title="Move this false positive to training samples">👎</button>
       {/if}
+      <button
+        class="reanalyze-btn"
+        onclick={handleReanalyzeClick}
+        disabled={reanalyzeLoading}
+        aria-label="Re-analyze recording"
+        title="Re-run bark detection against the archived source recording"
+      >{reanalyzeLoading ? '⏳' : '🔁'}</button>
       {#if entry.sampleId}
         <a class="cross-link-btn" href="/training#{entry.sampleId}" title="View linked training sample">🔬</a>
       {/if}
@@ -483,6 +510,10 @@
     >{downloadLoading ? '⏳' : '📥'}</button>
     <button class="close-btn" onclick={handleClose} aria-label="Close player">✕</button>
   </div>
+
+  {#if reanalyzeError}
+    <p class="reanalyze-error">{reanalyzeError}</p>
+  {/if}
 
   <!-- ── Waveform area ── -->
   <div class="waveform-area">
@@ -822,7 +853,8 @@
 
   .download-btn,
   .delete-btn,
-  .false-positive-btn {
+  .false-positive-btn,
+  .reanalyze-btn {
     flex-shrink: 0;
     background: none;
     border: none;
@@ -834,6 +866,8 @@
     line-height: 1;
   }
   .false-positive-btn { margin-left: 0; }
+  .reanalyze-btn:hover { background: #e8f4ff; color: #2255bb; }
+  .reanalyze-btn:disabled { opacity: 0.5; cursor: default; }
   .cross-link-btn {
     display: inline-flex; align-items: center; justify-content: center;
     font-size: 1rem; line-height: 1; padding: 0.2rem 0.3rem;
@@ -847,13 +881,18 @@
   .delete-btn:hover { background: #fdecea; color: #c0392b; }
   .false-positive-btn:hover { background: #fff3cd; color: #6f5900; }
 
+  .reanalyze-error {
+    margin: 0 1rem 0.5rem;
+    font-size: 0.85rem;
+    color: #c0392b;
+  }
+
   .delete-confirm {
     display: flex;
     align-items: center;
     gap: 0.35rem;
     margin-left: auto;
-    flex-shrink: 0;
-  }
+    flex-shrink: 0;  }
   .delete-confirm-text {
     font-size: 0.8rem;
     color: #c0392b;
