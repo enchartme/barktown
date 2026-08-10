@@ -44,6 +44,11 @@
   let waveData   = $state(null);
   let wfLoading  = $state(false);
 
+  /** @type {HTMLCanvasElement | null} */
+  let waveCanvasEl = $state(null);
+  /** @type {HTMLDivElement | null} */
+  let waveWrapEl   = $state(null);
+
   // Virtual waveform SVG dimensions (viewBox units, not pixels).
   // Using a viewBox lets the SVG scale to any container width.
   const VW = 1000; // virtual width
@@ -91,6 +96,42 @@
     duration > 0 ? (currentTime / duration) * VW : 0
   );
 
+  /** Paints `bars()` onto the canvas layer at native pixel resolution
+   * (rather than as hundreds of SVG <rect> nodes) — cheaper to render and
+   * sharper, since it isn't stretched through a viewBox transform. */
+  function drawWaveCanvas() {
+    const canvas = waveCanvasEl;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const dpr  = window.devicePixelRatio || 1;
+    const w    = Math.max(1, Math.round(rect.width * dpr));
+    const h    = Math.max(1, Math.round(rect.height * dpr));
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.clearRect(0, 0, w, h);
+    const scaleX = w / VW;
+    const scaleY = h / VH;
+    const px = playheadX;
+    for (const bar of bars()) {
+      ctx.fillStyle = bar.x <= px ? '#2255bb' : '#a0b8e8';
+      ctx.fillRect(bar.x * scaleX, bar.y * scaleY, Math.max(1, bar.w * scaleX), Math.max(1, bar.h * scaleY));
+    }
+  }
+
+  $effect(() => {
+    bars(); // reactive dependency: redraw whenever bars or the playhead change
+    playheadX;
+    drawWaveCanvas();
+  });
+
+  $effect(() => {
+    if (!waveWrapEl) return;
+    const ro = new ResizeObserver(() => drawWaveCanvas());
+    ro.observe(waveWrapEl);
+    return () => ro.disconnect();
+  });
+
   // ── Fetch waveform when entry changes ────────────────────────────────────
   $effect(() => {
     const path = entry.waveformPath;
@@ -134,10 +175,14 @@
    * @type {{ timestamps: number[], confidences: number[], loudnesses: number[], paddingS: number, windowS: number } | null}
    */
   let hitMetadata = $state(null);
+  // Hit whose confidence/loudness labels are shown — only on hover, since
+  // they'd otherwise overlap when hits are close together.
+  let hoveredHitIndex = $state(/** @type {number|null} */ (null));
 
   $effect(() => {
     const id = entry.id;
     hitMetadata = null;
+    hoveredHitIndex = null;
     if (!id) return;
     fetch(`${API_BASE}/api/diary/${id}/hit-metadata`)
       .then(r => {
@@ -442,38 +487,32 @@
   <!-- ── Waveform area ── -->
   <div class="waveform-area">
     {#if entry.waveformPath && !wfLoading && waveData}
-      <!-- SVG waveform with playhead overlay -->
-      <!-- Clicking the SVG seeks to the clicked position -->
-      <svg
-        class="player-waveform"
-        viewBox="0 0 {VW} {VH}"
-        preserveAspectRatio="none"
-        role="slider"
-        tabindex="0"
-        aria-label="Seek waveform. Current position: {formattedCur}"
-        aria-valuemin="0"
-        aria-valuemax={duration}
-        aria-valuenow={currentTime}
-        onclick={handleWaveformClick}
-        onkeydown={handleWaveformKeydown}
-      >
+      <div class="player-waveform-wrap" bind:this={waveWrapEl}>
+        <!-- Waveform bars are painted here at native pixel resolution
+             instead of as hundreds of SVG <rect> nodes (see drawWaveCanvas). -->
+        <canvas class="wave-canvas" bind:this={waveCanvasEl}></canvas>
+
+        <!-- SVG waveform with playhead overlay -->
+        <!-- Clicking the SVG seeks to the clicked position -->
+        <svg
+          class="player-waveform"
+          viewBox="0 0 {VW} {VH}"
+          preserveAspectRatio="none"
+          role="slider"
+          tabindex="0"
+          aria-label="Seek waveform. Current position: {formattedCur}"
+          aria-valuemin="0"
+          aria-valuemax={duration}
+          aria-valuenow={currentTime}
+          onclick={handleWaveformClick}
+          onkeydown={handleWaveformKeydown}
+        >
         <!-- Invisible hit-area rectangle covering the full viewbox.
              SVG's default pointer-events is "painted" so clicks in the
              gaps between bars are dead zones in Chrome.  A transparent rect
              (fill="transparent" counts as painted, unlike fill="none")
              ensures every pixel inside the SVG fires the seek handler. -->
         <rect x="0" y="0" width={VW} height={VH} fill="transparent" />
-
-        <!-- Bars: rendered in two passes to colour played vs unplayed -->
-        {#each bars() as bar, i}
-          <rect
-            x={bar.x}
-            y={bar.y}
-            width={bar.w}
-            height={bar.h}
-            fill={bar.x <= playheadX ? '#2255bb' : '#a0b8e8'}
-          />
-        {/each}
 
         <!-- Hit markers: each confirmed bark hit from goblin inference.
              hx = end of the detection window (block_end_ts - clip_start_ts).
@@ -486,14 +525,21 @@
             {@const conf = hitMetadata.confidences[i]}
             {@const loud = hitMetadata.loudnesses[i]}
             {@const tickAlpha = 0.45 + conf * 0.45}
-            <g pointer-events="all">
-              <!-- Detection-window band: bark is somewhere inside here -->
+            <g
+              pointer-events="all"
+              role="presentation"
+              onmouseenter={() => (hoveredHitIndex = i)}
+              onmouseleave={() => (hoveredHitIndex = null)}
+            >
+              <!-- Detection-window band: bark is somewhere inside here —
+                   more opaque while hovered, same as fragment highlighting
+                   on focus in /training. -->
               <rect
                 x={Math.max(0, hx - winPx)}
                 y="0"
                 width={Math.min(hx, winPx)}
                 height={VH}
-                fill="rgba(230, 120, 0, 0.07)"
+                fill="rgba(230, 120, 0, {hoveredHitIndex === i ? 0.5 : 0.1})"
               />
               <!-- Tick at end of window -->
               <line
@@ -502,25 +548,28 @@
                 stroke="rgba(230, 120, 0, {tickAlpha})"
                 stroke-width="1.5"
               />
-              <!-- Labels: right-aligned to the tick, two lines at top -->
-              <text
-                x={hx - 3}
-                y="9"
-                font-size="7"
-                font-family="monospace"
-                text-anchor="end"
-                fill="rgba(200, 90, 0, {tickAlpha})"
-                pointer-events="none"
-              >C{conf.toFixed(2)}</text>
-              <text
-                x={hx - 3}
-                y="18"
-                font-size="7"
-                font-family="monospace"
-                text-anchor="end"
-                fill="rgba(200, 90, 0, {tickAlpha})"
-                pointer-events="none"
-              >L{loud.toFixed(1)}x</text>
+              <!-- Labels: right-aligned to the tick, two lines at top — only
+                   while hovered, otherwise they clutter/overlap. -->
+              {#if hoveredHitIndex === i}
+                <text
+                  x={hx - 3}
+                  y="14"
+                  font-size="14"
+                  font-family="monospace"
+                  text-anchor="end"
+                  fill="rgba(200, 90, 0, {tickAlpha})"
+                  pointer-events="none"
+                >C{conf.toFixed(2)}</text>
+                <text
+                  x={hx - 3}
+                  y="28"
+                  font-size="14"
+                  font-family="monospace"
+                  text-anchor="end"
+                  fill="rgba(200, 90, 0, {tickAlpha})"
+                  pointer-events="none"
+                >L{loud.toFixed(1)}x</text>
+              {/if}
               <!-- Diamond at bottom -->
               <polygon
                 points="{hx},{VH - 10} {hx - 4},{VH - 5} {hx},{VH} {hx + 4},{VH - 5}"
@@ -551,7 +600,8 @@
             pointer-events="none"
           />
         {/if}
-      </svg>
+        </svg>
+      </div>
     {:else if entry.waveformPath && wfLoading}
       <div class="waveform-loading">Loading waveform…</div>
     {:else}
@@ -924,13 +974,29 @@
     margin-top: 1.5rem; /* accommodate absolutely-placed title */
   }
 
-  .player-waveform {
+  .player-waveform-wrap {
+    position: relative;
     width: 100%;
     height: 80px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #f4f6fb;
+  }
+  .wave-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .player-waveform {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     display: block;
     cursor: pointer;
-    border-radius: 4px;
-    background: #f4f6fb;
+    background: transparent;
   }
   .player-waveform:focus { outline: 2px solid #4a7cdc; }
 

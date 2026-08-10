@@ -220,6 +220,12 @@
   const waveCache      = new Map();
   /** @type {SVGSVGElement|null} */
   let waveSvgEl        = $state(null);
+  /** @type {HTMLCanvasElement|null} */
+  let waveCanvasEl     = $state(null);
+  /** @type {HTMLDivElement|null} */
+  let waveWrapEl       = $state(null);
+  // Fragment currently hovered (label shown even when not the focused/selected one).
+  let hoveredAnnId     = $state(/** @type {number|null} */ (null));
 
   // ── Annotations (fragments + time-coded notes) ─────────────────────────────
   /** @type {any[]} */
@@ -294,6 +300,40 @@
         played: barSec <= currentTime,
       };
     });
+  });
+
+  /** Paints `bars()` onto the canvas layer at native pixel resolution
+   * (rather than as hundreds of SVG <rect> nodes) — cheaper to render and
+   * sharper, since it isn't stretched through a viewBox transform. */
+  function drawWaveCanvas() {
+    const canvas = waveCanvasEl;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const dpr  = window.devicePixelRatio || 1;
+    const w    = Math.max(1, Math.round(rect.width * dpr));
+    const h    = Math.max(1, Math.round(rect.height * dpr));
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.clearRect(0, 0, w, h);
+    const scaleX = w / VW;
+    const scaleY = h / VH;
+    for (const bar of bars()) {
+      ctx.fillStyle = bar.played ? '#2255bb' : '#a0b8e8';
+      ctx.fillRect(bar.x * scaleX, bar.y * scaleY, Math.max(1, bar.w * scaleX), Math.max(1, bar.h * scaleY));
+    }
+  }
+
+  $effect(() => {
+    bars(); // reactive dependency: redraw whenever bars change
+    drawWaveCanvas();
+  });
+
+  $effect(() => {
+    if (!waveWrapEl) return;
+    const ro = new ResizeObserver(() => drawWaveCanvas());
+    ro.observe(waveWrapEl);
+    return () => ro.disconnect();
   });
 
   /** Live preview of an annotation's bounds while it's being dragged. */
@@ -410,6 +450,7 @@
     pendingSeekSec = seekSec;
     selected       = sample;
     selectedAnnId  = null;
+    hoveredAnnId   = null;
     editingNoteId  = null;
     addingSampleNote = false;
     pending        = null;
@@ -436,6 +477,7 @@
     pendingSeekSec   = null;
     selected         = null;
     selectedAnnId    = null;
+    hoveredAnnId     = null;
     editingNoteId    = null;
     addingSampleNote = false;
     pending          = null;
@@ -1080,42 +1122,44 @@
           {/if}
         </div>
 
-        <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-        <svg
-          class="wave-editor"
-          viewBox="0 0 {VW} {VH}"
-          preserveAspectRatio="none"
-          bind:this={waveSvgEl}
-          onmousedown={onWaveMouseDown}
-          role="img"
-          aria-label="Waveform editor — drag to select a fragment"
-        >
-          {#if waveData}
-            {#each bars() as bar}
-              <rect x={bar.x} y={bar.y} width={bar.w} height={bar.h} fill={bar.played ? '#2255bb' : '#a0b8e8'} />
-            {/each}
-          {:else}
-            <line x1="0" y1={VH / 2} x2={VW} y2={VH / 2} stroke={waveLoading ? '#c0d0f0' : '#e0e0e0'} stroke-width="1" />
-          {/if}
+        <div class="wave-editor-wrap" bind:this={waveWrapEl}>
+          <!-- Waveform bars are painted here at native pixel resolution
+               instead of as hundreds of SVG <rect> nodes (see drawWaveCanvas). -->
+          <canvas class="wave-canvas" bind:this={waveCanvasEl}></canvas>
 
-          {#each renderFragments as ann (ann.id)}
-            {@const x = secToX(ann.startSec)}
-            {@const w = Math.max(2, secToX(ann.endSec) - x)}
-            <rect
-              class="fragment-band"
-              x={x} y="0" width={w} height={VH}
-              fill={sampleLabelColor(ann.label)}
-              opacity={selectedAnnId === ann.id ? 0.45 : 0.28}
-              data-role="fragment-body"
-              data-ann-id={ann.id}
-            ></rect>
-            <text x={x + 3} y="12" class="fragment-label" data-role="fragment-body" data-ann-id={ann.id}>{ann.label}</text>
-            <text x={x + 3} y="22" class="fragment-label fragment-dur" data-role="fragment-body" data-ann-id={ann.id}>{(ann.endSec - ann.startSec).toFixed(1)}s</text>
-            {#if selectedAnnId === ann.id}
-              <rect class="frag-handle" x={x - 3} y="0" width="6" height={VH} data-role="handle-start" data-ann-id={ann.id}></rect>
-              <rect class="frag-handle" x={x + w - 3} y="0" width="6" height={VH} data-role="handle-end" data-ann-id={ann.id}></rect>
+          <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+          <svg
+            class="wave-editor"
+            viewBox="0 0 {VW} {VH}"
+            preserveAspectRatio="none"
+            bind:this={waveSvgEl}
+            onmousedown={onWaveMouseDown}
+            role="img"
+            aria-label="Waveform editor — drag to select a fragment"
+          >
+            {#if !waveData}
+              <line x1="0" y1={VH / 2} x2={VW} y2={VH / 2} stroke={waveLoading ? '#c0d0f0' : '#e0e0e0'} stroke-width="1" />
             {/if}
-          {/each}
+
+            {#each renderFragments as ann (ann.id)}
+              {@const x = secToX(ann.startSec)}
+              {@const w = Math.max(2, secToX(ann.endSec) - x)}
+              <rect
+                class="fragment-band"
+                x={x} y="0" width={w} height={VH}
+                fill={sampleLabelColor(ann.label)}
+                opacity={selectedAnnId === ann.id ? 0.5 : hoveredAnnId === ann.id ? 0.4 : 0.3}
+                data-role="fragment-body"
+                data-ann-id={ann.id}
+                role="presentation"
+                onmouseenter={() => (hoveredAnnId = ann.id)}
+                onmouseleave={() => (hoveredAnnId = null)}
+              ></rect>
+              {#if selectedAnnId === ann.id}
+                <rect class="frag-handle" x={x - 3} y={VH * (2 / 3)} width="6" height={VH / 3} data-role="handle-start" data-ann-id={ann.id}></rect>
+                <rect class="frag-handle" x={x + w - 3} y={VH * (2 / 3)} width="6" height={VH / 3} data-role="handle-end" data-ann-id={ann.id}></rect>
+              {/if}
+            {/each}
 
           {#each renderNotes as ann (ann.id)}
             {@const x = secToX(ann.startSec)}
@@ -1134,8 +1178,25 @@
             <rect x={x} y="0" width={w} height={VH} fill="#1a1a1a" opacity="0.12"></rect>
           {/if}
 
-          <line x1={playheadX} y1="0" x2={playheadX} y2={VH} stroke="#1a1a1a" stroke-width="1.5"></line>
-        </svg>
+            <line x1={playheadX} y1="0" x2={playheadX} y2={VH} stroke="#1a1a1a" stroke-width="1.5"></line>
+          </svg>
+
+          <!-- Fragment labels as an HTML overlay, not SVG <text>: stays a
+               fixed pixel size regardless of the viewBox's non-uniform
+               scaling, and only shown for the hovered/focused fragment so
+               labels don't pile up when fragments are dense. -->
+          <div class="fragment-labels-layer">
+            {#each renderFragments as ann (ann.id)}
+              {#if hoveredAnnId === ann.id || selectedAnnId === ann.id}
+                {@const leftPct = (secToX(ann.startSec) / VW) * 100}
+                <div class="fragment-label-html" style="left: {leftPct}%">
+                  <span class="fragment-label-text">{ann.label}</span>
+                  <span class="fragment-label-text fragment-dur">{(ann.endSec - ann.startSec).toFixed(1)}s</span>
+                </div>
+              {/if}
+            {/each}
+          </div>
+        </div>
 
         {#if mutationError}<div class="error-msg">{mutationError}</div>{/if}
 
@@ -1622,20 +1683,55 @@
   .regen-btn:hover:not(:disabled) { background: #e0e8f8; }
   .regen-btn:disabled { opacity: 0.5; cursor: default; }
 
-  .wave-editor {
+  .wave-editor-wrap {
+    position: relative;
     width: 100%;
     height: 160px;
-    display: block;
-    background: #f4f6fb;
     border-radius: 4px;
+    overflow: hidden;
+    background: #f4f6fb;
+  }
+  .wave-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .wave-editor {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: transparent;
     cursor: crosshair;
     user-select: none;
   }
 
   .fragment-band { cursor: pointer; }
-  .fragment-label { font-size: 9px; fill: #1a1a1a; pointer-events: none; }
-  .fragment-dur   { fill: rgba(0,0,0,0.5); }
   .frag-handle { fill: #1a1a1a; opacity: 0.35; cursor: ew-resize; }
+
+  /* HTML overlay for fragment labels — a fixed font-size here always renders
+     at true pixel size, unlike SVG <text> which gets stretched by the
+     wave-editor's non-uniform (preserveAspectRatio="none") scaling. */
+  .fragment-labels-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .fragment-label-html {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    padding-left: 3px;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+  .fragment-label-text { font-size: 18px; color: #1a1a1a; }
+  .fragment-label-text.fragment-dur { color: rgba(0, 0, 0, 0.5); }
 
   /* ── Toolbars ── */
   .pending-toolbar,
