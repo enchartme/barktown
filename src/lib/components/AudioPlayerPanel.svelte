@@ -734,7 +734,7 @@
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.25);
-    z-index: 200;
+    z-index: 600; /* above diary entries (max z-index 570) */
   }
 
   /* ── Panel ── */
@@ -743,7 +743,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 201;
+    z-index: 601;
     background: #fff;
     border-top: 1px solid #d0d0cc;
     border-radius: 12px 12px 0 0;
@@ -884,7 +884,7 @@
   .sample-picker-backdrop {
     position: fixed;
     inset: 0;
-    z-index: 202;
+    z-index: 602; /* above diary entries (max z-index 570) and the player panel */
     width: 100%;
     height: 100%;
     border: none;
@@ -896,7 +896,7 @@
     position: fixed;
     left: 50%;
     top: 50%;
-    z-index: 203;
+    z-index: 603;
     width: min(92vw, 420px);
     transform: translate(-50%, -50%);
     background: #fff;

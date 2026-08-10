@@ -235,7 +235,11 @@
   .site-header {
     position: sticky;
     top: 0;
-    z-index: 100;
+    /* Higher than any diary entry's z-index (entries top out at 571) so the
+       header's own stacking context — and GoblinPiStatus's popup inside it —
+       always paints above entries, regardless of GoblinPiStatus's internal
+       z-index values (900/901), which are only compared within this bracket. */
+    z-index: 1000;
     background: #fff;
     border-bottom: 1px solid #e0e0dc;
     padding: 0.6rem 1rem;

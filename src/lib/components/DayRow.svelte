@@ -280,7 +280,8 @@
     align-self: stretch;
     min-width: 0;
     position: relative;
-    overflow: hidden;
+    /* visible so radial hit-maps can overlap neighbouring day rows */
+    overflow: visible;
   }
 
   /* Inner wrapper: sets min-height from JS; abs-positioned children anchor to this */
