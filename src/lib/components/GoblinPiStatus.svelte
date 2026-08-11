@@ -1,7 +1,13 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { ASSET_BASE, formatDuration, formatSampleDatetime } from '$lib/utils.js';
+  import { API_BASE, ASSET_BASE, formatDuration, formatSampleDatetime } from '$lib/utils.js';
   import { SAMPLE_LABELS as LABELS, sampleLabelColor } from '$lib/sample-labels.js';
+  import {
+    fetchMonitorParams,
+    monitorParamValuesMatch,
+    parseMonitorParamInput,
+    saveMonitorParamAndRefresh,
+  } from '$lib/monitor-params.js';
 
   const BASE_URL       = 'https://goblinpi.tail523149.ts.net';
   const STATUS_URL     = `${BASE_URL}/status`;
@@ -34,6 +40,20 @@
   let monitorBusy     = $state(false);
   let monitorMessage  = $state('');
   const monitorActive = $derived(status?.monitor?.service_active ?? null);
+
+  // SQLite is authoritative; status.monitor.params.values is the monitor's
+  // independently reported in-memory state, used here to verify application.
+  /** @type {any[]} */
+  let dbMonitorParams       = $state([]);
+  /** @type {Record<string, string>} */
+  let monitorParamDrafts    = $state({});
+  /** @type {Record<string, boolean>} */
+  let monitorParamSaving    = $state({});
+  /** @type {Record<string, {kind: 'success'|'error', text: string}>} */
+  let monitorParamMessages  = $state({});
+  let monitorParamsLoading  = $state(false);
+  let monitorParamsError    = $state('');
+  const appliedMonitorParamValues = $derived(status?.monitor?.params?.values ?? {});
 
   // ── Recent recordings (shown at the end of the Manual tab's record section) ─
   /** @type {any[]} */
@@ -71,6 +91,109 @@
     }
   }
 
+  async function loadMonitorParams() {
+    monitorParamsLoading = true;
+    monitorParamsError = '';
+    try {
+      const rows = await fetchMonitorParams(API_BASE, {
+        signal: AbortSignal.timeout(8000),
+      });
+      dbMonitorParams = rows;
+      monitorParamDrafts = Object.fromEntries(
+        rows.map((row) => [row.paramId, String(row.currentValue)])
+      );
+    } catch (e) {
+      monitorParamsError = e?.message ?? 'Failed to load monitor parameters';
+    } finally {
+      monitorParamsLoading = false;
+    }
+  }
+
+  function replaceMonitorParamRow(updatedRow) {
+    dbMonitorParams = dbMonitorParams.map((row) =>
+      row.paramId === updatedRow.paramId ? updatedRow : row
+    );
+    monitorParamDrafts = {
+      ...monitorParamDrafts,
+      [updatedRow.paramId]: String(updatedRow.currentValue),
+    };
+  }
+
+  function setMonitorParamMessage(paramId, kind, text) {
+    monitorParamMessages = {
+      ...monitorParamMessages,
+      [paramId]: { kind, text },
+    };
+  }
+
+  function setAppliedMonitorParams(params) {
+    if (!status) return;
+    status = {
+      ...status,
+      monitor: {
+        ...status.monitor,
+        params,
+      },
+    };
+  }
+
+  function monitorParamHasChanged(row) {
+    const draft = monitorParamDrafts[row.paramId];
+    if (draft == null) return false;
+    const parsed = parseMonitorParamInput(row, draft);
+    if (parsed.error) return String(draft).trim() !== String(row.currentValue);
+    return !monitorParamValuesMatch(row.currentValue, parsed.value);
+  }
+
+  async function saveMonitorParam(row) {
+    const paramId = row.paramId;
+    if (monitorParamSaving[paramId] || !monitorParamHasChanged(row)) return;
+
+    const parsed = parseMonitorParamInput(row, monitorParamDrafts[paramId]);
+    if (parsed.error) {
+      setMonitorParamMessage(paramId, 'error', parsed.error);
+      return;
+    }
+
+    monitorParamSaving = { ...monitorParamSaving, [paramId]: true };
+    const { [paramId]: _oldMessage, ...otherMessages } = monitorParamMessages;
+    monitorParamMessages = otherMessages;
+
+    try {
+      const { updatedRow, goblinParams } = await saveMonitorParamAndRefresh({
+        apiBase: API_BASE,
+        goblinBase: BASE_URL,
+        paramId,
+        value: parsed.value,
+        patchSignal: AbortSignal.timeout(8000),
+        refreshSignal: AbortSignal.timeout(12000),
+      });
+      replaceMonitorParamRow(updatedRow);
+      setAppliedMonitorParams(goblinParams);
+      setMonitorParamMessage(paramId, 'success', 'Saved and applied');
+    } catch (e) {
+      // The PATCH can succeed while the monitor refresh fails. Preserve the
+      // new DB row so the UI immediately exposes that mismatch.
+      if (e?.updatedRow) replaceMonitorParamRow(e.updatedRow);
+      setMonitorParamMessage(
+        paramId,
+        'error',
+        e?.updatedRow
+          ? `Saved in DB; Goblin did not apply it: ${e?.message ?? 'refresh failed'}`
+          : (e?.message ?? 'Save failed')
+      );
+      await Promise.allSettled([loadMonitorParams(), fetchStatus()]);
+    } finally {
+      monitorParamSaving = { ...monitorParamSaving, [paramId]: false };
+    }
+  }
+
+  function handleMonitorParamKeydown(e, row) {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    saveMonitorParam(row);
+  }
+
   function restartInterval(ms) {
     clearInterval(intervalId);
     intervalId = setInterval(fetchStatus, ms);
@@ -87,6 +210,10 @@
 
   $effect(() => {
     restartInterval(showPopup ? POLL_OPEN_MS : POLL_CLOSED_MS);
+  });
+
+  $effect(() => {
+    if (showPopup && activeTab === 'monitor') loadMonitorParams();
   });
 
   $effect(() => {
@@ -487,9 +614,11 @@
 ></button>
 
 {#if showPopup}
-  <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
-  <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
-  <div class="status-backdrop" onclick={() => (showPopup = false)}></div>
+  <button
+    class="status-backdrop"
+    aria-label="Close Goblin status"
+    onclick={() => (showPopup = false)}
+  ></button>
 
   <div class="status-popup" role="dialog" aria-modal="true" aria-label="goblinpi status">
     <div class="popup-header">
@@ -508,11 +637,11 @@
       <button class="tab-btn" class:active={activeTab === 'manual'}   onclick={() => (activeTab = 'manual')}>Manual</button>
     </div>
 
-    {#if activeTab === 'hardware' || activeTab === 'monitor'}
+    {#if activeTab === 'hardware'}
       {#if status}
         <div class="popup-body">
           <table class="status-table">
-            {#each (activeTab === 'hardware' ? HARDWARE_SECTIONS : MONITOR_SECTIONS) as section}
+            {#each HARDWARE_SECTIONS as section}
               <tbody>
                 <tr class="section-hdr"><td colspan="3">{section.title}</td></tr>
                 {#each section.rows as row}
@@ -531,18 +660,6 @@
                 {/each}
               </tbody>
             {/each}
-            {#if activeTab === 'monitor' && status.monitor_config?.length}
-              <tbody>
-                <tr class="section-hdr"><td colspan="3">Monitor config</td></tr>
-                {#each status.monitor_config as row}
-                  <tr>
-                    <td class="td-label">{row.name}</td>
-                    <td class="td-value">{row.value != null ? row.value : '—'}</td>
-                    <td class="td-hint">{row.description}</td>
-                  </tr>
-                {/each}
-              </tbody>
-            {/if}
           </table>
         </div>
       {:else}
@@ -552,6 +669,133 @@
           <button class="retry-btn" onclick={fetchStatus}>Retry now</button>
         </div>
       {/if}
+
+    {:else if activeTab === 'monitor'}
+      <div class="popup-body">
+        <table class="status-table">
+          {#if status}
+            {#each MONITOR_SECTIONS as section}
+              <tbody>
+                <tr class="section-hdr"><td colspan="3">{section.title}</td></tr>
+                {#each section.rows as row}
+                  {@const val = getVal(status, row.path)}
+                  {@const level = getLevel(row.path, val)}
+                  <tr>
+                    <td class="td-label">{row.label}</td>
+                    <td class="td-value" style:background={levelBg(level)}>
+                      {val != null ? row.fmt(val) : '—'}
+                      {#if level !== 'neutral' && levelLabel(level)}
+                        <span class="level-tag">{levelLabel(level)}</span>
+                      {/if}
+                    </td>
+                    <td class="td-hint">{HINT[row.path] ?? ''}</td>
+                  </tr>
+                {/each}
+              </tbody>
+            {/each}
+          {:else}
+            <tbody>
+              <tr class="monitor-unreachable-row">
+                <td colspan="3">
+                  Goblin status is unavailable. DB values remain editable; applied values cannot be verified.
+                  <button class="inline-retry-btn" onclick={fetchStatus}>Retry Goblin</button>
+                </td>
+              </tr>
+            </tbody>
+          {/if}
+
+          <tbody>
+            <tr class="section-hdr">
+              <td colspan="3">
+                <span>Monitor parameters · DB ↔ Goblin memory</span>
+                <button
+                  class="section-action-btn"
+                  disabled={monitorParamsLoading}
+                  onclick={loadMonitorParams}
+                >{monitorParamsLoading ? 'Loading…' : 'Reload DB'}</button>
+              </td>
+            </tr>
+            <tr class="monitor-params-note">
+              <td colspan="3">Edit a database value, then press Enter or tap Apply. It is saved and applied to Goblin automatically.</td>
+            </tr>
+            {#if monitorParamsError}
+              <tr class="monitor-params-error">
+                <td colspan="3">Could not load DB values: {monitorParamsError}</td>
+              </tr>
+            {/if}
+            {#if monitorParamsLoading && dbMonitorParams.length === 0}
+              <tr class="monitor-params-loading"><td colspan="3">Loading monitor parameters…</td></tr>
+            {:else if !monitorParamsLoading && dbMonitorParams.length === 0 && !monitorParamsError}
+              <tr class="monitor-params-loading"><td colspan="3">No monitor parameters found.</td></tr>
+            {/if}
+            {#each dbMonitorParams as row (row.paramId)}
+              {@const goblinValue = appliedMonitorParamValues[row.paramId]}
+              {@const matches = monitorParamValuesMatch(row.currentValue, goblinValue)}
+              <tr class:param-mismatch={!matches}>
+                <td class="td-label param-label">
+                  <span>{row.name}</span>
+                  <code>{row.paramId}</code>
+                </td>
+                <td class="td-value param-value-cell">
+                  <div class="param-edit-row">
+                    <input
+                      class="param-input"
+                      class:input-error={monitorParamMessages[row.paramId]?.kind === 'error'}
+                      type="number"
+                      min={row.minValue ?? undefined}
+                      max={row.maxValue ?? undefined}
+                      step={row.paramId === 'confirmation_hits' ? '1' : 'any'}
+                      value={monitorParamDrafts[row.paramId] ?? row.currentValue}
+                      disabled={monitorParamSaving[row.paramId]}
+                      aria-label={`${row.name} value`}
+                      oninput={(e) => {
+                        monitorParamDrafts = {
+                          ...monitorParamDrafts,
+                          [row.paramId]: e.currentTarget.value,
+                        };
+                      }}
+                      onkeydown={(e) => handleMonitorParamKeydown(e, row)}
+                    />
+                    {#if monitorParamHasChanged(row)}
+                      <button
+                        class="param-apply-btn"
+                        type="button"
+                        disabled={monitorParamSaving[row.paramId]}
+                        aria-label={`Apply ${row.name}`}
+                        onclick={() => saveMonitorParam(row)}
+                      >{monitorParamSaving[row.paramId] ? 'Applying…' : 'Apply'}</button>
+                    {/if}
+                  </div>
+                  <div class="param-sync" class:match={matches} class:mismatch={!matches}>
+                    {#if matches}
+                      <span title="Database and Goblin memory match">✅ DB and Goblin: {row.currentValue}</span>
+                    {:else}
+                      <span title="Database and Goblin memory do not match">
+                        ❓ DB: {row.currentValue} · Goblin: {goblinValue ?? 'unavailable'}
+                      </span>
+                    {/if}
+                  </div>
+                  {#if monitorParamSaving[row.paramId]}
+                    <div class="param-message">Saving DB, then refreshing Goblin…</div>
+                  {:else if monitorParamMessages[row.paramId]}
+                    <div
+                      class="param-message"
+                      class:param-success={monitorParamMessages[row.paramId].kind === 'success'}
+                      class:param-error={monitorParamMessages[row.paramId].kind === 'error'}
+                    >{monitorParamMessages[row.paramId].text}</div>
+                  {/if}
+                </td>
+                <td class="td-hint param-hint">
+                  <span>{row.description}</span>
+                  <span class="param-range">
+                    Default {row.defaultValue} · allowed {row.minValue}–{row.maxValue}
+                  </span>
+                </td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
 
     {:else if activeTab === 'manual'}
       <!-- Manual tab -->
@@ -718,6 +962,10 @@
     position: fixed;
     inset: 0;
     z-index: 900;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: default;
   }
 
   /* ── Popup ── */
@@ -725,7 +973,7 @@
     position: fixed;
     top: 3rem;
     right: 1rem;
-    width: min(540px, calc(100vw - 2rem));
+    width: min(680px, calc(100vw - 2rem));
     max-height: calc(100dvh - 4rem);
     background: #fff;
     border: 1px solid #e0e0dc;
@@ -851,6 +1099,160 @@
     line-height: 1.4;
     width: 50%;
     border-bottom: 1px solid #f0f0ec;
+  }
+
+  /* ── Monitor parameter editor ── */
+  .section-action-btn {
+    float: right;
+    margin: -0.12rem 0;
+    padding: 0.12rem 0.4rem;
+    border: 1px solid #555;
+    border-radius: 3px;
+    background: transparent;
+    color: #ddd;
+    font: inherit;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .section-action-btn:hover:not(:disabled) { border-color: #aaa; color: #fff; }
+  .section-action-btn:disabled { cursor: default; opacity: 0.55; }
+
+  .monitor-unreachable-row td,
+  .monitor-params-note td,
+  .monitor-params-error td,
+  .monitor-params-loading td {
+    padding: 0.45rem 0.9rem;
+    border-bottom: 1px solid #eee;
+    font-size: 0.68rem;
+    line-height: 1.45;
+  }
+  .monitor-unreachable-row td {
+    color: #8a5a00;
+    background: #fff8e6;
+  }
+  .monitor-params-note td,
+  .monitor-params-loading td { color: #888; background: #fafaf8; }
+  .monitor-params-error td { color: #a93226; background: #fff1f0; }
+
+  .inline-retry-btn {
+    margin-left: 0.4rem;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid currentColor;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .param-mismatch { background: #fffcf3; }
+
+  .param-label {
+    width: 27%;
+    white-space: normal;
+    vertical-align: top;
+    padding-top: 0.5rem;
+  }
+  .param-label span {
+    display: block;
+    color: #333;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .param-label code {
+    display: block;
+    margin-top: 0.16rem;
+    color: #aaa;
+    font-size: 0.56rem;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .param-value-cell {
+    width: 31%;
+    vertical-align: top;
+    padding-top: 0.42rem;
+    padding-bottom: 0.42rem;
+    white-space: normal;
+  }
+
+  .param-input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    border: 1px solid #cfcfca;
+    border-radius: 4px;
+    background: #fff;
+    color: #222;
+    padding: 0.3rem 0.42rem;
+    font-family: inherit;
+    font-size: 0.76rem;
+    font-weight: 600;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+  }
+  .param-input:focus {
+    border-color: #555;
+    box-shadow: 0 0 0 2px rgba(20, 20, 20, 0.1);
+  }
+  .param-input:disabled { background: #f4f4f1; color: #777; }
+  .param-input.input-error { border-color: #c0392b; }
+
+  .param-edit-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0.3rem;
+  }
+
+  .param-apply-btn {
+    flex-shrink: 0;
+    border: 0;
+    border-radius: 4px;
+    background: #1a1a1a;
+    color: #fff;
+    padding: 0.3rem 0.45rem;
+    font-family: inherit;
+    font-size: 0.62rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .param-apply-btn:hover:not(:disabled) { background: #333; }
+  .param-apply-btn:disabled { cursor: default; opacity: 0.5; }
+
+  .param-sync,
+  .param-message {
+    margin-top: 0.25rem;
+    font-size: 0.6rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .param-sync.match { color: #277342; }
+  .param-sync.mismatch { color: #93640c; }
+  .param-message { color: #777; }
+  .param-message.param-success { color: #277342; }
+  .param-message.param-error { color: #a93226; }
+
+  .param-hint {
+    width: 42%;
+    vertical-align: top;
+    padding-top: 0.5rem;
+    color: #8e8e88;
+  }
+  .param-range {
+    display: block;
+    margin-top: 0.2rem;
+    color: #b2b2ac;
+    font-size: 0.58rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 560px) {
+    .param-label { width: 28%; }
+    .param-value-cell { width: 38%; }
+    .param-hint { width: 34%; }
+    .param-hint > span:first-child { display: none; }
   }
 
   /* ── Tab bar ── */
