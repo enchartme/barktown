@@ -54,6 +54,55 @@
   let monitorParamsLoading  = $state(false);
   let monitorParamsError    = $state('');
   const appliedMonitorParamValues = $derived(status?.monitor?.params?.values ?? {});
+  const pipelineStatus = $derived(status?.pipeline ?? {});
+  const assemblerState = $derived(pipelineStatus?.assembler_state ?? 'UNKNOWN');
+  const detectionStatus = $derived(pipelineStatus?.detection ?? {});
+  const assemblyStatus = $derived(pipelineStatus?.assembly ?? {});
+  const uploadStatus = $derived(pipelineStatus?.upload ?? {});
+  const maxScore10s = $derived(
+    detectionStatus?.max_score_10s ?? pipelineStatus?.max_score_10s ?? null
+  );
+  const detectionActive = $derived(
+    assemblerState === 'IDLE' || assemblerState === 'ACTIVE_CANDIDATE'
+  );
+  const detectionEngaged = $derived(
+    pipelineStatus?.state === 'monitoring' && detectionActive
+  );
+  const confirmedHits = $derived(detectionStatus?.confirmed_hits ?? 0);
+  const confirmationHits = $derived(
+    detectionStatus?.confirmation_hits ?? appliedMonitorParamValues?.confirmation_hits ?? 0
+  );
+  const confirmationWindow = $derived(
+    detectionStatus?.confirmation_window_s ?? appliedMonitorParamValues?.confirmation_window_s ?? 0
+  );
+  const confirmationRemaining = $derived(
+    detectionStatus?.confirmation_window_remaining_s ?? 0
+  );
+  const assemblyActive = $derived(assemblerState === 'ACTIVE_CONFIRMED');
+  const assemblyEngaged = $derived(
+    pipelineStatus?.state === 'monitoring' && assemblyActive
+  );
+  const clipElapsed = $derived(assemblyStatus?.clip_elapsed_s ?? 0);
+  const maxClip = $derived(
+    assemblyStatus?.max_clip_s ?? appliedMonitorParamValues?.max_clip_s ?? 0
+  );
+  const silenceElapsed = $derived(assemblyStatus?.silence_elapsed_s ?? 0);
+  const silenceGap = $derived(
+    assemblyStatus?.silence_gap_s ?? appliedMonitorParamValues?.silence_gap_s ?? 0
+  );
+  const audioUploadStatus = $derived(uploadStatus?.audio_clip ?? {});
+  const metadataUploadStatus = $derived(uploadStatus?.hit_metadata ?? {});
+  const uploadEngaged = $derived(
+    ['queued', 'encoding', 'uploading', 'retrying', 'pending', 'waiting'].includes(
+      audioUploadStatus?.state
+    ) || ['uploading', 'pending', 'waiting'].includes(metadataUploadStatus?.state)
+  );
+  const uploadsFailed24h = $derived(
+    uploadStatus?.uploads_failed_24h ?? status?.counts_24h?.uploads_failed ?? 0
+  );
+  const uploadsRetried24h = $derived(
+    uploadStatus?.uploads_retried_24h ?? status?.counts_24h?.uploads_retried ?? 0
+  );
 
   // ── Recent recordings (shown at the end of the Manual tab's record section) ─
   /** @type {any[]} */
@@ -456,27 +505,51 @@
     ]},
   ];
 
-  const MONITOR_SECTIONS = [
-    { title: 'Pipeline', rows: [
-      { path: 'pipeline.state',              label: 'Service state',   fmt: v => v ?? '—' },
-      { path: 'pipeline.assembler_state',    label: 'Assembler',       fmt: v => v ?? '—' },
-      { path: 'pipeline.max_score_10s',      label: 'Max score 10s',   fmt: v => v != null ? v.toFixed(3) : '—' },
-      { path: 'pipeline.model_version',      label: 'Model version',   fmt: v => v ?? '—' },
-      { path: 'pipeline.last_inference_ts',  label: 'Last inference',  fmt: v => v ? new Date(v).toLocaleTimeString() : '—' },
-      { path: 'pipeline.bark_events_1m',     label: 'Barks last 1m',   fmt: v => String(v) },
-      { path: 'pipeline.bark_events_10m',    label: 'Barks last 10m',  fmt: v => String(v) },
-      { path: 'pipeline.bark_events_1h',     label: 'Barks last 1h',   fmt: v => String(v) },
-      { path: 'pipeline.bark_events_today',  label: 'Barks today',     fmt: v => String(v) },
-    ]},
-    { title: 'Counts 24h', rows: [
-      { path: 'counts_24h.bark_candidates', label: 'Bark candidates', fmt: v => String(v) },
-      { path: 'counts_24h.bark_events',     label: 'Bark events',     fmt: v => String(v) },
-      { path: 'counts_24h.evidence_clips',  label: 'Evidence clips',  fmt: v => String(v) },
-      { path: 'counts_24h.uploads_ok',      label: 'Uploads OK',      fmt: v => String(v) },
-      { path: 'counts_24h.uploads_failed',  label: 'Uploads failed',  fmt: v => String(v) },
-      { path: 'counts_24h.uploads_retried', label: 'Uploads retried', fmt: v => String(v) },
-    ]},
+  const PIPELINE_SUMMARY_ROWS = [
+    { path: 'pipeline.state',             label: 'Service state', fmt: v => v ?? '—' },
+    { path: 'pipeline.model_version',     label: 'Model version', fmt: v => v ?? '—' },
+    { path: 'pipeline.bark_events_today', label: 'Barks today',   fmt: v => String(v) },
   ];
+
+  function progressPercent(value, max) {
+    const current = Number(value);
+    const limit = Number(max);
+    if (!Number.isFinite(current) || !Number.isFinite(limit) || limit <= 0) return 0;
+    return Math.max(0, Math.min(100, (current / limit) * 100));
+  }
+
+  function fmtScadaSeconds(value) {
+    const seconds = Number(value);
+    if (!Number.isFinite(seconds)) return '—';
+    return `${seconds < 10 ? seconds.toFixed(1) : Math.round(seconds)}s`;
+  }
+
+  function uploadStateLabel(channel) {
+    const state = channel?.state;
+    if (!state) return 'Unavailable';
+    return state.replaceAll('_', ' ').replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  function uploadTone(channel) {
+    const state = channel?.state;
+    if (state === 'uploaded') return 'ok';
+    if (state === 'failed') return 'error';
+    if (state === 'retrying') return 'warn';
+    if (['queued', 'encoding', 'uploading', 'pending', 'waiting'].includes(state)) return 'active';
+    return 'idle';
+  }
+
+  function uploadDetail(channel) {
+    if (!channel) return '';
+    if (channel.state === 'retrying' && channel.retry_in_s != null) {
+      return `retry in ${fmtScadaSeconds(channel.retry_in_s)}`;
+    }
+    if (channel.attempt != null && channel.max_attempts != null) {
+      return `attempt ${channel.attempt}/${channel.max_attempts}`;
+    }
+    if (channel.hit_count != null) return `${channel.hit_count} hits`;
+    return channel.detail ?? '';
+  }
 
   function getVal(obj, path) {
     return path.split('.').reduce((o, k) => o?.[k], obj);
@@ -672,28 +745,167 @@
 
     {:else if activeTab === 'monitor'}
       <div class="popup-body">
-        <table class="status-table">
-          {#if status}
-            {#each MONITOR_SECTIONS as section}
-              <tbody>
-                <tr class="section-hdr"><td colspan="3">{section.title}</td></tr>
-                {#each section.rows as row}
-                  {@const val = getVal(status, row.path)}
-                  {@const level = getLevel(row.path, val)}
-                  <tr>
-                    <td class="td-label">{row.label}</td>
-                    <td class="td-value" style:background={levelBg(level)}>
-                      {val != null ? row.fmt(val) : '—'}
-                      {#if level !== 'neutral' && levelLabel(level)}
-                        <span class="level-tag">{levelLabel(level)}</span>
-                      {/if}
-                    </td>
-                    <td class="td-hint">{HINT[row.path] ?? ''}</td>
-                  </tr>
-                {/each}
-              </tbody>
-            {/each}
-          {:else}
+        {#if status}
+          <table class="status-table pipeline-summary">
+            <tbody>
+              <tr class="section-hdr"><td colspan="3">Pipeline</td></tr>
+              {#each PIPELINE_SUMMARY_ROWS as row}
+                {@const val = getVal(status, row.path)}
+                <tr>
+                  <td class="td-label">{row.label}</td>
+                  <td class="td-value">{val != null ? row.fmt(val) : '—'}</td>
+                  <td class="td-hint"></td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+
+          <section class="scada-panel" aria-label="Live bark pipeline stages">
+            <div class="scada-grid">
+              <article class="scada-stage" class:stage-engaged={detectionEngaged}>
+                <header class="stage-header">
+                  <span class="stage-number">01</span>
+                  <span class="stage-title">Detection</span>
+                  <span class="stage-lamp" class:lamp-on={detectionEngaged}></span>
+                </header>
+
+                <div class="stage-state">{assemblerState}</div>
+                <div class="score-readout">
+                  <span>Max score · 10s</span>
+                  <strong>{maxScore10s != null ? Number(maxScore10s).toFixed(3) : '—'}</strong>
+                </div>
+                <div class="score-track" aria-hidden="true">
+                  <span style:width={`${progressPercent(maxScore10s, 1)}%`}></span>
+                </div>
+
+                {#if detectionActive}
+                  <div class="instrument">
+                    <div class="instrument-label">
+                      <span>Confirmed hits</span>
+                      <strong>{confirmedHits} / {confirmationHits || '—'}</strong>
+                    </div>
+                    <div
+                      class="instrument-track hits-track"
+                      role="progressbar"
+                      aria-label="Confirmed hits"
+                      aria-valuenow={confirmedHits}
+                      aria-valuemin="0"
+                      aria-valuemax={confirmationHits || 0}
+                    >
+                      <span style:width={`${progressPercent(confirmedHits, confirmationHits)}%`}></span>
+                    </div>
+                  </div>
+
+                  <div class="instrument">
+                    <div class="instrument-label">
+                      <span>Window remaining</span>
+                      <strong>{fmtScadaSeconds(confirmationRemaining)} / {fmtScadaSeconds(confirmationWindow)}</strong>
+                    </div>
+                    <div
+                      class="instrument-track countdown-track"
+                      role="progressbar"
+                      aria-label="Confirmation window remaining"
+                      aria-valuenow={confirmationRemaining}
+                      aria-valuemin="0"
+                      aria-valuemax={confirmationWindow || 0}
+                    >
+                      <span style:width={`${progressPercent(confirmationRemaining, confirmationWindow)}%`}></span>
+                    </div>
+                  </div>
+                {:else}
+                  <div class="stage-standby">Detection latched · assembly owns event</div>
+                {/if}
+              </article>
+
+              <article class="scada-stage" class:stage-engaged={assemblyEngaged}>
+                <header class="stage-header">
+                  <span class="stage-number">02</span>
+                  <span class="stage-title">Assembly</span>
+                  <span class="stage-lamp" class:lamp-on={assemblyEngaged}></span>
+                </header>
+
+                <div class="stage-state">{assemblyActive ? 'ACTIVE_CONFIRMED' : 'STANDBY'}</div>
+                {#if assemblyActive}
+                  <div class="instrument stage-first-instrument">
+                    <div class="instrument-label">
+                      <span>Clip length</span>
+                      <strong>{fmtScadaSeconds(clipElapsed)} / {fmtScadaSeconds(maxClip)}</strong>
+                    </div>
+                    <div
+                      class="instrument-track clip-track"
+                      role="progressbar"
+                      aria-label="Clip length"
+                      aria-valuenow={clipElapsed}
+                      aria-valuemin="0"
+                      aria-valuemax={maxClip || 0}
+                    >
+                      <span style:width={`${progressPercent(clipElapsed, maxClip)}%`}></span>
+                    </div>
+                  </div>
+
+                  <div class="instrument">
+                    <div class="instrument-label">
+                      <span>Silence timer</span>
+                      <strong>{fmtScadaSeconds(silenceElapsed)} / {fmtScadaSeconds(silenceGap)}</strong>
+                    </div>
+                    <div
+                      class="instrument-track silence-track"
+                      role="progressbar"
+                      aria-label="Silence timer"
+                      aria-valuenow={silenceElapsed}
+                      aria-valuemin="0"
+                      aria-valuemax={silenceGap || 0}
+                    >
+                      <span style:width={`${progressPercent(silenceElapsed, silenceGap)}%`}></span>
+                    </div>
+                  </div>
+                {:else}
+                  <div class="stage-standby stage-standby-tall">
+                    {assemblerState === 'COOLDOWN' ? 'Finalising confirmed clip' : 'Waiting for confirmed detection'}
+                  </div>
+                {/if}
+              </article>
+
+              <article class="scada-stage upload-stage" class:stage-engaged={uploadEngaged}>
+                <header class="stage-header">
+                  <span class="stage-number">03</span>
+                  <span class="stage-title">Upload</span>
+                  <span class="queue-depth">Q {uploadStatus?.queue_depth ?? 0}</span>
+                </header>
+
+                <div class="upload-channel" title={audioUploadStatus?.detail ?? ''}>
+                  <span class="channel-lamp tone-{uploadTone(audioUploadStatus)}"></span>
+                  <span class="channel-copy">
+                    <small>Audio clip</small>
+                    <strong>{uploadStateLabel(audioUploadStatus)}</strong>
+                  </span>
+                  <span class="channel-detail">{uploadDetail(audioUploadStatus)}</span>
+                </div>
+
+                <div class="upload-channel" title={metadataUploadStatus?.detail ?? ''}>
+                  <span class="channel-lamp tone-{uploadTone(metadataUploadStatus)}"></span>
+                  <span class="channel-copy">
+                    <small>Hit metadata</small>
+                    <strong>{uploadStateLabel(metadataUploadStatus)}</strong>
+                  </span>
+                  <span class="channel-detail">{uploadDetail(metadataUploadStatus)}</span>
+                </div>
+
+                <div class="upload-counters">
+                  <div class:counter-alert={uploadsFailed24h > 0}>
+                    <strong>{uploadsFailed24h}</strong>
+                    <span>Failed · 24h</span>
+                  </div>
+                  <div class:counter-warn={uploadsRetried24h > 0}>
+                    <strong>{uploadsRetried24h}</strong>
+                    <span>Retried · 24h</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+        {:else}
+          <table class="status-table">
             <tbody>
               <tr class="monitor-unreachable-row">
                 <td colspan="3">
@@ -702,8 +914,10 @@
                 </td>
               </tr>
             </tbody>
-          {/if}
+          </table>
+        {/if}
 
+        <table class="status-table">
           <tbody>
             <tr class="section-hdr">
               <td colspan="3">
@@ -1099,6 +1313,302 @@
     line-height: 1.4;
     width: 50%;
     border-bottom: 1px solid #f0f0ec;
+  }
+
+  /* ── Pipeline SCADA ── */
+  .pipeline-summary .td-label { width: 35%; }
+  .pipeline-summary .td-value { width: 65%; }
+  .pipeline-summary .td-hint { display: none; }
+
+  .scada-panel {
+    padding: 0.65rem;
+    border-bottom: 1px solid #deded9;
+    background:
+      linear-gradient(rgba(86, 110, 106, 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(86, 110, 106, 0.055) 1px, transparent 1px),
+      #f3f4f1;
+    background-size: 16px 16px;
+    color: #26312f;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .scada-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+
+  .scada-stage {
+    position: relative;
+    min-width: 0;
+    min-height: 12.5rem;
+    padding: 0.62rem;
+    border: 1px solid #cbd2cf;
+    border-top: 2px solid #aeb9b6;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 1px 2px rgba(30, 45, 42, 0.06);
+  }
+
+  .scada-stage.stage-engaged {
+    border-top-color: #59d6c9;
+    box-shadow: 0 1px 2px rgba(30, 45, 42, 0.06), 0 0 0 1px rgba(89, 214, 201, 0.08);
+  }
+
+  .scada-stage:not(:last-child)::after {
+    content: '›';
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    right: -0.48rem;
+    width: 0.4rem;
+    color: #8da09d;
+    font-size: 1rem;
+    line-height: 1;
+    text-align: center;
+    transform: translateY(-50%);
+  }
+
+  .stage-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding-bottom: 0.48rem;
+    border-bottom: 1px solid #e2e6e4;
+  }
+
+  .stage-number {
+    display: grid;
+    place-items: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 1px solid #b8c4c1;
+    border-radius: 2px;
+    color: #667b77;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.55rem;
+    font-weight: 700;
+  }
+
+  .stage-title {
+    flex: 1;
+    color: #26312f;
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .stage-lamp,
+  .channel-lamp {
+    width: 0.48rem;
+    height: 0.48rem;
+    flex: 0 0 auto;
+    border: 1px solid #aeb8b6;
+    border-radius: 50%;
+    background: #e2e6e4;
+    box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.16);
+  }
+
+  .stage-lamp.lamp-on {
+    border-color: #7df2e6;
+    background: #56d8c9;
+    box-shadow: 0 0 7px rgba(86, 216, 201, 0.7);
+  }
+
+  .stage-state {
+    margin-top: 0.5rem;
+    overflow: hidden;
+    color: #718480;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.035em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .score-readout {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.4rem;
+    margin-top: 0.55rem;
+  }
+
+  .score-readout span,
+  .instrument-label span {
+    color: #6f7f7c;
+    font-size: 0.57rem;
+  }
+
+  .score-readout strong {
+    color: #177f77;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.86rem;
+  }
+
+  .score-track,
+  .instrument-track {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #c7cfcd;
+    border-radius: 2px;
+    background: #e8ecea;
+  }
+
+  .score-track {
+    height: 0.28rem;
+    margin-top: 0.2rem;
+  }
+
+  .score-track > span,
+  .instrument-track > span {
+    display: block;
+    height: 100%;
+    transition: width 0.35s ease;
+  }
+
+  .score-track > span { background: #65cfc5; }
+
+  .instrument { margin-top: 0.72rem; }
+  .stage-first-instrument { margin-top: 1.65rem; }
+
+  .instrument-label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.35rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .instrument-label strong {
+    color: #34413f;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.58rem;
+    font-weight: 650;
+    white-space: nowrap;
+  }
+
+  .instrument-track { height: 0.62rem; }
+  .instrument-track::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent calc(20% - 1px),
+      rgba(255, 255, 255, 0.65) calc(20% - 1px),
+      rgba(255, 255, 255, 0.65) 20%
+    );
+  }
+
+  .hits-track > span { background: #45c9bd; }
+  .countdown-track > span { background: #d7a34b; }
+  .clip-track > span { background: #4a9fd1; }
+  .silence-track > span { background: #e17a4f; }
+
+  .stage-standby {
+    display: grid;
+    min-height: 3.5rem;
+    margin-top: 0.75rem;
+    place-items: center;
+    border: 1px dashed #cbd3d0;
+    background: #fafbf9;
+    color: #899794;
+    font-size: 0.58rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+  .stage-standby-tall { min-height: 7.2rem; margin-top: 1.35rem; }
+
+  .queue-depth {
+    color: #667b77;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.56rem;
+  }
+
+  .upload-channel {
+    display: flex;
+    align-items: center;
+    gap: 0.42rem;
+    min-width: 0;
+    margin-top: 0.6rem;
+    padding: 0.42rem;
+    border: 1px solid #d3d9d7;
+    border-radius: 2px;
+    background: #f8f9f7;
+  }
+
+  .channel-lamp.tone-ok { border-color: #76df91; background: #4ec46d; box-shadow: 0 0 6px rgba(78, 196, 109, 0.6); }
+  .channel-lamp.tone-error { border-color: #ff8e83; background: #db5549; box-shadow: 0 0 6px rgba(219, 85, 73, 0.6); }
+  .channel-lamp.tone-warn { border-color: #f1c36c; background: #d99b33; box-shadow: 0 0 6px rgba(217, 155, 51, 0.55); }
+  .channel-lamp.tone-active { border-color: #78d9ee; background: #4baec4; box-shadow: 0 0 6px rgba(75, 174, 196, 0.55); }
+
+  .channel-copy { min-width: 0; flex: 1; }
+  .channel-copy small,
+  .channel-copy strong { display: block; }
+  .channel-copy small {
+    color: #7c8c89;
+    font-size: 0.51rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .channel-copy strong {
+    overflow: hidden;
+    margin-top: 0.06rem;
+    color: #34413f;
+    font-size: 0.62rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .channel-detail {
+    max-width: 42%;
+    overflow: hidden;
+    color: #7a8b88;
+    font-size: 0.5rem;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .upload-counters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+    margin-top: 0.65rem;
+  }
+  .upload-counters > div {
+    padding: 0.35rem 0.4rem;
+    border: 1px solid #d0d7d4;
+    border-radius: 2px;
+    background: #fafbf9;
+  }
+  .upload-counters strong,
+  .upload-counters span { display: block; }
+  .upload-counters strong {
+    color: #34413f;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.78rem;
+  }
+  .upload-counters span { margin-top: 0.05rem; color: #7a8b88; font-size: 0.48rem; text-transform: uppercase; }
+  .upload-counters .counter-alert { border-color: #e2aaa5; background: #fff7f6; }
+  .upload-counters .counter-alert strong { color: #b63f35; }
+  .upload-counters .counter-warn { border-color: #dfc58e; background: #fffaf0; }
+  .upload-counters .counter-warn strong { color: #966412; }
+
+  @media (max-width: 620px) {
+    .scada-grid { grid-template-columns: 1fr; }
+    .scada-stage { min-height: auto; }
+    .scada-stage:not(:last-child)::after {
+      top: auto;
+      right: 50%;
+      bottom: -0.52rem;
+      transform: translateX(50%) rotate(90deg);
+    }
+    .stage-first-instrument { margin-top: 0.8rem; }
+    .stage-standby-tall { min-height: 3.5rem; margin-top: 0.75rem; }
   }
 
   /* ── Monitor parameter editor ── */
