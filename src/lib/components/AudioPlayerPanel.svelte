@@ -1,6 +1,7 @@
 <script>
   import { onMount }       from 'svelte';
   import { formatDuration, formatDate, downsampleWaveform, waveformNorm, ASSET_BASE, API_BASE } from '$lib/utils.js';
+  import { hitMetadataById, setHitMetadata } from '$lib/hit-metadata.js';
   import { SAMPLE_LABELS, sampleLabelColor } from '$lib/sample-labels.js';
   import { fly }           from 'svelte/transition';
 
@@ -171,29 +172,14 @@
   });
 
   // ── Hit metadata (bark timestamps + confidence + loudness from goblin) ────
-  /**
-   * @type {{ timestamps: number[], confidences: number[], loudnesses: number[], paddingS: number, windowS: number } | null}
-   */
-  let hitMetadata = $state(null);
+  const hitMetadata = $derived($hitMetadataById.get(entry.id) ?? null);
   // Hit whose confidence/loudness labels are shown — only on hover, since
   // they'd otherwise overlap when hits are close together.
   let hoveredHitIndex = $state(/** @type {number|null} */ (null));
 
   $effect(() => {
-    const id = entry.id;
-    hitMetadata = null;
+    void entry.id;
     hoveredHitIndex = null;
-    if (!id) return;
-    fetch(`${API_BASE}/api/diary/${id}/hit-metadata`)
-      .then(r => {
-        if (r.status === 404) return null;
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-      })
-      .then(data => {
-        if (entry.id === id && data) hitMetadata = data;
-      })
-      .catch(() => {}); // non-critical — silently ignore network errors
   });
 
   // ── Volume / gain ──────────────────────────────────────────────────────────
@@ -376,7 +362,7 @@
       const res = await fetch(`${API_BASE}/api/diary/${entry.id}/reanalyze`, { method: 'POST' });
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error ?? `HTTP ${res.status}`);
-      hitMetadata = data;
+      setHitMetadata(entry.id, data);
     } catch (e) {
       reanalyzeError = e?.message ?? 'Re-analysis failed.';
     } finally {

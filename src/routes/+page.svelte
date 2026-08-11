@@ -5,6 +5,7 @@
   import OverviewPanel    from '$lib/components/OverviewPanel.svelte';
   import GoblinPiStatus   from '$lib/components/GoblinPiStatus.svelte';
   import { groupByDate, ASSET_BASE, API_BASE } from '$lib/utils.js';
+  import { loadHitMetadata } from '$lib/hit-metadata.js';
 
   // Svelte 5 runes
   let { data } = $props();
@@ -127,6 +128,13 @@
       const res = await fetch(`${API_BASE}/api/diary`);
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
       entries = await res.json();
+
+      // Progressive enhancement: do not await metadata. This runs only for a
+      // page mount, not from layout/resize effects, and follows every page the
+      // bulk API advertises through links.next.
+      void loadHitMetadata().catch((e) => {
+        console.error('Failed to load hit metadata:', e);
+      });
     } catch (e) {
       loadError = e.message;
     } finally {

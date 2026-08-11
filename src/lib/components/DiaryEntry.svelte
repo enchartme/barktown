@@ -1,5 +1,5 @@
 <script>
-  import { API_BASE } from '$lib/utils.js';
+  import { hitMetadataById } from '$lib/hit-metadata.js';
 
   /**
    * @type {{
@@ -56,19 +56,9 @@
   // ── Auto-detected clips ("-A- ...") get a radial hit-map instead of a text label ──
   const isAutoDetected = $derived(/^-A-/.test((entry.label ?? '').trim()));
 
-  /** @type {{ timestamps: number[], loudnesses: number[] } | null} */
-  let hitMetadata = $state(null);
-
-  // Fetched lazily after mount so it never delays initial diary rendering.
-  $effect(() => {
-    const id = entry.id;
-    hitMetadata = null;
-    if (!isAutoDetected || !id) return;
-    fetch(`${API_BASE}/api/diary/${id}/hit-metadata`)
-      .then(r => (r.ok ? r.json() : null))
-      .then(data => { if (entry.id === id && data) hitMetadata = data; })
-      .catch(() => {}); // non-critical — silently ignore network errors
-  });
+  // Populated asynchronously by the page-level bulk loader. Resizes only
+  // redraw the canvas from this cache; they never initiate another request.
+  const hitMetadata = $derived($hitMetadataById.get(entry.id) ?? null);
 
   // Matches the play-knob svg: left:0, top:0, 16x16, translateX(-50%).
   const KNOB_CENTER_X = 0;

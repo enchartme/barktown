@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "test": "node --test test/*.test.mjs",
     "preview": "npm run build && wrangler dev",
     "preprocess": "node scripts/build-audio-index.mjs",
     "fetch-sun": "node scripts/fetch-sun-data.mjs",
