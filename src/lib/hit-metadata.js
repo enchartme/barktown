@@ -23,13 +23,8 @@ export const hitMetadataById = writable(/** @type {Map<string, HitMetadata>} */ 
 const AUTO_DETECTED_LABEL = /^-A-(?:\s|$)/;
 const SECONDS_PER_MINUTE = 60;
 
-/**
- * Build the compact stats string for a hit-metadata row.
- *
- * @param {HitMetadata} metadata
- * @param {number} durationSec
- */
-export function formatHitMetadataStats(metadata, durationSec) {
+/** @param {HitMetadata} metadata @param {number} durationSec */
+function hitMetadataStats(metadata, durationSec) {
   const hitCount = Array.isArray(metadata.timestamps) ? metadata.timestamps.length : 0;
   const confidences = Array.isArray(metadata.confidences)
     ? metadata.confidences.filter(Number.isFinite)
@@ -50,11 +45,37 @@ export function formatHitMetadataStats(metadata, durationSec) {
   const density = Number.isFinite(durationSec) && durationSec > 0
     ? Math.round((hitCount / durationSec) * SECONDS_PER_MINUTE)
     : 0;
+
+  return { hitCount, maximumConfidence, maximumLoudness, medianLoudness, density };
+}
+
+/**
+ * Build the compact stats string for a hit-metadata row.
+ *
+ * @param {HitMetadata} metadata
+ * @param {number} durationSec
+ */
+export function formatHitMetadataStats(metadata, durationSec) {
+  const { hitCount, maximumConfidence, maximumLoudness, medianLoudness, density } =
+    hitMetadataStats(metadata, durationSec);
   const confidenceTag = maximumConfidence >= 0.995
     ? 'C1'
     : `C${maximumConfidence.toFixed(2)}`;
 
   return `${confidenceTag} D${density} W${hitCount} La${maximumLoudness.toFixed(1)} Lm${medianLoudness.toFixed(1)}`;
+}
+
+/** @param {{id?: string, filename?: string, sampleId?: string | null, label?: string, time?: string}} entry */
+function diaryEntryDescriptor(entry) {
+  const label = (entry.label || entry.time || '').trim();
+  const isSample = Boolean(entry.sampleId)
+    || /(?:^|_)SAMPLE(?:_|$)/i.test(entry.id ?? '')
+    || /(?:^|\s)SAMPLE(?:\s|$)/i.test(entry.filename ?? '');
+
+  if (AUTO_DETECTED_LABEL.test(label)) return '-A-';
+  return isSample && !/^SAMPLE(?:\s|$)/i.test(label)
+    ? `SAMPLE${label ? ` ${label}` : ''}`
+    : label;
 }
 
 /**
@@ -74,18 +95,38 @@ export function formatHitMetadataStats(metadata, durationSec) {
  */
 export function formatDiaryEntryTitle(entry, metadata) {
   const label = (entry.label || entry.time || '').trim();
-  const isSample = Boolean(entry.sampleId)
-    || /(?:^|_)SAMPLE(?:_|$)/i.test(entry.id ?? '')
-    || /(?:^|\s)SAMPLE(?:\s|$)/i.test(entry.filename ?? '');
-  const descriptor = isSample && !/^SAMPLE(?:\s|$)/i.test(label)
-    ? `SAMPLE${label ? ` ${label}` : ''}`
-    : label;
+  const descriptor = diaryEntryDescriptor(entry);
 
   if (!metadata) return descriptor;
 
   const stats = formatHitMetadataStats(metadata, entry.durationSec ?? 0);
   if (AUTO_DETECTED_LABEL.test(label)) return `-A- ${stats}`;
   return `${descriptor}${descriptor ? ' ' : ''}${stats}`;
+}
+
+/**
+ * Build the expanded, user-facing title shown in the audio player panel.
+ * Confidence remains available in compact diagnostic titles but is omitted
+ * here in favor of the bark count, rate, and loudness summary.
+ *
+ * @param {{
+ *   id?: string,
+ *   filename?: string,
+ *   sampleId?: string | null,
+ *   label?: string,
+ *   time?: string,
+ *   durationSec?: number
+ * }} entry
+ * @param {HitMetadata | null | undefined} metadata
+ */
+export function formatAudioPanelTitle(entry, metadata) {
+  const descriptor = diaryEntryDescriptor(entry);
+  if (!metadata) return descriptor;
+
+  const { hitCount, maximumLoudness, medianLoudness, density } =
+    hitMetadataStats(metadata, entry.durationSec ?? 0);
+  const stats = `Barks: ${hitCount}, Density: ${density} bpm, Loudness Peak: ${maximumLoudness.toFixed(1)}x, Median: ${medianLoudness.toFixed(1)}x`;
+  return `${descriptor}${descriptor ? ': ' : ''}${stats}`;
 }
 
 /**

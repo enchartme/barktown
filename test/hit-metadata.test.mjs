@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { get } from 'svelte/store';
 
 import {
+  formatAudioPanelTitle,
   formatAutoDetectionLabel,
   formatDiaryEntryTitle,
   formatHitMetadataStats,
@@ -87,6 +88,36 @@ test('sample diary titles preserve SAMPLE and the comment before current stats',
       loudnesses: [4.2, 1.4, 2.2],
     }),
     'SAMPLE bark C0.98 D18 W3 La4.2 Lm2.2',
+  );
+});
+
+test('audio panel title expands sample hit stats for display', () => {
+  assert.equal(
+    formatAudioPanelTitle({
+      id: '2026-07-23_18-43-58_SAMPLE_bark',
+      label: 'bark',
+      durationSec: 30,
+    }, {
+      timestamps: Array.from({ length: 9 }, (_, i) => i),
+      confidences: Array(9).fill(1),
+      loudnesses: [2.1, 2.4, 2.8, 2.9, 3.0, 3.1, 3.2, 3.4, 3.6],
+    }),
+    'SAMPLE bark: Barks: 9, Density: 18 bpm, Loudness Peak: 3.6x, Median: 3.0x',
+  );
+});
+
+test('audio panel title expands auto-detected hit stats for display', () => {
+  assert.equal(
+    formatAudioPanelTitle({
+      id: 'auto',
+      label: '-A- stale compact stats',
+      durationSec: 574,
+    }, {
+      timestamps: Array.from({ length: 67 }, (_, i) => i),
+      confidences: Array(67).fill(1),
+      loudnesses: [...Array(66).fill(2.3), 5.3],
+    }),
+    '-A-: Barks: 67, Density: 7 bpm, Loudness Peak: 5.3x, Median: 2.3x',
   );
 });
 

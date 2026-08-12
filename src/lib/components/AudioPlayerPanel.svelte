@@ -1,7 +1,7 @@
 <script>
   import { onMount }       from 'svelte';
   import { formatDuration, formatDate, downsampleWaveform, waveformNorm, ASSET_BASE, API_BASE } from '$lib/utils.js';
-  import { formatDiaryEntryTitle, hitMetadataById, setHitMetadata } from '$lib/hit-metadata.js';
+  import { formatAudioPanelTitle, hitMetadataById, setHitMetadata } from '$lib/hit-metadata.js';
   import { SAMPLE_LABELS, sampleLabelColor } from '$lib/sample-labels.js';
   import { fly }           from 'svelte/transition';
 
@@ -432,7 +432,7 @@
   const formattedDate  = $derived(formatDate(entry.date));
   const formattedDur   = $derived(formatDuration(entry.durationSec));
   const formattedCur   = $derived(formatDuration(currentTime));
-  const displayLabel   = $derived(formatDiaryEntryTitle(entry, hitMetadata));
+  const displayLabel   = $derived(formatAudioPanelTitle(entry, hitMetadata));
   const audioSrc       = $derived(`${ASSET_BASE}/${entry.audioPath}`);
 </script>
 
