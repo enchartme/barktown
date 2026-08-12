@@ -4,6 +4,7 @@
   import AudioPlayerPanel from '$lib/components/AudioPlayerPanel.svelte';
   import OverviewPanel    from '$lib/components/OverviewPanel.svelte';
   import GoblinPiStatus   from '$lib/components/GoblinPiStatus.svelte';
+  import ReportMetrics    from '$lib/components/ReportMetrics.svelte';
   import {
     addDays,
     API_BASE,
@@ -12,7 +13,8 @@
     isIsoDate,
     startOfIsoWeek,
   } from '$lib/utils.js';
-  import { loadHitMetadata } from '$lib/hit-metadata.js';
+  import { hitMetadataById, loadHitMetadata } from '$lib/hit-metadata.js';
+  import { summarizeEntries } from '$lib/report-summary.js';
 
   // Svelte 5 runes
   let { data, report = false } = $props();
@@ -45,6 +47,20 @@
     report && reportStartDate && reportEndDate
       ? groupByDateRange(filteredEntries, reportStartDate, reportEndDate)
       : groupByDate(filteredEntries)
+  ));
+  const reportEntries = $derived(
+    report && reportStartDate && reportEndDate
+      ? entries.filter(entry => entry.date >= reportStartDate && entry.date <= reportEndDate)
+      : []
+  );
+  const reportSummary = $derived(summarizeEntries(reportEntries, $hitMetadataById));
+  const reportSummariesByDate = $derived.by(() => (
+    report && reportStartDate && reportEndDate
+      ? new Map(groupByDateRange(reportEntries, reportStartDate, reportEndDate).map(day => [
+          day.date,
+          summarizeEntries(day.entries, $hitMetadataById),
+        ]))
+      : new Map()
   ));
   const sunByDate = $derived(data.sunByDate ?? {});
 
@@ -303,6 +319,9 @@
 
   <main class="diary-main">
     {#if report && reportWeekStart}
+      <div class="report-summary-banner">
+        <ReportMetrics summary={reportSummary} label={`Summary for ${reportRangeLabel}`} />
+      </div>
       <div class="report-toolbar" aria-label="Report weeks">
         <button class="week-btn" disabled={loading} onclick={() => changeReportWeek(-1)}>← Earlier</button>
         <strong>{reportRangeLabel}</strong>
@@ -324,6 +343,7 @@
       selectedId={selectedEntry?.id ?? null}
       onselect={selectEntry}
       {sunByDate}
+      summaries={report ? reportSummariesByDate : null}
     />
     {/if}
   </main>
@@ -449,6 +469,11 @@
     gap: 0.8rem;
     color: #555;
     font-size: 0.82rem;
+  }
+
+  .report-summary-banner {
+    width: min(720px, calc(100% - 2rem));
+    margin: 0 auto 0.5rem;
   }
 
   .report-toolbar strong {

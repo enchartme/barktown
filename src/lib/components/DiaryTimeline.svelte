@@ -9,9 +9,10 @@
    *   selectedId: string | null;
    *   onselect: (entry: import('$lib/types').Entry) => void;
    *   sunByDate: Record<string, { date: string, sunrise: string|null, sunset: string|null }>;
+   *   summaries?: Map<string, {disturbances: number, totalDurationSec: number, barks: number, worstDensityBpm: number}> | null;
    * }}
    */
-  let { days, startHour, endHour, selectedId, onselect, sunByDate = {} } = $props();
+  let { days, startHour, endHour, selectedId, onselect, sunByDate = {}, summaries = null } = $props();
 </script>
 
 <div class="timeline">
@@ -24,6 +25,7 @@
       {selectedId}
       {onselect}
       sunEntry={sunByDate[day.date] ?? null}
+      reportSummary={summaries?.get(day.date) ?? null}
     />
   {/each}
 
