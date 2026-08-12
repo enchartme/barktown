@@ -1,6 +1,5 @@
-// src/routes/+page.server.js
-// Server-side load — runs in Node during prerender, bypassing browser CORS enforcement.
-// Only sun.json is prerendered; index.json is fetched live by the client.
+// Server-side load — runs during prerender, bypassing browser CORS enforcement.
+// Diary entries remain live; only optional sunrise/sunset data is prerendered.
 
 import { ASSET_BASE } from '$lib/utils.js';
 

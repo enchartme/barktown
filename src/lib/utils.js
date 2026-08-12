@@ -109,6 +109,58 @@ export function groupByDate(entries) {
   return groups;
 }
 
+/**
+ * Add whole calendar days to an ISO date without involving the local timezone.
+ *
+ * @param {string} dateStr YYYY-MM-DD
+ * @param {number} amount
+ * @returns {string} YYYY-MM-DD
+ */
+export function addDays(dateStr, amount) {
+  const date = new Date(`${dateStr}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + amount);
+  return date.toISOString().slice(0, 10);
+}
+
+/**
+ * Return the Monday that starts the ISO week containing an ISO date.
+ *
+ * @param {string} dateStr YYYY-MM-DD
+ * @returns {string} YYYY-MM-DD
+ */
+export function startOfIsoWeek(dateStr) {
+  const date = new Date(`${dateStr}T00:00:00Z`);
+  const daysSinceMonday = (date.getUTCDay() + 6) % 7;
+  return addDays(dateStr, -daysSinceMonday);
+}
+
+/** Return true for a real calendar date formatted as YYYY-MM-DD. */
+export function isIsoDate(dateStr) {
+  if (typeof dateStr !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
+  const date = new Date(`${dateStr}T00:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === dateStr;
+}
+
+/**
+ * Group entries into every day in an inclusive range. Empty dates are retained
+ * and the result follows the diary's newest-first ordering.
+ *
+ * @param {import('./types').Entry[]} entries
+ * @param {string} startDate YYYY-MM-DD
+ * @param {string} endDate YYYY-MM-DD
+ * @returns {{ date: string, entries: import('./types').Entry[] }[]}
+ */
+export function groupByDateRange(entries, startDate, endDate) {
+  const entriesByDate = new Map(groupByDate(entries).map(day => [day.date, day.entries]));
+  const groups = [];
+
+  for (let date = endDate; date >= startDate; date = addDays(date, -1)) {
+    groups.push({ date, entries: entriesByDate.get(date) ?? [] });
+  }
+
+  return groups;
+}
+
 // ─── Lane assignment ──────────────────────────────────────────────────────────
 
 /**

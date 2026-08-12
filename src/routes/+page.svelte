@@ -1,230 +1,26 @@
-<script>
-  import { onMount } from 'svelte';
-  import DiaryTimeline    from '$lib/components/DiaryTimeline.svelte';
-  import AudioPlayerPanel from '$lib/components/AudioPlayerPanel.svelte';
-  import OverviewPanel    from '$lib/components/OverviewPanel.svelte';
-  import GoblinPiStatus   from '$lib/components/GoblinPiStatus.svelte';
-  import { groupByDate, ASSET_BASE, API_BASE } from '$lib/utils.js';
-  import { loadHitMetadata } from '$lib/hit-metadata.js';
-
-  // Svelte 5 runes
-  let { data } = $props();
-
-  /** Entries fetched live from the diary API on every page load. */
-  /** @type {import('$lib/types').Entry[]} */
-  let entries   = $state([]);
-  let loading   = $state(true);
-  /** @type {string | null} */
-  let loadError = $state(null);
-
-  /** Entry kind filter. */
-  let kindFilter = $state('both'); // 'text' | 'audio' | 'both'
-
-  const filteredEntries = $derived(
-    kindFilter === 'both'  ? entries :
-    kindFilter === 'audio' ? entries.filter(e => e.kind === 'audio') :
-    entries.filter(e => e.kind !== 'audio')
-  );
-
-  const days      = $derived(groupByDate(filteredEntries));
-  const sunByDate = $derived(data.sunByDate ?? {});
-
-  /** @type {import('$lib/types').Entry | null} */
-  let selectedEntry = $state(null);
-
-  /**
-   * panelEntry holds the entry data for AudioPlayerPanel.
-   * It outlives the close action so the component still has valid props
-   * while its fly-out transition is running.
-   * showPanel is the boolean that actually triggers the transition.
-   */
-  /** @type {import('$lib/types').Entry | null} */
-  let panelEntry = $state(null);
-  let showPanel  = $state(false);
-
-  /** Toggle the overview bar-chart panel. */
-  let showOverview = $state(true);
-
-  /** Visible time domain (hours). Controls which slice of the 24h track is shown. */
-  let domain = $state({ startHour: 9, endHour: 20 });
-
-  const ZOOM_LEVELS = [
-    { label: '24h',       startHour: 0,  endHour: 24 },
-    { label: '6 to 22',  startHour: 6,  endHour: 22 },
-    { label: '9 to 20', startHour: 9,  endHour: 20 },
-  ];
-
-  /** Open the detail panel for a given entry and update the URL hash. */
-  function selectEntry(entry) {
-    selectedEntry = entry;
-    panelEntry    = entry;  // set data first so panel has props before mounting
-    showPanel     = true;
-    if (typeof window !== 'undefined') {
-      history.replaceState(null, '', '#' + entry.id);
-    }
-  }
-
-  /** Close the detail panel: triggers the fly-out transition. */
-  function closePanel() {
-    selectedEntry = null;  // clears timeline highlight immediately
-    showPanel     = false; // triggers fly-out; panelEntry stays set until transition ends
-    if (typeof window !== 'undefined') {
-      history.replaceState(null, '', window.location.pathname + window.location.search);
-    }
-  }
-
-  /** Called by AudioPlayerPanel after its exit transition finishes. */
-  function handlePanelClosed() {
-    panelEntry = null;  // now safe to clear – component is gone from DOM
-  }
-
-  /**
-   * Delete a diary entry via the API, then remove it from the local list
-   * and close the panel.
-   * @param {import('$lib/types').Entry} entry
-   */
-  async function deleteEntry(entry) {
-    try {
-      const res = await fetch(`${API_BASE}/api/diary/${encodeURIComponent(entry.id)}`, { method: 'DELETE' });
-      if (!res.ok && res.status !== 204) throw new Error(`${res.status} ${res.statusText}`);
-    } catch (e) {
-      // Surface errors in the browser console; panel will still close.
-      console.error('Failed to delete entry:', e);
-    }
-    entries = entries.filter(e => e.id !== entry.id);
-    closePanel();
-  }
-
-  /** Convert a false-positive diary recording into a labeled training sample. */
-  async function moveEntryToSamples(entry, label, keepInDiary = false) {
-    const res = await fetch(
-      `${API_BASE}/api/diary/${encodeURIComponent(entry.id)}/move-to-samples`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ label, keepInDiary }),
-      },
-    );
-    if (!res.ok) {
-      let message = `${res.status} ${res.statusText}`;
-      try {
-        const body = await res.json();
-        if (body?.error) message = body.error;
-      } catch {
-        // Keep the HTTP status text when the response is not JSON.
-      }
-      throw new Error(message);
-    }
-
-    if (!keepInDiary) {
-      entries = entries.filter(e => e.id !== entry.id);
-      closePanel();
-    }
-  }
-
-  // On mount: fetch diary entries live from the API, then handle deep-link hash.
-  onMount(async () => {
-    try {
-      const res = await fetch(`${API_BASE}/api/diary`);
-      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-      entries = await res.json();
-
-      // Progressive enhancement: do not await metadata. This runs only for a
-      // page mount, not from layout/resize effects, and follows every page the
-      // bulk API advertises through links.next.
-      void loadHitMetadata().catch((e) => {
-        console.error('Failed to load hit metadata:', e);
-      });
-    } catch (e) {
-      loadError = e.message;
-    } finally {
-      loading = false;
-    }
-
-    const hash = window.location.hash.slice(1);
-    if (hash) {
-      const entry = entries.find((e) => e.id === hash);
-      if (entry) { selectedEntry = entry; panelEntry = entry; showPanel = true; }
-    }
-  });
-</script>
-
 <svelte:head>
   <title>Barktown</title>
+  <meta name="description" content="Choose the Barktown diary or weekly report." />
 </svelte:head>
 
-<div class="app">
-  <header class="site-header">
-    <h1>🐕 Barktown</h1>
-    <button
-      class="subtitle recordings-toggle"
-      class:active={showOverview}
-      onclick={() => (showOverview = !showOverview)}
-      aria-pressed={showOverview}
-      title="Toggle overview chart"
-    >{#if loading}Loading…{:else if loadError}Error{:else}{entries.length} recorded events{/if}</button>
+<main class="intro">
+  <section class="intro-card">
+    <p class="eyebrow">🐕 Barktown</p>
+    <h1>Welcome to Barktown</h1>
+    <p class="lede">Choose a view to get started.</p>
 
-    <div class="kind-controls" role="group" aria-label="Entry type filter">
-      {#each ['text', 'audio', 'both'] as k (k)}
-        <button
-          class="zoom-btn"
-          class:active={kindFilter === k}
-          onclick={() => (kindFilter = k)}
-          aria-pressed={kindFilter === k}
-        >{k}</button>
-      {/each}
-    </div>
-
-    <div class="zoom-controls" role="group" aria-label="Zoom level">
-      {#each ZOOM_LEVELS as level (level.label)}
-        <button
-          class="zoom-btn"
-          class:active={domain.startHour === level.startHour && domain.endHour === level.endHour}
-          onclick={() => (domain = { startHour: level.startHour, endHour: level.endHour })}
-          aria-pressed={domain.startHour === level.startHour && domain.endHour === level.endHour}
-        >
-          {level.label}
-        </button>
-      {/each}
-    </div>
-
-    <a class="nav-link" href="/training">Samples</a>
-
-    <GoblinPiStatus />
-  </header>
-
-  <main class="diary-main">
-    {#if showOverview}
-      <OverviewPanel entries={filteredEntries} />
-    {/if}
-    {#if loading}
-      <p class="status-msg">Loading recordings…</p>
-    {:else if loadError}
-      <p class="status-msg error">Could not load index.json: {loadError}</p>
-    {:else}
-    <DiaryTimeline
-      {days}
-      startHour={domain.startHour}
-      endHour={domain.endHour}
-      selectedId={selectedEntry?.id ?? null}
-      onselect={selectEntry}
-      {sunByDate}
-    />
-    {/if}
-  </main>
-</div>
-
-<!-- Slide-up panel: showPanel triggers enter/exit transition;
-     panelEntry stays non-null until the exit animation finishes -->
-{#if showPanel && panelEntry}
-  <AudioPlayerPanel
-    entry={panelEntry}
-    onclose={closePanel}
-    onclosed={handlePanelClosed}
-    ondelete={deleteEntry}
-    onmovesample={moveEntryToSamples}
-  />
-{/if}
+    <nav aria-label="Barktown views">
+      <a href="/diary">
+        <strong>Diary</strong>
+        <span>Browse the complete recording timeline.</span>
+      </a>
+      <a href="/report">
+        <strong>Report</strong>
+        <span>Review recordings two weeks at a time.</span>
+      </a>
+    </nav>
+  </section>
+</main>
 
 <style>
   :global(*, *::before, *::after) { box-sizing: border-box; }
@@ -235,100 +31,65 @@
     color: #1a1a1a;
   }
 
-  .app {
+  .intro {
     min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: 2rem 1rem;
   }
 
-  /* ── Header ── */
-  .site-header {
-    position: sticky;
-    top: 0;
-    /* Higher than any diary entry's z-index (entries top out at 571) so the
-       header's own stacking context — and GoblinPiStatus's popup inside it —
-       always paints above entries, regardless of GoblinPiStatus's internal
-       z-index values (900/901), which are only compared within this bracket. */
-    z-index: 1000;
-    background: #fff;
-    border-bottom: 1px solid #e0e0dc;
-    padding: 0.6rem 1rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
+  .intro-card {
+    width: min(100%, 580px);
   }
 
-  .site-header h1 {
-    margin: 0;
-    font-size: 1.1rem;
+  .eyebrow {
+    margin: 0 0 0.75rem;
     font-weight: 700;
-    letter-spacing: -0.02em;
-    white-space: nowrap;
   }
 
-  .subtitle {
+  h1 {
     margin: 0;
-    font-size: 0.8rem;
-    color: #888;
-    white-space: nowrap;
+    font-size: clamp(2rem, 8vw, 3.6rem);
+    letter-spacing: -0.05em;
   }
 
-  .recordings-toggle {
-    background: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    padding: 0.15rem 0.4rem;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background 0.1s, color 0.1s, border-color 0.1s;
+  .lede {
+    margin: 0.65rem 0 1.6rem;
+    color: #777;
   }
-  .recordings-toggle:hover { background: #f0f0ec; border-color: #d0d0cc; color: #555; }
-  .recordings-toggle.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
 
-  .kind-controls {
+  nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  a {
+    min-height: 124px;
+    padding: 1.1rem;
     display: flex;
-    gap: 0.25rem;
-    margin-left: auto;
-  }
-
-  .zoom-controls {
-    display: flex;
-    gap: 0.25rem;
-  }
-
-  .zoom-btn {
-    background: none;
-    border: 1px solid #d0d0cc;
-    border-radius: 4px;
-    padding: 0.2rem 0.55rem;
-    font-size: 0.75rem;
-    cursor: pointer;
-    color: #555;
-    transition: background 0.1s, color 0.1s;
-  }
-  .zoom-btn:hover   { background: #f0f0ec; }
-  .zoom-btn.active  { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
-
-  .nav-link {
-    font-size: 0.78rem;
-    color: #555;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+    border: 1px solid #d8d8d3;
+    border-radius: 10px;
+    background: #fff;
+    color: inherit;
     text-decoration: none;
-    white-space: nowrap;
-    padding: 0.2rem 0.4rem;
-    border-radius: 4px;
-    transition: background 0.1s, color 0.1s;
-  }
-  .nav-link:hover { background: #f0f0ec; color: #1a1a1a; }
-
-  /* ── Main ── */
-  .diary-main {
-    padding: 0.5rem 0;
+    transition: transform 0.12s, border-color 0.12s, box-shadow 0.12s;
   }
 
-  .status-msg {
-    padding: 3rem 1.5rem;
-    text-align: center;
-    color: #999;
-    font-size: 0.9rem;
+  a:hover {
+    transform: translateY(-2px);
+    border-color: #999;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 7%);
   }
-  .status-msg.error { color: #c0392b; }
+
+  a strong { font-size: 1.15rem; }
+  a span { color: #777; font-size: 0.86rem; line-height: 1.4; }
+
+  @media (max-width: 480px) {
+    nav { grid-template-columns: 1fr; }
+    a { min-height: 104px; }
+  }
 </style>

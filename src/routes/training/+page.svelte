@@ -941,7 +941,8 @@
 <div class="app">
   <header class="site-header">
     <span class="site-brand">🐕 Barktown</span>
-    <a class="back-link" href="/">‹ Back to the diary</a>
+    <a class="back-link" href="/diary">‹ Back to the diary</a>
+    <a class="back-link" href="/report">Report</a>
   </header>
 
   <div class="training-body">
@@ -1067,7 +1068,7 @@
           <span class="editor-title">{formatSampleDatetime(selected.datetimeLocal, { seconds: true })}</span>
           <span class="editor-dur">{formatDuration(selected.durationSec)}</span>
           {#if selected.diaryId}
-            <a class="cross-link-btn" href="/#{selected.diaryId}" title="View source diary entry">📖</a>
+            <a class="cross-link-btn" href="/diary#{selected.diaryId}" title="View source diary entry">📖</a>
           {/if}
 
           <label class="category-control">

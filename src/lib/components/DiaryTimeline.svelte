@@ -28,7 +28,7 @@
   {/each}
 
   {#if days.length === 0}
-    <p class="empty">No recordings found in index.json.</p>
+    <p class="empty">No recordings found.</p>
   {/if}
 </div>
 
