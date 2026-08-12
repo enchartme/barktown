@@ -20,6 +20,47 @@ import { API_BASE } from './utils.js';
 /** Shared reactive cache populated page-by-page by the bulk endpoint. */
 export const hitMetadataById = writable(/** @type {Map<string, HitMetadata>} */ (new Map()));
 
+const AUTO_DETECTED_LABEL = /^-A-(?:\s|$)/;
+const BARK_DENSITY_WINDOW_S = 1.5;
+
+/**
+ * Build the compact auto-detection label from the current hit-metadata row.
+ * Non-auto labels and auto labels whose metadata has not loaded are returned
+ * unchanged.
+ *
+ * @param {string} label
+ * @param {HitMetadata | null | undefined} metadata
+ * @param {number} durationSec
+ */
+export function formatAutoDetectionLabel(label, metadata, durationSec) {
+  if (!AUTO_DETECTED_LABEL.test((label ?? '').trim()) || !metadata) return label;
+
+  const hitCount = Array.isArray(metadata.timestamps) ? metadata.timestamps.length : 0;
+  const confidences = Array.isArray(metadata.confidences)
+    ? metadata.confidences.filter(Number.isFinite)
+    : [];
+  const loudnesses = Array.isArray(metadata.loudnesses)
+    ? metadata.loudnesses.filter(Number.isFinite).sort((a, b) => a - b)
+    : [];
+
+  const maximumConfidence = confidences.length ? Math.max(...confidences) : 0;
+  const maximumLoudness = loudnesses.length ? loudnesses[loudnesses.length - 1] : 0;
+  const middle = Math.floor(loudnesses.length / 2);
+  const medianLoudness = loudnesses.length === 0
+    ? 0
+    : loudnesses.length % 2
+      ? loudnesses[middle]
+      : (loudnesses[middle - 1] + loudnesses[middle]) / 2;
+  const density = Number.isFinite(durationSec) && durationSec > 0
+    ? Math.round((hitCount / durationSec) * BARK_DENSITY_WINDOW_S * 100)
+    : 0;
+  const confidenceTag = maximumConfidence >= 0.995
+    ? 'C1'
+    : `C${maximumConfidence.toFixed(2)}`;
+
+  return `-A- ${confidenceTag} D${density} W${hitCount} La${maximumLoudness.toFixed(1)} Lm${medianLoudness.toFixed(1)}`;
+}
+
 /** Merge records into the cache while preserving already loaded pages. */
 function mergeHitMetadata(items) {
   hitMetadataById.update((current) => {
