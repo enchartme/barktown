@@ -127,6 +127,13 @@
     return res.json();
   }
 
+  async function fetchLatestDiaryDate() {
+    const res = await fetch(`${API_BASE}/api/diary/latest-date`);
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    const body = await res.json();
+    return isIsoDate(body?.date) ? body.date : null;
+  }
+
   async function changeReportWeek(deltaWeeks) {
     if (!reportWeekStart || loading) return;
     const nextWeekStart = addDays(reportWeekStart, deltaWeeks * 7);
@@ -233,16 +240,10 @@
           metadataBounds = reportBounds(reportWeekStart);
           entries = await fetchDiary(metadataBounds);
         } else {
-          const allEntries = await fetchDiary();
-          const latestDate = allEntries.reduce(
-            (latest, entry) => !latest || entry.date > latest ? entry.date : latest,
-            ''
-          );
+          const latestDate = await fetchLatestDiaryDate();
           reportWeekStart = startOfIsoWeek(latestDate || todayInStockholm());
           metadataBounds = reportBounds(reportWeekStart);
-          entries = allEntries.filter(entry => (
-            entry.date >= metadataBounds.startDate && entry.date <= metadataBounds.endDate
-          ));
+          entries = await fetchDiary(metadataBounds);
         }
         updateReportUrl(reportWeekStart);
       } else {
