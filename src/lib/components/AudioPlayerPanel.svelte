@@ -355,7 +355,7 @@
   let reanalyzeError   = $state('');
 
   async function handleReanalyzeClick() {
-    if (reanalyzeLoading) return;
+    if (reanalyzeLoading || !entry.reanalyzable) return;
     reanalyzeLoading = true;
     reanalyzeError = '';
     try {
@@ -476,9 +476,11 @@
       <button
         class="reanalyze-btn"
         onclick={handleReanalyzeClick}
-        disabled={reanalyzeLoading}
+        disabled={reanalyzeLoading || !entry.reanalyzable}
         aria-label="Re-analyze recording"
-        title="Re-run bark detection against the archived source recording"
+        title={entry.reanalyzable
+          ? 'Re-run deterministic bark-window classification against the source WAV'
+          : 'Source WAV is not available for re-analysis'}
       >{reanalyzeLoading ? '⏳' : '🔁'}</button>
       {#if entry.sampleId}
         <a class="cross-link-btn" href="/training#{entry.sampleId}" title="View linked training sample">🔬</a>
@@ -853,7 +855,8 @@
   }
   .false-positive-btn { margin-left: 0; }
   .reanalyze-btn:hover { background: #e8f4ff; color: #2255bb; }
-  .reanalyze-btn:disabled { opacity: 0.5; cursor: default; }
+  .reanalyze-btn:disabled { opacity: 0.35; cursor: not-allowed; filter: grayscale(1); }
+  .reanalyze-btn:disabled:hover { background: none; color: #aaa; }
   .cross-link-btn {
     display: inline-flex; align-items: center; justify-content: center;
     font-size: 1rem; line-height: 1; padding: 0.2rem 0.3rem;

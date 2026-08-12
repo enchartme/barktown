@@ -10,6 +10,9 @@ import { API_BASE } from './utils.js';
  *   loudnesses: number[],
  *   paddingS: number,
  *   windowS: number,
+ *   modelTrainedAt: string | null,
+ *   analysisSettings: Record<string, unknown>,
+ *   analysisTrigger: 'automatic' | 'manual',
  *   createdAt: string
  * }} HitMetadata
  */

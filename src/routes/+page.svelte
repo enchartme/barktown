@@ -10,7 +10,7 @@
   // Svelte 5 runes
   let { data } = $props();
 
-  /** Entries fetched live from S3 on every page load. */
+  /** Entries fetched live from the diary API on every page load. */
   /** @type {import('$lib/types').Entry[]} */
   let entries   = $state([]);
   let loading   = $state(true);
