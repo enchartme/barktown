@@ -1,5 +1,5 @@
 <script>
-  import { hitMetadataById } from '$lib/hit-metadata.js';
+  import { formatDiaryEntryTitle, hitMetadataById } from '$lib/hit-metadata.js';
 
   /**
    * @type {{
@@ -53,12 +53,15 @@
   // Strip leading "still " (case-insensitive) – redundant once pins are seen in sequence.
   const displayLabel = $derived(entry.label.replace(/^still\s+/i, '').replace('barking', 'bark').replace('yapping', 'yap'));
 
-  // ── Auto-detected clips ("-A- ...") get a radial hit-map instead of a text label ──
+  // "-A- ..." still controls the compact label treatment, independently of
+  // whether analysis metadata exists for the clip.
   const isAutoDetected = $derived(/^-A-/.test((entry.label ?? '').trim()));
 
-  // Populated asynchronously by the page-level bulk loader. Resizes only
-  // redraw the canvas from this cache; they never initiate another request.
+  // Metadata presence controls the radial hit-map. It is populated
+  // asynchronously by the page-level bulk loader; resizes only redraw the
+  // canvas from this cache and never initiate another request.
   const hitMetadata = $derived($hitMetadataById.get(entry.id) ?? null);
+  const titleLabel = $derived(formatDiaryEntryTitle(entry, hitMetadata));
 
   // Matches the play-knob svg: left:0, top:0, 16x16, translateX(-50%).
   const KNOB_CENTER_X = 0;
@@ -172,19 +175,19 @@
   class:flag--audio={entry.kind === 'audio'}
   role="button"
   tabindex="0"
-  aria-label="{entry.kind === 'audio' ? 'Audio' : 'Note'}: {entry.label || entry.time} at {entry.time}"
+  aria-label="{entry.kind === 'audio' ? 'Audio' : 'Note'}: {titleLabel} at {entry.time}"
   onclick={handleClick}
   onkeydown={handleKeydown}
   onmouseenter={() => (knobHovered = true)}
   onmouseleave={() => (knobHovered = false)}
   style="height: {height}px; --c-base: {baseColor}; z-index: {displayZIndex};"
-  title="{entry.time}  {entry.label}  ({entry.kind})"
+  title="{entry.time}  {titleLabel}  ({entry.kind})"
 >
   {#if !hitMetadata}
     <span class="flag-stem"></span>
   {/if}
 
-  {#if isAutoDetected && entry.kind === 'audio'}
+  {#if hitMetadata && entry.kind === 'audio'}
     <!-- Radial hit-map, centred on the play-knob -->
     <canvas
       bind:this={radialCanvas}
@@ -280,7 +283,7 @@
   /* ── Audio: extra left padding so text clears the knob circle ── */
   .flag--audio .flag-tag { padding-left: 8px; }
 
-  /* ── Radial hit-map for auto-detected clips ── */
+  /* ── Radial hit-map for clips with hit metadata ── */
   .flag-radial {
     position: absolute;
     pointer-events: auto; /* part of the flag's hoverable/clickable footprint */

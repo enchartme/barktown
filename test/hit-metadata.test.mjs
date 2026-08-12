@@ -4,6 +4,8 @@ import { get } from 'svelte/store';
 
 import {
   formatAutoDetectionLabel,
+  formatDiaryEntryTitle,
+  formatHitMetadataStats,
   hitMetadataById,
   loadHitMetadata,
 } from '../src/lib/hit-metadata.js';
@@ -58,7 +60,55 @@ test('auto-detection label is rebuilt from current hit metadata', () => {
 
   assert.equal(
     formatAutoDetectionLabel('-A- C1 D6 W94 La11.0 Lm1.9', metadata, 10),
-    '-A- C0.98 D45 W3 La4.2 Lm2.2',
+    '-A- C0.98 D18 W3 La4.2 Lm2.2',
+  );
+});
+
+test('hit metadata stats can be formatted independently of the stored label', () => {
+  assert.equal(
+    formatHitMetadataStats({
+      timestamps: [1, 3, 5],
+      confidences: [0.91, 0.98, 0.94],
+      loudnesses: [4.2, 1.4, 2.2],
+    }, 10),
+    'C0.98 D18 W3 La4.2 Lm2.2',
+  );
+});
+
+test('sample diary titles preserve SAMPLE and the comment before current stats', () => {
+  assert.equal(
+    formatDiaryEntryTitle({
+      id: '2026-07-23_18-43-58_SAMPLE_bark',
+      label: 'bark',
+      durationSec: 10,
+    }, {
+      timestamps: [1, 3, 5],
+      confidences: [0.91, 0.98, 0.94],
+      loudnesses: [4.2, 1.4, 2.2],
+    }),
+    'SAMPLE bark C0.98 D18 W3 La4.2 Lm2.2',
+  );
+});
+
+test('diary titles retain their descriptor without metadata and refresh auto stats', () => {
+  assert.equal(
+    formatDiaryEntryTitle({
+      id: '2026-07-23_18-43-58_SAMPLE_bark',
+      label: 'bark',
+    }, null),
+    'SAMPLE bark',
+  );
+  assert.equal(
+    formatDiaryEntryTitle({
+      id: 'auto',
+      label: '-A- stale stats',
+      durationSec: 10,
+    }, {
+      timestamps: [1],
+      confidences: [1],
+      loudnesses: [2],
+    }),
+    '-A- C1 D6 W1 La2.0 Lm2.0',
   );
 });
 
@@ -69,7 +119,7 @@ test('auto-detection label handles maximum confidence, even median, and no hits'
       confidences: [0.91, 1, 0.95, 0.93],
       loudnesses: [4, 1, 3, 2],
     }, 12),
-    '-A- C1 D50 W4 La4.0 Lm2.5',
+    '-A- C1 D20 W4 La4.0 Lm2.5',
   );
   assert.equal(
     formatAutoDetectionLabel('-A- old values', {

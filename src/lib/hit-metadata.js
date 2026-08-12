@@ -21,20 +21,15 @@ import { API_BASE } from './utils.js';
 export const hitMetadataById = writable(/** @type {Map<string, HitMetadata>} */ (new Map()));
 
 const AUTO_DETECTED_LABEL = /^-A-(?:\s|$)/;
-const BARK_DENSITY_WINDOW_S = 1.5;
+const SECONDS_PER_MINUTE = 60;
 
 /**
- * Build the compact auto-detection label from the current hit-metadata row.
- * Non-auto labels and auto labels whose metadata has not loaded are returned
- * unchanged.
+ * Build the compact stats string for a hit-metadata row.
  *
- * @param {string} label
- * @param {HitMetadata | null | undefined} metadata
+ * @param {HitMetadata} metadata
  * @param {number} durationSec
  */
-export function formatAutoDetectionLabel(label, metadata, durationSec) {
-  if (!AUTO_DETECTED_LABEL.test((label ?? '').trim()) || !metadata) return label;
-
+export function formatHitMetadataStats(metadata, durationSec) {
   const hitCount = Array.isArray(metadata.timestamps) ? metadata.timestamps.length : 0;
   const confidences = Array.isArray(metadata.confidences)
     ? metadata.confidences.filter(Number.isFinite)
@@ -51,14 +46,60 @@ export function formatAutoDetectionLabel(label, metadata, durationSec) {
     : loudnesses.length % 2
       ? loudnesses[middle]
       : (loudnesses[middle - 1] + loudnesses[middle]) / 2;
+  // D is the rounded bark rate per minute.
   const density = Number.isFinite(durationSec) && durationSec > 0
-    ? Math.round((hitCount / durationSec) * BARK_DENSITY_WINDOW_S * 100)
+    ? Math.round((hitCount / durationSec) * SECONDS_PER_MINUTE)
     : 0;
   const confidenceTag = maximumConfidence >= 0.995
     ? 'C1'
     : `C${maximumConfidence.toFixed(2)}`;
 
-  return `-A- ${confidenceTag} D${density} W${hitCount} La${maximumLoudness.toFixed(1)} Lm${medianLoudness.toFixed(1)}`;
+  return `${confidenceTag} D${density} W${hitCount} La${maximumLoudness.toFixed(1)} Lm${medianLoudness.toFixed(1)}`;
+}
+
+/**
+ * Build a diary-entry title while preserving meaningful entry context.
+ * Sample rows keep their SAMPLE marker and comment; current hit stats follow
+ * the descriptor whenever metadata is available.
+ *
+ * @param {{
+ *   id?: string,
+ *   filename?: string,
+ *   sampleId?: string | null,
+ *   label?: string,
+ *   time?: string,
+ *   durationSec?: number
+ * }} entry
+ * @param {HitMetadata | null | undefined} metadata
+ */
+export function formatDiaryEntryTitle(entry, metadata) {
+  const label = (entry.label || entry.time || '').trim();
+  const isSample = Boolean(entry.sampleId)
+    || /(?:^|_)SAMPLE(?:_|$)/i.test(entry.id ?? '')
+    || /(?:^|\s)SAMPLE(?:\s|$)/i.test(entry.filename ?? '');
+  const descriptor = isSample && !/^SAMPLE(?:\s|$)/i.test(label)
+    ? `SAMPLE${label ? ` ${label}` : ''}`
+    : label;
+
+  if (!metadata) return descriptor;
+
+  const stats = formatHitMetadataStats(metadata, entry.durationSec ?? 0);
+  if (AUTO_DETECTED_LABEL.test(label)) return `-A- ${stats}`;
+  return `${descriptor}${descriptor ? ' ' : ''}${stats}`;
+}
+
+/**
+ * Build the compact auto-detection label from the current hit-metadata row.
+ * Non-auto labels and auto labels whose metadata has not loaded are returned
+ * unchanged.
+ *
+ * @param {string} label
+ * @param {HitMetadata | null | undefined} metadata
+ * @param {number} durationSec
+ */
+export function formatAutoDetectionLabel(label, metadata, durationSec) {
+  if (!AUTO_DETECTED_LABEL.test((label ?? '').trim()) || !metadata) return label;
+  return `-A- ${formatHitMetadataStats(metadata, durationSec)}`;
 }
 
 /** Merge records into the cache while preserving already loaded pages. */
