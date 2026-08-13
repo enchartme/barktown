@@ -1,6 +1,6 @@
 <svelte:head>
   <title>Barktown</title>
-  <meta name="description" content="Choose the Barktown diary or weekly report." />
+  <meta name="description" content="Explore Barktown's diary, reports and research method." />
 </svelte:head>
 
 <main class="intro">
@@ -21,6 +21,10 @@
       <a href="/report2">
         <strong>Report2</strong>
         <span>Read two weeks of recordings as flowing text.</span>
+      </a>
+      <a href="/method">
+        <strong>Method</strong>
+        <span>See how sounds become reviewable evidence.</span>
       </a>
     </nav>
   </section>
@@ -43,7 +47,7 @@
   }
 
   .intro-card {
-    width: min(100%, 580px);
+    width: min(100%, 720px);
   }
 
   .eyebrow {
@@ -92,7 +96,7 @@
   a strong { font-size: 1.15rem; }
   a span { color: #777; font-size: 0.86rem; line-height: 1.4; }
 
-  @media (max-width: 480px) {
+  @media (max-width: 620px) {
     nav { grid-template-columns: 1fr; }
     a { min-height: 104px; }
   }

@@ -944,6 +944,7 @@
     <a class="back-link" href="/diary">‹ Back to the diary</a>
     <a class="back-link" href="/report">Report</a>
     <a class="back-link" href="/report2">Report2</a>
+    <a class="back-link" href="/method">Method</a>
   </header>
 
   <div class="training-body">

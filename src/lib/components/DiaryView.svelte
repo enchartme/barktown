@@ -315,6 +315,7 @@
     <a class="nav-link" class:current={report} aria-current={report ? 'page' : undefined} href="/report">Report</a>
     <a class="nav-link" href="/report2">Report2</a>
     <a class="nav-link" href="/training">Samples</a>
+    <a class="nav-link" href="/method">Method</a>
 
     <GoblinPiStatus />
   </header>
