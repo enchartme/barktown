@@ -18,6 +18,10 @@
         <strong>Report</strong>
         <span>Review recordings two weeks at a time.</span>
       </a>
+      <a href="/report2">
+        <strong>Report2</strong>
+        <span>Read two weeks of recordings as flowing text.</span>
+      </a>
     </nav>
   </section>
 </main>

@@ -1,5 +1,6 @@
 <script>
   import { assignLanes, parseTimeToMinutes, formatDate } from '$lib/utils.js';
+  import { DIARY_DAY_COLOR, DIARY_NIGHT_COLOR, sunTimeToLocalMinutes } from '$lib/sun-time.js';
   import DiaryEntry from './DiaryEntry.svelte';
   import ReportMetrics from './ReportMetrics.svelte';
 
@@ -136,24 +137,6 @@
   // ── Sunrise / sunset background gradient ────────────────────────────────
 
   /**
-   * Parse an ISO datetime string (e.g. "2026-03-07T05:28+00:00") and return
-   * minutes since midnight in the LOCAL timezone of the current environment.
-   * Returns null if the string is falsy or unparseable.
-   * @param {string|null|undefined} isoStr
-   * @returns {number|null}
-   */
-  function sunTimeToLocalMinutes(isoStr) {
-    if (!isoStr) return null;
-    const d = new Date(isoStr);
-    if (isNaN(d)) return null;
-    return d.getHours() * 60 + d.getMinutes();
-  }
-
-  // Pastel colours for the day/night gradient.
-  const COL_DAY   = '#fffde6'; // warm pastel yellow – daylight
-  const COL_NIGHT = '#dce8f8'; // cool pastel blue  – night
-
-  /**
    * CSS linear-gradient string for the track background, or plain white if
    * no sun data is available for this date. Sun times are clamped to the
    * visible domain so the gradient always covers the full track width.
@@ -167,12 +150,12 @@
     const ssPct = clamp(((ss - domainStartMin) / domainWidthMin) * 100).toFixed(3);
     return [
       `linear-gradient(to right,`,
-      `  ${COL_NIGHT} 0%,`,
-      `  ${COL_NIGHT} ${srPct}%,`,
-      `  ${COL_DAY}   ${srPct}%,`,
-      `  ${COL_DAY}   ${ssPct}%,`,
-      `  ${COL_NIGHT} ${ssPct}%,`,
-      `  ${COL_NIGHT} 100%)`,
+      `  ${DIARY_NIGHT_COLOR} 0%,`,
+      `  ${DIARY_NIGHT_COLOR} ${srPct}%,`,
+      `  ${DIARY_DAY_COLOR}   ${srPct}%,`,
+      `  ${DIARY_DAY_COLOR}   ${ssPct}%,`,
+      `  ${DIARY_NIGHT_COLOR} ${ssPct}%,`,
+      `  ${DIARY_NIGHT_COLOR} 100%)`,
     ].join(' ');
   });
 </script>

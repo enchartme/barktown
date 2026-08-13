@@ -943,6 +943,7 @@
     <span class="site-brand">🐕 Barktown</span>
     <a class="back-link" href="/diary">‹ Back to the diary</a>
     <a class="back-link" href="/report">Report</a>
+    <a class="back-link" href="/report2">Report2</a>
   </header>
 
   <div class="training-body">
