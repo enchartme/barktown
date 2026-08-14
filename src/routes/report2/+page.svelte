@@ -5,6 +5,7 @@
   import ReportBarcode from '$lib/components/ReportBarcode.svelte';
   import { hitMetadataById, loadHitMetadata } from '$lib/hit-metadata.js';
   import { groupReportNoteLabels, reportSentenceNeedsPeriod } from '$lib/report-annotations.js';
+  import { reportBounds } from '$lib/report-range.js';
   import { formatDisturbedTime, summarizeEntries } from '$lib/report-summary.js';
   import { DIARY_NIGHT_COLOR, isNighttimeRecording } from '$lib/sun-time.js';
   import {
@@ -26,20 +27,24 @@
   let loading = $state(true);
   /** @type {string | null} */
   let loadError = $state(null);
-  /** Monday of the newer week in the rolling two-week window. */
+  /** Monday of the newest week in the selected report window. */
   /** @type {string | null} */
   let reportWeekStart = $state(null);
   let reportRequestId = 0;
 
   let dayOrder = $state('asc');
   let recordingOrder = $state('asc');
+  let rangeWeeks = $state(1);
 
   /** @type {import('$lib/types').Entry | null} */
   let panelEntry = $state(null);
   let showPanel = $state(false);
 
-  const reportStartDate = $derived(reportWeekStart ? addDays(reportWeekStart, -7) : null);
-  const reportEndDate = $derived(reportWeekStart ? addDays(reportWeekStart, 6) : null);
+  const reportDateBounds = $derived(
+    reportWeekStart ? reportBounds(reportWeekStart, rangeWeeks) : null,
+  );
+  const reportStartDate = $derived(reportDateBounds?.startDate ?? null);
+  const reportEndDate = $derived(reportDateBounds?.endDate ?? null);
   const sunByDate = $derived(data.sunByDate ?? {});
 
   const days = $derived.by(() => {
@@ -73,10 +78,6 @@
     }).format(new Date());
   }
 
-  function reportBounds(weekStart) {
-    return { startDate: addDays(weekStart, -7), endDate: addDays(weekStart, 6) };
-  }
-
   function formatRangeDate(dateStr, includeYear = false) {
     return new Date(`${dateStr}T12:00:00`).toLocaleDateString(undefined, {
       month: 'short',
@@ -95,6 +96,7 @@
     if (!reportWeekStart) return;
     const url = new URL(window.location.href);
     url.searchParams.set('week', reportWeekStart);
+    url.searchParams.set('weeks', String(rangeWeeks));
     url.searchParams.set('days', dayOrder);
     url.searchParams.set('recordings', recordingOrder);
     history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
@@ -125,7 +127,7 @@
   }
 
   async function loadReport(weekStart) {
-    const bounds = reportBounds(weekStart);
+    const bounds = reportBounds(weekStart, rangeWeeks);
     const requestId = ++reportRequestId;
     loading = true;
     loadError = null;
@@ -159,6 +161,31 @@
     if (!reportWeekStart || loading) return;
     closePanel();
     reportWeekStart = addDays(reportWeekStart, deltaWeeks * 7);
+    updateReportUrl();
+    await loadReport(reportWeekStart);
+  }
+
+  async function showLatestWeek() {
+    if (loading) return;
+    closePanel();
+    loading = true;
+    loadError = null;
+
+    try {
+      const latestDate = await fetchLatestDiaryDate();
+      reportWeekStart = startOfIsoWeek(latestDate || todayInStockholm());
+      updateReportUrl();
+      await loadReport(reportWeekStart);
+    } catch (error) {
+      loadError = error?.message ?? 'Failed to find the latest diary date';
+      loading = false;
+    }
+  }
+
+  async function changeRangeWeeks(weeks) {
+    if (!reportWeekStart || loading || rangeWeeks === weeks) return;
+    closePanel();
+    rangeWeeks = weeks;
     updateReportUrl();
     await loadReport(reportWeekStart);
   }
@@ -202,6 +229,7 @@
     const url = new URL(window.location.href);
     dayOrder = url.searchParams.get('days') === 'desc' ? 'desc' : 'asc';
     recordingOrder = url.searchParams.get('recordings') === 'desc' ? 'desc' : 'asc';
+    rangeWeeks = url.searchParams.get('weeks') === '2' ? 2 : 1;
 
     const requestedWeek = url.searchParams.get('week');
     if (requestedWeek && isIsoDate(requestedWeek)) {
@@ -231,7 +259,7 @@
 
 <svelte:head>
   <title>Report2 · Barktown</title>
-  <meta name="description" content="Read two weeks of Barktown recordings as flowing text." />
+  <meta name="description" content="Read Barktown recordings as flowing text." />
 </svelte:head>
 
 <div class="app" style={`--diary-night: ${DIARY_NIGHT_COLOR}`}>
@@ -259,23 +287,39 @@
           <button disabled={loading} onclick={() => changeReportWeek(-1)}>← Earlier</button>
           <strong>{reportRangeLabel}</strong>
           <button disabled={loading} onclick={() => changeReportWeek(1)}>Later →</button>
+          <button disabled={loading} onclick={showLatestWeek}>Latest</button>
         </div>
       {/if}
     </header>
 
     <div class="ordering-controls" aria-label="Report ordering controls">
+      <div class="week-count-controls" role="group" aria-label="Report length">
+        <button
+          class:active={rangeWeeks === 1}
+          aria-pressed={rangeWeeks === 1}
+          disabled={loading}
+          onclick={() => changeRangeWeeks(1)}
+        >1 week</button>
+        <span aria-hidden="true">|</span>
+        <button
+          class:active={rangeWeeks === 2}
+          aria-pressed={rangeWeeks === 2}
+          disabled={loading}
+          onclick={() => changeRangeWeeks(2)}
+        >2 weeks</button>
+      </div>
       <label>
         Days
         <select value={dayOrder} onchange={changeDayOrder}>
-          <option value="asc">Earlier → later</option>
-          <option value="desc">Later → earlier</option>
+          <option value="asc">Earliest on top</option>
+          <option value="desc">Latest on top</option>
         </select>
       </label>
       <label>
         Recordings
         <select value={recordingOrder} onchange={changeRecordingOrder}>
-          <option value="asc">Earlier → later</option>
-          <option value="desc">Later → earlier</option>
+          <option value="asc">Earliest on top</option>
+          <option value="desc">Latest on top</option>
         </select>
       </label>
     </div>
@@ -486,6 +530,29 @@
     font-size: 0.75rem;
     font-weight: 650;
   }
+
+  .week-count-controls {
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #aaa;
+  }
+
+  .week-count-controls button {
+    padding: 0.2rem 0.35rem;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: #777;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.75rem;
+  }
+
+  .week-count-controls button:hover:not(:disabled) { background: #f0f0ec; color: #1a1a1a; }
+  .week-count-controls button.active { color: #1a1a1a; font-weight: 750; }
+  .week-count-controls button:disabled { cursor: wait; opacity: 0.5; }
 
   select {
     padding: 0.25rem 1.8rem 0.25rem 0.45rem;
