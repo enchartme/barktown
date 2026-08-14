@@ -7,10 +7,11 @@
   import ReportMetrics    from '$lib/components/ReportMetrics.svelte';
   import {
     addDays,
-    API_BASE,
     groupByDate,
     groupByDateRange,
     isIsoDate,
+    PRIVATE_API_BASE,
+    PUBLIC_API_BASE,
     startOfIsoWeek,
   } from '$lib/utils.js';
   import { hitMetadataById, loadHitMetadata } from '$lib/hit-metadata.js';
@@ -119,7 +120,7 @@
   }
 
   async function fetchDiary({ startDate, endDate } = {}) {
-    const url = new URL('/api/diary', API_BASE);
+    const url = new URL('/api/diary', PUBLIC_API_BASE);
     if (startDate) url.searchParams.set('startDate', startDate);
     if (endDate) url.searchParams.set('endDate', endDate);
     const res = await fetch(url);
@@ -128,7 +129,7 @@
   }
 
   async function fetchLatestDiaryDate() {
-    const res = await fetch(`${API_BASE}/api/diary/latest-date`);
+    const res = await fetch(`${PUBLIC_API_BASE}/api/diary/latest-date`);
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
     const body = await res.json();
     return isIsoDate(body?.date) ? body.date : null;
@@ -191,7 +192,7 @@
    */
   async function deleteEntry(entry) {
     try {
-      const res = await fetch(`${API_BASE}/api/diary/${encodeURIComponent(entry.id)}`, { method: 'DELETE' });
+      const res = await fetch(`${PRIVATE_API_BASE}/api/diary/${encodeURIComponent(entry.id)}`, { method: 'DELETE' });
       if (!res.ok && res.status !== 204) throw new Error(`${res.status} ${res.statusText}`);
     } catch (e) {
       // Surface errors in the browser console; panel will still close.
@@ -204,7 +205,7 @@
   /** Convert a false-positive diary recording into a labeled training sample. */
   async function moveEntryToSamples(entry, label, keepInDiary = false) {
     const res = await fetch(
-      `${API_BASE}/api/diary/${encodeURIComponent(entry.id)}/move-to-samples`,
+      `${PRIVATE_API_BASE}/api/diary/${encodeURIComponent(entry.id)}/move-to-samples`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

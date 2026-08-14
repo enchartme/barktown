@@ -1,18 +1,24 @@
 <script>
   import { tick } from 'svelte';
-  import { ASSET_BASE, downsampleWaveform, waveformNorm, formatDuration, formatSampleDatetime, formatDate } from '$lib/utils.js';
+  import {
+    ASSET_BASE,
+    PRIVATE_API_BASE,
+    PUBLIC_API_BASE,
+    downsampleWaveform,
+    waveformNorm,
+    formatDuration,
+    formatSampleDatetime,
+    formatDate,
+  } from '$lib/utils.js';
   import { SAMPLE_LABELS as LABELS, SAMPLE_LABEL_GUIDELINES as LABEL_GUIDELINES, sampleLabelColor, sampleLabelShortcut, LABEL_BY_SHORTCUT } from '$lib/sample-labels.js';
   import TrainingProjectionScatterplot from '$lib/components/TrainingProjectionScatterplot.svelte';
 
-  // The barktown-ingest CRUD API, reached directly over Tailscale — same
-  // no-auth trust model as GoblinPiStatus.svelte. Audio/waveform bytes are
-  // still served from the public S3 bucket (ASSET_BASE); only sample/
-  // annotation metadata goes through this API.
+  // Sample and annotation reads use the anonymous public API. Mutations still
+  // go directly to masmopi over Tailscale, using the same no-auth trust model
+  // as GoblinPiStatus.svelte. Audio/waveform bytes remain on ASSET_BASE.
   //
   // masmopi (Pi 5, ingestion + API host), NOT goblinpi (Pi 3B+, mic capture
   // only — goblinpi just uploads to masmopi and has no ingest API of its own).
-  const API_BASE = 'https://masmopi.tail523149.ts.net';
-
   const ALL_LABELS = ['all', ...LABELS, 'unmarked'];
   const NOTE_COLOR = '#f1c40f';
 
@@ -116,7 +122,7 @@
     samplesLoading = true;
     samplesError   = '';
     try {
-      const res = await fetch(`${API_BASE}/api/samples`, { signal: AbortSignal.timeout(8000) });
+      const res = await fetch(`${PUBLIC_API_BASE}/api/samples`, { signal: AbortSignal.timeout(8000) });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       samples = [...data].sort((a, b) => b.datetimeLocal.localeCompare(a.datetimeLocal));
@@ -141,7 +147,7 @@
    * you work on the currently selected sample. */
   async function fetchSidebarAnnotationSummary() {
     try {
-      const res = await fetch(`${API_BASE}/api/annotations`, { signal: AbortSignal.timeout(8000) });
+      const res = await fetch(`${PUBLIC_API_BASE}/api/annotations`, { signal: AbortSignal.timeout(8000) });
       if (!res.ok) return;
       const rows = await res.json();
       const notes = new Map();
@@ -408,7 +414,7 @@
     regenLoading = true;
     try {
       const res = await fetch(
-        `${API_BASE}/api/samples/${encodeURIComponent(selected.id)}/regenerate-waveform`,
+        `${PRIVATE_API_BASE}/api/samples/${encodeURIComponent(selected.id)}/regenerate-waveform`,
         { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pixelsPerSecond: pps }) },
       );
       if (!res.ok) throw new Error(`${res.status}`);
@@ -428,7 +434,7 @@
     annotationsLoading = true;
     annotationsError   = '';
     try {
-      const res = await fetch(`${API_BASE}/api/samples/${encodeURIComponent(sampleId)}/annotations`, {
+      const res = await fetch(`${PUBLIC_API_BASE}/api/samples/${encodeURIComponent(sampleId)}/annotations`, {
         signal: AbortSignal.timeout(8000),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -647,7 +653,7 @@
   async function commitAnnotationBounds(ann, startSec, endSec) {
     mutationError = '';
     try {
-      const res = await fetch(`${API_BASE}/api/annotations/${ann.id}`, {
+      const res = await fetch(`${PRIVATE_API_BASE}/api/annotations/${ann.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ startSec, endSec }),
@@ -666,7 +672,7 @@
     if (!pending || !selected) return;
     mutationError = '';
     try {
-      const res = await fetch(`${API_BASE}/api/samples/${encodeURIComponent(selected.id)}/annotations`, {
+      const res = await fetch(`${PRIVATE_API_BASE}/api/samples/${encodeURIComponent(selected.id)}/annotations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ startSec: pending.startSec, endSec: pending.endSec, label: pendingLabel, source: 'manual' }),
@@ -686,7 +692,7 @@
     if (!pending || !selected || !pendingNoteText.trim()) return;
     mutationError = '';
     try {
-      const res = await fetch(`${API_BASE}/api/samples/${encodeURIComponent(selected.id)}/annotations`, {
+      const res = await fetch(`${PRIVATE_API_BASE}/api/samples/${encodeURIComponent(selected.id)}/annotations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -720,7 +726,7 @@
     if (!ann) return;
     mutationError = '';
     try {
-      const res = await fetch(`${API_BASE}/api/annotations/${ann.id}`, {
+      const res = await fetch(`${PRIVATE_API_BASE}/api/annotations/${ann.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ label: newLabel }),
@@ -750,7 +756,7 @@
     if (!ann || !trimmed || trimmed === ann.label) return;
     mutationError = '';
     try {
-      const res = await fetch(`${API_BASE}/api/annotations/${annId}`, {
+      const res = await fetch(`${PRIVATE_API_BASE}/api/annotations/${annId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ label: trimmed }),
@@ -785,7 +791,7 @@
     if (!text || !selected) return;
     mutationError = '';
     try {
-      const res = await fetch(`${API_BASE}/api/samples/${encodeURIComponent(selected.id)}/annotations`, {
+      const res = await fetch(`${PRIVATE_API_BASE}/api/samples/${encodeURIComponent(selected.id)}/annotations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ startSec: 0, endSec: 0, label: text, source: 'note' }),
@@ -807,7 +813,7 @@
     if (!ann) return;
     mutationError = '';
     try {
-      const res = await fetch(`${API_BASE}/api/annotations/${ann.id}`, {
+      const res = await fetch(`${PRIVATE_API_BASE}/api/annotations/${ann.id}`, {
         method: 'DELETE', signal: AbortSignal.timeout(8000),
       });
       if (!res.ok && res.status !== 204) throw new Error(`HTTP ${res.status}`);
@@ -831,7 +837,7 @@
     if (!selected) return;
     deleteBusy = true;
     try {
-      const res = await fetch(`${API_BASE}/api/samples/${encodeURIComponent(selected.id)}`, {
+      const res = await fetch(`${PRIVATE_API_BASE}/api/samples/${encodeURIComponent(selected.id)}`, {
         method: 'DELETE', signal: AbortSignal.timeout(15000),
       });
       if (!res.ok && res.status !== 204) throw new Error(`HTTP ${res.status}`);
@@ -850,7 +856,7 @@
     renameBusy  = true;
     renameError = '';
     try {
-      const res = await fetch(`${API_BASE}/api/samples/${encodeURIComponent(selected.id)}`, {
+      const res = await fetch(`${PRIVATE_API_BASE}/api/samples/${encodeURIComponent(selected.id)}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ label: newLabel }),

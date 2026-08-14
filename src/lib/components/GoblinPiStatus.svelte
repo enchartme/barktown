@@ -1,6 +1,6 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { API_BASE, ASSET_BASE, formatDuration, formatSampleDatetime } from '$lib/utils.js';
+  import { PRIVATE_API_BASE, PUBLIC_API_BASE, formatDuration, formatSampleDatetime } from '$lib/utils.js';
   import { SAMPLE_LABELS as LABELS, sampleLabelColor } from '$lib/sample-labels.js';
   import {
     fetchMonitorParams,
@@ -11,7 +11,7 @@
 
   const BASE_URL       = 'https://goblinpi.tail523149.ts.net';
   const STATUS_URL     = `${BASE_URL}/status`;
-  const SAMPLES_INDEX  = `${ASSET_BASE}/training-samples-index.json`;
+  const SAMPLES_URL    = `${PUBLIC_API_BASE}/api/samples`;
   const POLL_OPEN_MS   = 1_000;
   const POLL_CLOSED_MS = 10_000;
   const RECENT_SAMPLES_COUNT = 5;
@@ -116,7 +116,7 @@
     samplesLoading = true;
     samplesError   = '';
     try {
-      const res = await fetch(SAMPLES_INDEX, { signal: AbortSignal.timeout(8000) });
+      const res = await fetch(SAMPLES_URL, { signal: AbortSignal.timeout(8000) });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       // Sort newest first
@@ -144,7 +144,7 @@
     monitorParamsLoading = true;
     monitorParamsError = '';
     try {
-      const rows = await fetchMonitorParams(API_BASE, {
+      const rows = await fetchMonitorParams(PRIVATE_API_BASE, {
         signal: AbortSignal.timeout(8000),
       });
       dbMonitorParams = rows;
@@ -210,7 +210,7 @@
 
     try {
       const { updatedRow, goblinParams } = await saveMonitorParamAndRefresh({
-        apiBase: API_BASE,
+        apiBase: PRIVATE_API_BASE,
         goblinBase: BASE_URL,
         paramId,
         value: parsed.value,

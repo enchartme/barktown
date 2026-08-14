@@ -1,6 +1,6 @@
 <script>
   import { onMount }       from 'svelte';
-  import { formatDuration, formatDate, downsampleWaveform, waveformNorm, ASSET_BASE, API_BASE } from '$lib/utils.js';
+  import { formatDuration, formatDate, downsampleWaveform, waveformNorm, ASSET_BASE, PRIVATE_API_BASE } from '$lib/utils.js';
   import { formatAudioPanelTitle, hitMetadataById, setHitMetadata } from '$lib/hit-metadata.js';
   import { SAMPLE_LABELS, sampleLabelColor } from '$lib/sample-labels.js';
   import { fly }           from 'svelte/transition';
@@ -359,7 +359,7 @@
     reanalyzeLoading = true;
     reanalyzeError = '';
     try {
-      const res = await fetch(`${API_BASE}/api/diary/${entry.id}/reanalyze`, { method: 'POST' });
+      const res = await fetch(`${PRIVATE_API_BASE}/api/diary/${entry.id}/reanalyze`, { method: 'POST' });
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error ?? `HTTP ${res.status}`);
       setHitMetadata(entry.id, data);

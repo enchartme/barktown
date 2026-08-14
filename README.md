@@ -1,9 +1,18 @@
 # barktown
 
-A **static audio-diary viewer** for a collection of `.m4a` / `.aac` voice recordings.
-No server, no database. Everything runs in the browser from pre-built
-static files you generate on your own machine. Audio and waveform assets are
-hosted on an S3-compatible object store (MinIO).
+A SvelteKit audio-diary viewer backed by live Barktown metadata APIs. Audio and
+waveform assets are hosted on an S3-compatible object store (MinIO), while
+diary, hit, sample, and annotation metadata comes from SQLite through the API.
+
+Runtime requests deliberately cross two trust boundaries:
+
+- `https://barktown-api.enchart.me` provides anonymous read-only metadata.
+- `https://masmopi.tail523149.ts.net` provides Tailnet-only mutations and
+  operator features such as reanalysis and monitor parameters.
+
+Public reads must never depend on Tailnet reachability. For now the UI still
+renders its operator controls; using those controls continues to require being
+connected to the Tailnet.
 
 ---
 
@@ -285,7 +294,8 @@ index.json
 | Build / bundler | Vite 6 |
 | Static adapter | `@sveltejs/adapter-cloudflare` |
 | Asset hosting | MinIO S3 (`s3.angiehjort.com/barktown`) |
+| Public metadata | `barktown-api.enchart.me` read-only API |
+| Private operations | `masmopi.tail523149.ts.net` over Tailscale |
 | Preprocessing | Node.js ES modules (no npm deps) |
 | Audio analysis | ffprobe (duration), audiowaveform (peaks) |
 | Styling | Scoped `<style>` per component, no CSS framework |
-

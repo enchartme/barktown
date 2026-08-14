@@ -19,7 +19,7 @@ export const PUBLIC_API_BASE = 'https://barktown-api.enchart.me';
 /**
  * Base URL for the Tailnet-only barktown-ingest mutation/operator API.
  */
-export const API_BASE = 'https://masmopi.tail523149.ts.net';
+export const PRIVATE_API_BASE = 'https://masmopi.tail523149.ts.net';
 
 // ─── Time helpers ─────────────────────────────────────────────────────────────
 

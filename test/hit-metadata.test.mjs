@@ -46,6 +46,7 @@ test('bulk loader follows advertised pagination and merges every page', async ()
   });
 
   assert.deepEqual(result, { pagesLoaded: 2, recordsLoaded: 3 });
+  assert.equal(new URL(requestedUrls[0]).origin, 'https://barktown-api.enchart.me');
   assert.match(requestedUrls[0], /\/api\/hit-metadata\?page=1&pageSize=1000$/);
   assert.match(requestedUrls[1], /\/api\/hit-metadata\?page=2&pageSize=1000$/);
   assert.deepEqual([...get(hitMetadataById).keys()], ['clip-a', 'clip-b', 'clip-c']);

@@ -14,7 +14,7 @@
   import { DIARY_NIGHT_COLOR, isNighttimeRecording } from '$lib/sun-time.js';
   import {
     addDays,
-    API_BASE,
+    PUBLIC_API_BASE,
     formatDate,
     groupByDateRange,
     isIsoDate,
@@ -119,7 +119,7 @@
   }
 
   async function fetchDiary(bounds) {
-    const url = new URL('/api/diary', API_BASE);
+    const url = new URL('/api/diary', PUBLIC_API_BASE);
     url.searchParams.set('startDate', bounds.startDate);
     url.searchParams.set('endDate', bounds.endDate);
     const response = await fetch(url);
@@ -128,14 +128,14 @@
   }
 
   async function fetchLatestDiaryDate() {
-    const response = await fetch(`${API_BASE}/api/diary/latest-date`);
+    const response = await fetch(`${PUBLIC_API_BASE}/api/diary/latest-date`);
     if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
     const body = await response.json();
     return isIsoDate(body?.date) ? body.date : null;
   }
 
   async function fetchAnnotations() {
-    const response = await fetch(`${API_BASE}/api/annotations`);
+    const response = await fetch(`${PUBLIC_API_BASE}/api/annotations`);
     if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
     const body = await response.json();
     if (!Array.isArray(body)) throw new Error('Annotations response has an invalid shape');

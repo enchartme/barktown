@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { API_BASE } from './utils.js';
+import { PUBLIC_API_BASE } from './utils.js';
 
 /**
  * @typedef {{
@@ -179,7 +179,7 @@ export async function loadHitMetadata({
   pageSize = 1000,
   fetchImpl = fetch,
 } = {}) {
-  const firstUrl = new URL('/api/hit-metadata', API_BASE);
+  const firstUrl = new URL('/api/hit-metadata', PUBLIC_API_BASE);
   firstUrl.searchParams.set('page', '1');
   firstUrl.searchParams.set('pageSize', String(pageSize));
   if (startDate) firstUrl.searchParams.set('startDate', startDate);
@@ -210,7 +210,7 @@ export async function loadHitMetadata({
     if (body.pagination.hasNextPage && !advertisedNext) {
       throw new Error('Hit metadata response indicates another page but provides no next link');
     }
-    nextUrl = advertisedNext ? new URL(advertisedNext, API_BASE).toString() : '';
+    nextUrl = advertisedNext ? new URL(advertisedNext, PUBLIC_API_BASE).toString() : '';
   }
 
   return { pagesLoaded, recordsLoaded };
