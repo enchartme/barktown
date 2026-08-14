@@ -313,7 +313,7 @@
           <strong>{reportRangeLabel}</strong>
           <button disabled={loading} onclick={() => changeReportWeek(1)}>Later →</button>
           <button disabled={loading} onclick={showLatestWeek}>Latest</button>
-          <button disabled={loading} onclick={showPrintLayout}>Print</button>
+          <button disabled={loading} onclick={showPrintLayout}>🖨️</button>
         </div>
       {/if}
     </header>
@@ -361,7 +361,7 @@
         <p>
           This report shows {countLabel(reportTotals.disturbances, 'disturbance')} recorded at
           {data.recordingContext.album} {data.recordingContext.location} with microphone direction
-          {data.recordingContext.direction}. {data.recordingContext.copyright}
+          {data.recordingContext.direction}.
         </p>
         <p>
           Darker lines represent louder barks and yaps. Blue background means dogs were barking
@@ -442,6 +442,9 @@
           </section>
         {/each}
       </div>
+      {#if data.recordingContext.copyright}
+        <footer class="print-footer">{data.recordingContext.copyright}</footer>
+      {/if}
     {/if}
   </main>
 </div>
@@ -467,7 +470,8 @@
 
   .app { min-height: 100dvh; }
 
-  .print-intro { display: none; }
+  .print-intro,
+  .print-footer { display: none; }
 
   .site-header {
     position: sticky;
@@ -679,6 +683,14 @@
     margin-bottom: 1.5rem;
   }
 
+  .app.print-layout .print-footer {
+    display: block;
+    margin-top: 1.5rem;
+    color: #777;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.8rem;
+  }
+
   .print-intro h1 {
     margin: 0;
     font-size: clamp(2rem, 6vw, 3.4rem);
@@ -794,7 +806,7 @@
   }
 
   .annotation-label { margin-left: 0.25rem; }
-  .period { margin-left: -0.12rem; }
+  .period { margin-left: 0.18rem; }
   .no-recordings { color: #aaa; font-style: italic; }
 
   .status {
@@ -833,6 +845,11 @@
     .print-intro {
       display: block !important;
       margin-bottom: 1.2rem;
+    }
+
+    .print-footer {
+      display: block !important;
+      margin-top: 1.2rem;
     }
 
     main {
