@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { reportBounds } from '../src/lib/report-range.js';
+import { formatPrintReportRange, reportBounds } from '../src/lib/report-range.js';
 
 test('Report2 defaults to one ISO week', () => {
   assert.deepEqual(reportBounds('2026-08-10'), {
@@ -15,4 +15,11 @@ test('Report2 can include the selected week and the preceding week', () => {
     startDate: '2026-08-03',
     endDate: '2026-08-16',
   });
+});
+
+test('print report ranges use the requested compact heading format', () => {
+  assert.equal(
+    formatPrintReportRange('2026-08-03', '2026-08-09'),
+    'for aug 3 — aug 9 2026',
+  );
 });

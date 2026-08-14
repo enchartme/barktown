@@ -5,7 +5,7 @@
   import ReportBarcode from '$lib/components/ReportBarcode.svelte';
   import { hitMetadataById, loadHitMetadata } from '$lib/hit-metadata.js';
   import { groupReportNoteLabels, reportSentenceNeedsPeriod } from '$lib/report-annotations.js';
-  import { reportBounds } from '$lib/report-range.js';
+  import { formatPrintReportRange, reportBounds } from '$lib/report-range.js';
   import {
     formatDisturbedTime,
     summarizeEntries,
@@ -39,6 +39,7 @@
   let dayOrder = $state('asc');
   let recordingOrder = $state('asc');
   let rangeWeeks = $state(1);
+  let printMode = $derived(data.initialPrintMode ?? false);
 
   /** @type {import('$lib/types').Entry | null} */
   let panelEntry = $state(null);
@@ -95,6 +96,16 @@
     reportStartDate && reportEndDate
       ? `${formatRangeDate(reportStartDate)} – ${formatRangeDate(reportEndDate, true)}`
       : '',
+  );
+  const printRangeLabel = $derived(
+    reportStartDate && reportEndDate
+      ? formatPrintReportRange(reportStartDate, reportEndDate)
+      : '',
+  );
+  const interactiveHref = $derived(
+    reportWeekStart
+      ? `/report2?week=${reportWeekStart}&weeks=${rangeWeeks}&days=${dayOrder}&recordings=${recordingOrder}`
+      : '/report2',
   );
 
   function updateReportUrl() {
@@ -195,6 +206,14 @@
     await loadReport(reportWeekStart);
   }
 
+  function showPrintLayout() {
+    closePanel();
+    printMode = true;
+    const url = new URL(window.location.href);
+    url.searchParams.set('print', '1');
+    history.pushState(null, '', `${url.pathname}${url.search}`);
+  }
+
   function changeDayOrder(event) {
     dayOrder = event.currentTarget.value;
     updateReportUrl();
@@ -232,6 +251,7 @@
 
   onMount(async () => {
     const url = new URL(window.location.href);
+    printMode = url.searchParams.get('print') === '1';
     dayOrder = url.searchParams.get('days') === 'desc' ? 'desc' : 'asc';
     recordingOrder = url.searchParams.get('recordings') === 'desc' ? 'desc' : 'asc';
     rangeWeeks = url.searchParams.get('weeks') === '2' ? 2 : 1;
@@ -263,12 +283,12 @@
 </script>
 
 <svelte:head>
-  <title>Report2 · Barktown</title>
+  <title>{printMode ? 'Barktown disturbance report' : 'Report2 · Barktown'}</title>
   <meta name="description" content="Read Barktown recordings as flowing text." />
 </svelte:head>
 
-<div class="app" style={`--diary-night: ${DIARY_NIGHT_COLOR}`}>
-  <header class="site-header">
+<div class="app" class:print-layout={printMode} style={`--diary-night: ${DIARY_NIGHT_COLOR}`}>
+  <header class="site-header screen-only">
     <a class="brand" href="/">🐕 Barktown</a>
     <nav aria-label="Barktown views">
       <a href="/diary">Diary</a>
@@ -281,7 +301,7 @@
   </header>
 
   <main>
-    <header class="report-heading">
+    <header class="report-heading screen-only">
       <div>
         <p class="eyebrow">Sounds as text</p>
         <h1>Report2</h1>
@@ -293,11 +313,12 @@
           <strong>{reportRangeLabel}</strong>
           <button disabled={loading} onclick={() => changeReportWeek(1)}>Later →</button>
           <button disabled={loading} onclick={showLatestWeek}>Latest</button>
+          <button disabled={loading} onclick={showPrintLayout}>Print</button>
         </div>
       {/if}
     </header>
 
-    <div class="ordering-controls" aria-label="Report ordering controls">
+    <div class="ordering-controls screen-only" aria-label="Report ordering controls">
       <div class="week-count-controls" role="group" aria-label="Report length">
         <button
           class:active={rangeWeeks === 1}
@@ -334,6 +355,21 @@
     {:else if loadError}
       <p class="status error">Could not load diary data: {loadError}</p>
     {:else}
+      <header class="print-intro">
+        <h1>Barktown disturbance report</h1>
+        <p class="print-range">{printRangeLabel}</p>
+        <p>
+          This report shows {countLabel(reportTotals.disturbances, 'disturbance')} recorded at
+          {data.recordingContext.album} {data.recordingContext.location} with microphone direction
+          {data.recordingContext.direction}. {data.recordingContext.copyright}
+        </p>
+        <p>
+          Darker lines represent louder barks and yaps. Blue background means dogs were barking
+          before sunrise/after sunset. No human voices were recorded without permission.
+          See interactive version <a href={interactiveHref}>here</a>. See methodology
+          <a href="/method">here</a>.
+        </p>
+      </header>
       <section class="report-totals" aria-label={`${rangeWeeks}-week report totals`}>
         <div class="total-metric">
           <span>Disturbances</span>
@@ -368,6 +404,7 @@
                   {@const noteLabels = entry.sampleId
                     ? (noteLabelsBySampleId.get(entry.sampleId) ?? [])
                     : []}
+                  {@const needsPeriod = reportSentenceNeedsPeriod(noteLabels)}
                   <span
                     class="recording-sentence"
                     class:nighttime={isNighttimeRecording(entry.time, sunByDate[day.date])}
@@ -389,13 +426,13 @@
                         durationSec={entry.durationSec}
                         metadata={$hitMetadataById.get(entry.id) ?? null}
                       />
+                      {#if noteLabels.length === 0 && needsPeriod}
+                        <span class="period" aria-hidden="true">.</span>
+                      {/if}
                     </span>
-                    {#each noteLabels as label}
-                      <span class="annotation-label">{label}</span>
+                    {#each noteLabels as label, index}
+                      <span class="annotation-label">{label}{index === noteLabels.length - 1 && needsPeriod ? '.' : ''}</span>
                     {/each}
-                    {#if reportSentenceNeedsPeriod(noteLabels)}
-                      <span class="period" aria-hidden="true">.</span>
-                    {/if}
                   </span>{' '}
                 {/each}
               </p>
@@ -410,11 +447,13 @@
 </div>
 
 {#if showPanel && panelEntry}
-  <AudioPlayerPanel
-    entry={panelEntry}
-    onclose={closePanel}
-    onclosed={handlePanelClosed}
-  />
+  <div class="audio-panel screen-only">
+    <AudioPlayerPanel
+      entry={panelEntry}
+      onclose={closePanel}
+      onclosed={handlePanelClosed}
+    />
+  </div>
 {/if}
 
 <style>
@@ -427,6 +466,8 @@
   }
 
   .app { min-height: 100dvh; }
+
+  .print-intro { display: none; }
 
   .site-header {
     position: sticky;
@@ -619,6 +660,53 @@
     white-space: nowrap;
   }
 
+  .app.print-layout {
+    background: #fff;
+  }
+
+  .app.print-layout .screen-only,
+  .app.print-layout .play-button {
+    display: none;
+  }
+
+  .app.print-layout main {
+    width: min(900px, calc(100% - 2rem));
+    padding-top: 2rem;
+  }
+
+  .app.print-layout .print-intro {
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+
+  .print-intro h1 {
+    margin: 0;
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    line-height: 1;
+  }
+
+  .print-intro p {
+    max-width: 780px;
+    margin: 0.75rem 0 0;
+    color: #333;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.96rem;
+    line-height: 1.55;
+  }
+
+  .print-intro .print-range {
+    margin-top: 0.35rem;
+    color: #777;
+    font-size: 1rem;
+  }
+
+  .print-intro a { color: #2255bb; }
+
+  .app.print-layout .day-section,
+  .app.print-layout .report-totals {
+    break-inside: avoid;
+  }
+
   .day-section {
     padding: 1.2rem 1.35rem 1.3rem;
     border: 1px solid #dededa;
@@ -732,5 +820,29 @@
     .range-controls { flex-wrap: wrap; }
     .range-controls strong { order: -1; width: 100%; }
     .report-totals { grid-template-columns: 1fr; }
+  }
+
+  @page { margin: 14mm; }
+
+  @media print {
+    :global(body) { background: #fff; }
+
+    .screen-only,
+    .play-button { display: none !important; }
+
+    .print-intro {
+      display: block !important;
+      margin-bottom: 1.2rem;
+    }
+
+    main {
+      width: auto;
+      padding: 0;
+    }
+
+    .report-days { gap: 0.6rem; }
+    .report-totals,
+    .day-section { break-inside: avoid; }
+    .day-section { border-color: #aaa; }
   }
 </style>

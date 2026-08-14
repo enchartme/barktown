@@ -13,9 +13,11 @@
  */
 export const ASSET_BASE = 'https://s3.angiehjort.com/barktown';
 
+/** Public, anonymous read-only Barktown API. */
+export const PUBLIC_API_BASE = 'https://barktown-api.enchart.me';
+
 /**
- * Base URL for the barktown-ingest REST API (server.mjs on masmopi).
- * Reached over Tailscale — no auth, same trust model as GoblinPiStatus.
+ * Base URL for the Tailnet-only barktown-ingest mutation/operator API.
  */
 export const API_BASE = 'https://masmopi.tail523149.ts.net';
 
