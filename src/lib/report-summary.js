@@ -31,6 +31,23 @@ export function summarizeEntries(entries, metadataById = new Map()) {
   };
 }
 
+/**
+ * Sum the three additive metrics shown in Report2 day headings.
+ *
+ * @param {Array<{disturbances?: number, totalDurationSec?: number, barks?: number}>} summaries
+ */
+export function sumReportSummaries(summaries) {
+  return summaries.reduce((total, summary) => ({
+    disturbances: total.disturbances + (summary.disturbances ?? 0),
+    totalDurationSec: total.totalDurationSec + (summary.totalDurationSec ?? 0),
+    barks: total.barks + (summary.barks ?? 0),
+  }), {
+    disturbances: 0,
+    totalDurationSec: 0,
+    barks: 0,
+  });
+}
+
 /** Format a duration without seconds, truncating incomplete minutes. */
 export function formatDisturbedTime(totalDurationSec) {
   const totalMinutes = Math.floor(Math.max(0, totalDurationSec) / 60);

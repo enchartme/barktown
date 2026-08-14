@@ -1,7 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { formatDisturbedTime, summarizeEntries } from '../src/lib/report-summary.js';
+import {
+  formatDisturbedTime,
+  summarizeEntries,
+  sumReportSummaries,
+} from '../src/lib/report-summary.js';
 
 test('report summaries aggregate disturbances, duration, hits, and worst density', () => {
   const entries = [
@@ -26,4 +30,15 @@ test('disturbed time truncates seconds and uses hour/minute units', () => {
   assert.equal(formatDisturbedTime((3 * 60 * 60) + (45 * 60) + 59), '3 h 45 min');
   assert.equal(formatDisturbedTime(59 * 60 + 59), '59 min');
   assert.equal(formatDisturbedTime(0), '0 min');
+});
+
+test('Report2 totals sum the three additive day metrics', () => {
+  assert.deepEqual(sumReportSummaries([
+    { disturbances: 2, totalDurationSec: 90, barks: 4, worstDensityBpm: 5 },
+    { disturbances: 3, totalDurationSec: 150, barks: 7, worstDensityBpm: 20 },
+  ]), {
+    disturbances: 5,
+    totalDurationSec: 240,
+    barks: 11,
+  });
 });

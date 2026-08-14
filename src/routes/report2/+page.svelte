@@ -6,7 +6,11 @@
   import { hitMetadataById, loadHitMetadata } from '$lib/hit-metadata.js';
   import { groupReportNoteLabels, reportSentenceNeedsPeriod } from '$lib/report-annotations.js';
   import { reportBounds } from '$lib/report-range.js';
-  import { formatDisturbedTime, summarizeEntries } from '$lib/report-summary.js';
+  import {
+    formatDisturbedTime,
+    summarizeEntries,
+    sumReportSummaries,
+  } from '$lib/report-summary.js';
   import { DIARY_NIGHT_COLOR, isNighttimeRecording } from '$lib/sun-time.js';
   import {
     addDays,
@@ -68,6 +72,7 @@
       };
     });
   });
+  const reportTotals = $derived(sumReportSummaries(days.map((day) => day.summary)));
 
   function todayInStockholm() {
     return new Intl.DateTimeFormat('sv-SE', {
@@ -329,6 +334,20 @@
     {:else if loadError}
       <p class="status error">Could not load diary data: {loadError}</p>
     {:else}
+      <section class="report-totals" aria-label={`${rangeWeeks}-week report totals`}>
+        <div class="total-metric">
+          <span>Disturbances</span>
+          <strong>{reportTotals.disturbances.toLocaleString()}</strong>
+        </div>
+        <div class="total-metric">
+          <span>Time disturbed</span>
+          <strong>{formatDisturbedTime(reportTotals.totalDurationSec)}</strong>
+        </div>
+        <div class="total-metric">
+          <span>Barks</span>
+          <strong>{reportTotals.barks.toLocaleString()}</strong>
+        </div>
+      </section>
       <div class="report-days">
         {#each days as day (day.date)}
           <section class="day-section">
@@ -566,6 +585,40 @@
     gap: 1.1rem;
   }
 
+  .report-totals {
+    margin-bottom: 1.1rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    overflow: hidden;
+    border: 1px solid #dededa;
+    border-radius: 8px;
+    background: #dededa;
+  }
+
+  .total-metric {
+    min-width: 0;
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: #fff;
+  }
+
+  .total-metric span {
+    color: #777;
+    font-size: 0.72rem;
+    font-weight: 650;
+  }
+
+  .total-metric strong {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.2rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
   .day-section {
     padding: 1.2rem 1.35rem 1.3rem;
     border: 1px solid #dededa;
@@ -678,5 +731,6 @@
     .day-section { padding-inline: 0.75rem; }
     .range-controls { flex-wrap: wrap; }
     .range-controls strong { order: -1; width: 100%; }
+    .report-totals { grid-template-columns: 1fr; }
   }
 </style>
