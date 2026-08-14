@@ -691,6 +691,8 @@
     font-size: 0.8rem;
   }
 
+  .app.print-layout .recording-sentence { margin-right: 0; }
+
   .print-intro h1 {
     margin: 0;
     font-size: clamp(2rem, 6vw, 3.4rem);
@@ -858,6 +860,7 @@
     }
 
     .report-days { gap: 0.6rem; }
+    .recording-sentence { margin-right: 0; }
     .report-totals,
     .day-section { break-inside: avoid; }
     .day-section { border-color: #aaa; }
