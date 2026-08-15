@@ -294,7 +294,7 @@
       <a href="/diary">Diary</a>
       <a href="/report">Report</a>
       <a class="current" aria-current="page" href="/report2">Report2</a>
-      <a href="/training">Samples</a>
+      <a href="/training">Training</a>
       <a href="/method">Method</a>
     </nav>
     <GoblinPiStatus />
