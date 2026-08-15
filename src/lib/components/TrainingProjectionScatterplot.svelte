@@ -47,21 +47,21 @@
   function previewSource(point, resolvedAudioPath) {
     if (!resolvedAudioPath) return null;
 
-    if (Number.isFinite(point.annotationStart) && Number.isFinite(point.annotationEnd)) {
-      return {
-        path: resolvedAudioPath,
-        start: point.annotationStart,
-        end: point.annotationEnd,
-      };
-    }
-
-    // Legacy fallback for projections without explicit annotation bounds.
-    const match = /_(\d+)-(\d+)(\.[^./]+)$/.exec(point.sourceFragment ?? '');
-    if (!match) {
+    if (Number.isFinite(point.recordingStart) && Number.isFinite(point.recordingEnd)) {
       return {
         path: resolvedAudioPath,
         start: point.recordingStart,
         end: point.recordingEnd,
+      };
+    }
+
+    // Legacy fallback for projections without explicit recording-window bounds.
+    const match = /_(\d+)-(\d+)(\.[^./]+)$/.exec(point.sourceFragment ?? '');
+    if (!match) {
+      return {
+        path: resolvedAudioPath,
+        start: point.annotationStart,
+        end: point.annotationEnd,
       };
     }
     return {
@@ -119,7 +119,7 @@
           'embedding_id', 'source_fragment', 'original_30s_recording',
           'original_recording_audio', 'window_start_s', 'window_end_s',
           'recording_window_start_s', 'recording_window_end_s', 'label',
-          'umap_x', 'umap_y',
+          'pca_x', 'pca_y', 'umap_x', 'umap_y',
         ];
         const missing = required.filter((name) => column[name] == null);
         if (missing.length) throw new Error(`Missing CSV column${missing.length > 1 ? 's' : ''}: ${missing.join(', ')}`);
@@ -128,18 +128,25 @@
         for (const line of lines) {
           if (!line) continue;
           const row = parseCsvLine(line);
-          const x = Number(row[column.umap_x]);
-          const y = Number(row[column.umap_y]);
-          if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+          const pcaX = Number(row[column.pca_x]);
+          const pcaY = Number(row[column.pca_y]);
+          const umapX = Number(row[column.umap_x]);
+          const umapY = Number(row[column.umap_y]);
+          const windowStart = optionalNumber(row[column.window_start_s]);
+          const windowEnd = optionalNumber(row[column.window_end_s]);
+          if (![pcaX, pcaY, umapX, umapY].every(Number.isFinite)) continue;
           points.push({
             embeddingId: row[column.embedding_id],
             sourceFragment: row[column.source_fragment],
             originalRecording: row[column.original_30s_recording],
             originalAudio: row[column.original_recording_audio],
-            windowStart: Number(row[column.window_start_s]),
-            windowEnd: Number(row[column.window_end_s]),
-            recordingStart: Number(row[column.recording_window_start_s]),
-            recordingEnd: Number(row[column.recording_window_end_s]),
+            windowStart,
+            windowEnd,
+            windowDuration: Number.isFinite(windowStart) && Number.isFinite(windowEnd)
+              ? Math.max(0, windowEnd - windowStart)
+              : null,
+            recordingStart: optionalNumber(row[column.recording_window_start_s]),
+            recordingEnd: optionalNumber(row[column.recording_window_end_s]),
             annotationStart: optionalNumber(row[column.annotation_start_s]),
             annotationEnd: optionalNumber(row[column.annotation_end_s]),
             label: row[column.label],
@@ -153,11 +160,13 @@
             nearestDistance: optionalNumber(row[column.nearest_distance]),
             suspicionScore: optionalNumber(row[column.suspicion_score]),
             suspicionRank: optionalNumber(row[column.suspicion_rank]),
-            x,
-            y,
+            pcaX,
+            pcaY,
+            umapX,
+            umapY,
           });
         }
-        if (!points.length) throw new Error('The CSV contains no plottable UMAP coordinates.');
+        if (!points.length) throw new Error('The CSV contains no plottable PCA/UMAP coordinates.');
         cachedPoints = points;
         return points;
       })
@@ -188,7 +197,9 @@
   let interactionError = $state('');
   /** @type {any | null} */
   let hovered = $state(null);
+  let projection = $state('umap');
   let colorEncoding = $state('label');
+  let durationThreshold = $state(2);
   let tooltipX = $state(0);
   let tooltipY = $state(0);
   let plotWidth = 0;
@@ -222,6 +233,14 @@
   const selectedEncodingLabel = $derived(
     QUALITY_COLOR_ENCODINGS.find((encoding) => encoding.value === colorEncoding)?.label ?? 'Label'
   );
+  const highlightedDurationCount = $derived.by(() => {
+    let count = 0;
+    for (const point of points) {
+      if (activeLabel && point.label !== activeLabel) continue;
+      if (Number.isFinite(point.windowDuration) && point.windowDuration < durationThreshold) count++;
+    }
+    return count;
+  });
 
   $effect(() => {
     const node = plotWrap;
@@ -238,14 +257,18 @@
     // redraws without changing the projection domain or point positions.
     const hoverId = hovered?.embeddingId;
     const filterLabel = activeLabel;
+    const selectedProjection = projection;
     const encoding = colorEncoding;
     const colorDomain = numericColorDomain;
+    const maxWindowDuration = durationThreshold;
     if (!plotWrap || !points.length) return;
     const frame = requestAnimationFrame(() => {
       void hoverId;
       void filterLabel;
+      void selectedProjection;
       void encoding;
       void colorDomain;
+      void maxWindowDuration;
       draw();
     });
     return () => cancelAnimationFrame(frame);
@@ -313,6 +336,13 @@
     return VIRIDIS_LUT[Math.max(0, Math.min(255, Math.round(t * 255)))];
   }
 
+  function selectProjection(nextProjection) {
+    if (projection === nextProjection) return;
+    hovered = null;
+    stopPreview();
+    projection = nextProjection;
+  }
+
   function draw() {
     if (!canvas || !plotWrap || !points.length) return;
     const rect = plotWrap.getBoundingClientRect();
@@ -330,11 +360,13 @@
     ctx.clearRect(0, 0, plotWidth, plotHeight);
 
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    const xField = projection === 'pca' ? 'pcaX' : 'umapX';
+    const yField = projection === 'pca' ? 'pcaY' : 'umapY';
     for (const point of points) {
-      if (point.x < minX) minX = point.x;
-      if (point.x > maxX) maxX = point.x;
-      if (point.y < minY) minY = point.y;
-      if (point.y > maxY) maxY = point.y;
+      if (point[xField] < minX) minX = point[xField];
+      if (point[xField] > maxX) maxX = point[xField];
+      if (point[yField] < minY) minY = point[yField];
+      if (point[yField] > maxY) maxY = point[yField];
     }
     const xPad = Math.max((maxX - minX) * 0.025, 0.01);
     const yPad = Math.max((maxY - minY) * 0.025, 0.01);
@@ -345,8 +377,8 @@
 
     hitGrid = new Map();
     for (const point of points) {
-      const sx = innerPad + ((point.x - minX) / (maxX - minX || 1)) * innerW;
-      const sy = innerPad + (1 - (point.y - minY) / (maxY - minY || 1)) * innerH;
+      const sx = innerPad + ((point[xField] - minX) / (maxX - minX || 1)) * innerW;
+      const sy = innerPad + (1 - (point[yField] - minY) / (maxY - minY || 1)) * innerH;
       point.sx = sx;
       point.sy = sy;
       const key = gridKey(sx, sy);
@@ -357,7 +389,11 @@
       ctx.beginPath();
       ctx.arc(sx, sy, POINT_RADIUS, 0, Math.PI * 2);
       ctx.fillStyle = pointColor(point);
-      ctx.globalAlpha = activeLabel && point.label !== activeLabel ? 0.16 : 1;
+      const labelMatches = !activeLabel || point.label === activeLabel;
+      const durationMatches = Number.isFinite(point.windowDuration) && point.windowDuration < durationThreshold;
+      ctx.globalAlpha = labelMatches
+        ? (durationMatches ? 1 : 0.16)
+        : (durationMatches ? 0.1 : 0.03);
       ctx.fill();
     }
     ctx.globalAlpha = 1;
@@ -371,7 +407,11 @@
       ctx.beginPath();
       ctx.arc(hovered.sx, hovered.sy, 5, 0, Math.PI * 2);
       ctx.fillStyle = pointColor(hovered);
-      ctx.globalAlpha = activeLabel && hovered.label !== activeLabel ? 0.35 : 1;
+      const hoveredLabelMatches = !activeLabel || hovered.label === activeLabel;
+      const hoveredDurationMatches = Number.isFinite(hovered.windowDuration) && hovered.windowDuration < durationThreshold;
+      ctx.globalAlpha = hoveredLabelMatches
+        ? (hoveredDurationMatches ? 1 : 0.45)
+        : (hoveredDurationMatches ? 0.35 : 0.15);
       ctx.fill();
       ctx.globalAlpha = 1;
     }
@@ -400,6 +440,7 @@
     for (let dx = -1; dx <= 1; dx++) {
       for (let dy = -1; dy <= 1; dy++) {
         for (const point of hitGrid.get(`${gx + dx},${gy + dy}`) ?? []) {
+          if (activeLabel && point.label !== activeLabel) continue;
           const distanceSq = (point.sx - x) ** 2 + (point.sy - y) ** 2;
           if (distanceSq <= nearestDistanceSq) {
             nearest = point;
@@ -473,9 +514,15 @@
   });
 </script>
 
-<section class="projection" aria-label="Embedding projection">
+<section class="projection" aria-label={`${projection.toUpperCase()} embedding projection`}>
   <div class="projection-heading">
-    <p>UMAP view of the exported embedding windows. Hover a window to hear its labelled audio; click to open the parent recording at that moment.</p>
+    <div class="projection-copy">
+      <div class="projection-switch" role="group" aria-label="Projection">
+        <button class:active={projection === 'pca'} aria-pressed={projection === 'pca'} onclick={() => selectProjection('pca')}>PCA</button>
+        <button class:active={projection === 'umap'} aria-pressed={projection === 'umap'} onclick={() => selectProjection('umap')}>UMAP</button>
+      </div>
+      <p>projection of the exported embedding windows. Hover a window to hear its labelled audio; click to open the parent recording at that moment.</p>
+    </div>
     {#if points.length}<span class="point-count">{points.length.toLocaleString()} windows</span>{/if}
   </div>
 
@@ -492,9 +539,14 @@
         onpointerleave={handlePointerLeave}
         onclick={handleClick}
         role="img"
-        aria-label={`UMAP scatterplot with ${points.length} embedding windows, coloured by ${selectedEncodingLabel.toLowerCase()}`}
+        aria-label={`${projection.toUpperCase()} scatterplot with ${points.length} embedding windows, coloured by ${selectedEncodingLabel.toLowerCase()}`}
       ></canvas>
-      <div class="plot-color-overlay">
+      <div class="plot-controls-overlay">
+        <label class="duration-control">
+          <span>Window &lt; {durationThreshold.toFixed(1)}s</span>
+          <input type="range" min="0.1" max="2" step="0.1" bind:value={durationThreshold} />
+          <small>{highlightedDurationCount.toLocaleString()}</small>
+        </label>
         <label class="color-control">
           <span>Color</span>
           <select bind:value={colorEncoding}>
@@ -516,7 +568,8 @@
         <div class="plot-tooltip" style:left={`${tooltipX}px`} style:top={`${tooltipY}px`}>
           <span class="tooltip-label" style:background={sampleLabelColor(hovered.label)}>{hovered.label}</span>
           <strong>{hovered.originalRecording}</strong>
-          <span>{hovered.recordingStart.toFixed(2)}–{hovered.recordingEnd.toFixed(2)} s in parent</span>
+          <span>{metric(hovered.recordingStart, 2)}–{metric(hovered.recordingEnd, 2)} s in parent</span>
+          <span>{metric(hovered.windowDuration, 2)} s window</span>
           <div class="quality-grid">
             <span class="quality-title">Quality criteria</span>
             <span><small>Split</small><b>{hovered.trainOrValidation || '—'}</b></span>
@@ -550,8 +603,31 @@
     margin-bottom: 0.7rem;
   }
   .projection-heading p { margin: 0; color: #777; font-size: 0.78rem; line-height: 1.45; }
+  .projection-copy { display: flex; align-items: center; gap: 0.45rem; min-width: 0; }
+  .projection-switch {
+    display: inline-flex;
+    flex-shrink: 0;
+    padding: 2px;
+    border: 1px solid #d0d0ca;
+    border-radius: 5px;
+    background: #efefeb;
+  }
+  .projection-switch button {
+    padding: 0.18rem 0.42rem;
+    border: 0;
+    border-radius: 3px;
+    background: transparent;
+    color: #777;
+    font: inherit;
+    font-size: 0.68rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .projection-switch button:hover { color: #222; }
+  .projection-switch button.active { background: #fff; color: #1a1a1a; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+  .projection-switch button:focus-visible { outline: 2px solid rgba(74, 124, 220, 0.35); outline-offset: 1px; }
   .point-count { color: #999; font-size: 0.72rem; white-space: nowrap; padding-top: 0.15rem; }
-  .plot-color-overlay {
+  .plot-controls-overlay {
     position: absolute;
     z-index: 3;
     top: 8px;
@@ -568,6 +644,17 @@
     background: rgba(255, 255, 255, 0.92);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
+  .duration-control {
+    display: inline-grid;
+    grid-template-columns: auto 110px auto;
+    align-items: center;
+    gap: 0.35rem;
+    color: #666;
+    font-size: 0.72rem;
+    white-space: nowrap;
+  }
+  .duration-control input { width: 110px; accent-color: #555; cursor: pointer; }
+  .duration-control small { min-width: 2.5rem; color: #999; font-size: 0.65rem; text-align: right; font-variant-numeric: tabular-nums; }
   .color-control { display: inline-flex; align-items: center; gap: 0.35rem; color: #666; font-size: 0.72rem; }
   .color-control select {
     max-width: 12rem;
@@ -666,6 +753,7 @@
 
   @media (max-width: 760px) {
     .projection-heading { flex-direction: column; gap: 0.25rem; }
+    .projection-copy { align-items: flex-start; }
     .plot-wrap { height: 420px; }
   }
 </style>
