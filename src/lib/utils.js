@@ -17,7 +17,7 @@ export const ASSET_BASE = 'https://s3.angiehjort.com/barktown';
 export const PUBLIC_API_BASE = 'https://barktown-api.enchart.me';
 
 /**
- * Base URL for the Tailnet-only barktown-ingest mutation/operator API.
+ * Base URL for barktown-server's Tailnet-only mutation/operator API.
  */
 export const PRIVATE_API_BASE = 'https://masmopi.tail523149.ts.net';
 

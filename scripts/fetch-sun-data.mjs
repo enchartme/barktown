@@ -89,7 +89,7 @@ async function fetchDay(date) {
     response = await fetch(url, {
       headers: {
         // api.met.no terms require a descriptive User-Agent.
-        'User-Agent': 'barktown-sun-fetcher/1.0 github.com/enchartme/barktown',
+        'User-Agent': 'barktown-sun-fetcher/1.0 github.com/enchartme/barktown-ui',
       },
     });
   } catch (err) {

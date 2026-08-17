@@ -87,9 +87,9 @@
         'Model artifacts are deployed as a TFLite classifier plus adjacent metadata; the runtime verifies the declared filename and SHA-256 before loading a new bundle. The same scoring and hit-gating core is reused for live inference and offline re-analysis, reducing the risk that the review path silently applies different rules.'
       ],
       links: [
-        { label: 'UI', href: 'https://github.com/enchartme/barktown' },
+        { label: 'UI', href: 'https://github.com/enchartme/barktown-ui' },
         { label: 'Monitor', href: 'https://github.com/enchartme/barktown-goblin' },
-        { label: 'Ingest API', href: 'https://github.com/enchartme/barktown-ingest' },
+        { label: 'Server', href: 'https://github.com/enchartme/barktown-server' },
         { label: 'Training tools', href: 'https://github.com/enchartme/barktown-utils' }
       ],
       media: 'System architecture diagram',
