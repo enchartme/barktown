@@ -1,21 +1,11 @@
 <script module>
   import { ASSET_BASE } from '$lib/utils.js';
+  import { TRAINING_COLOR_ENCODINGS } from '$lib/training-color-guides.js';
 
   const CSV_PATH = 'training-set-projection.csv';
   const GRID_SIZE = 12;
   const HIT_RADIUS = 8;
   const POINT_RADIUS = 2;
-  const QUALITY_COLOR_ENCODINGS = Object.freeze([
-    { value: 'classifierScore', label: 'Classifier score' },
-    { value: 'classifierError', label: 'Classifier error' },
-    { value: 'knnLabelDisagreement', label: 'KNN label mismatch' },
-    { value: 'knnBinaryDisagreement', label: 'KNN binary mismatch' },
-    { value: 'knnMeanDistance', label: 'KNN mean distance' },
-    { value: 'labelCentroidDistance', label: 'Centroid distance' },
-    { value: 'nearestDistance', label: 'Nearest distance' },
-    { value: 'suspicionScore', label: 'Suspicion score' },
-    { value: 'suspicionRank', label: 'Suspicion rank' },
-  ]);
   const VIRIDIS_STOPS = [
     [68, 1, 84],
     [59, 82, 139],
@@ -183,8 +173,8 @@
   import { onMount } from 'svelte';
   import { sampleLabelColor } from '$lib/sample-labels.js';
 
-  /** @type {{ samples?: any[], activeLabel?: string|null, onopen?: (point: any) => Promise<string | void> | string | void, onwindowcounts?: (counts: Map<string, number>) => void }} */
-  let { samples = [], activeLabel = null, onopen = () => {}, onwindowcounts = () => {} } = $props();
+  /** @type {{ samples?: any[], activeLabel?: string|null, activeSampleId?: string|null, colorEncoding?: string, onopen?: (point: any) => Promise<string | void> | string | void, onwindowsummary?: (summary: { counts: Map<string, number>, durationBins: Map<string, number[]>, colorDomains: Map<string, { min: number, max: number }> }) => void }} */
+  let { samples = [], activeLabel = null, activeSampleId = null, colorEncoding = $bindable('label'), onopen = () => {}, onwindowsummary = () => {} } = $props();
 
   /** @type {HTMLCanvasElement | null} */
   let canvas = $state(null);
@@ -198,8 +188,7 @@
   /** @type {any | null} */
   let hovered = $state(null);
   let projection = $state('umap');
-  let colorEncoding = $state('label');
-  let durationThreshold = $state(2);
+  let shortWindowsOnly = $state(false);
   let tooltipX = $state(0);
   let tooltipY = $state(0);
   let plotWidth = 0;
@@ -218,6 +207,9 @@
   const sampleAudioById = $derived.by(() => new Map(
     samples.map((sample) => [sample.id, sample.audioPath]),
   ));
+  const activeSampleAudioPath = $derived(
+    activeSampleId ? (sampleAudioById.get(activeSampleId) ?? null) : null
+  );
   const numericColorDomain = $derived.by(() => {
     if (colorEncoding === 'label') return null;
     let min = Infinity;
@@ -231,17 +223,8 @@
     return Number.isFinite(min) ? { min, max } : null;
   });
   const selectedEncodingLabel = $derived(
-    QUALITY_COLOR_ENCODINGS.find((encoding) => encoding.value === colorEncoding)?.label ?? 'Label'
+    TRAINING_COLOR_ENCODINGS.find((encoding) => encoding.value === colorEncoding)?.label ?? 'Label'
   );
-  const highlightedDurationCount = $derived.by(() => {
-    let count = 0;
-    for (const point of points) {
-      if (activeLabel && point.label !== activeLabel) continue;
-      if (Number.isFinite(point.windowDuration) && point.windowDuration < durationThreshold) count++;
-    }
-    return count;
-  });
-
   $effect(() => {
     const node = plotWrap;
     if (!node) return;
@@ -257,18 +240,20 @@
     // redraws without changing the projection domain or point positions.
     const hoverId = hovered?.embeddingId;
     const filterLabel = activeLabel;
+    const filterSampleId = activeSampleId;
     const selectedProjection = projection;
     const encoding = colorEncoding;
     const colorDomain = numericColorDomain;
-    const maxWindowDuration = durationThreshold;
+    const focusShortWindows = shortWindowsOnly;
     if (!plotWrap || !points.length) return;
     const frame = requestAnimationFrame(() => {
       void hoverId;
       void filterLabel;
+      void filterSampleId;
       void selectedProjection;
       void encoding;
       void colorDomain;
-      void maxWindowDuration;
+      void focusShortWindows;
       draw();
     });
     return () => cancelAnimationFrame(frame);
@@ -336,6 +321,26 @@
     return VIRIDIS_LUT[Math.max(0, Math.min(255, Math.round(t * 255)))];
   }
 
+  function pointMatchesActiveSample(point) {
+    if (!activeSampleId) return true;
+    return point.originalRecording === activeSampleId
+      || Boolean(activeSampleAudioPath && point.originalAudio === activeSampleAudioPath);
+  }
+
+  function pointMatchesSelection(point) {
+    return (!activeLabel || point.label === activeLabel)
+      && (!shortWindowsOnly || (Number.isFinite(point.windowDuration) && point.windowDuration < 0.9))
+      && pointMatchesActiveSample(point);
+  }
+
+  function pointOpacity(point) {
+    let opacity = 1;
+    if (activeLabel && point.label !== activeLabel) opacity *= 0.1;
+    if (shortWindowsOnly && (!Number.isFinite(point.windowDuration) || point.windowDuration >= 0.9)) opacity *= 0.16;
+    if (!pointMatchesActiveSample(point)) opacity *= 0.1;
+    return Math.max(0.02, opacity);
+  }
+
   function selectProjection(nextProjection) {
     if (projection === nextProjection) return;
     hovered = null;
@@ -389,11 +394,7 @@
       ctx.beginPath();
       ctx.arc(sx, sy, POINT_RADIUS, 0, Math.PI * 2);
       ctx.fillStyle = pointColor(point);
-      const labelMatches = !activeLabel || point.label === activeLabel;
-      const durationMatches = Number.isFinite(point.windowDuration) && point.windowDuration < durationThreshold;
-      ctx.globalAlpha = labelMatches
-        ? (durationMatches ? 1 : 0.16)
-        : (durationMatches ? 0.1 : 0.03);
+      ctx.globalAlpha = pointOpacity(point);
       ctx.fill();
     }
     ctx.globalAlpha = 1;
@@ -407,11 +408,7 @@
       ctx.beginPath();
       ctx.arc(hovered.sx, hovered.sy, 5, 0, Math.PI * 2);
       ctx.fillStyle = pointColor(hovered);
-      const hoveredLabelMatches = !activeLabel || hovered.label === activeLabel;
-      const hoveredDurationMatches = Number.isFinite(hovered.windowDuration) && hovered.windowDuration < durationThreshold;
-      ctx.globalAlpha = hoveredLabelMatches
-        ? (hoveredDurationMatches ? 1 : 0.45)
-        : (hoveredDurationMatches ? 0.35 : 0.15);
+      ctx.globalAlpha = pointOpacity(hovered);
       ctx.fill();
       ctx.globalAlpha = 1;
     }
@@ -425,13 +422,6 @@
     return Number.isFinite(value) ? `${Math.round(value * 100)}%` : '—';
   }
 
-  function scaleEnd(value) {
-    if (!Number.isFinite(value)) return '—';
-    if (Number.isInteger(value) && Math.abs(value) >= 10) return value.toLocaleString();
-    if (Math.abs(value) >= 100) return Math.round(value).toLocaleString();
-    return Number(value.toPrecision(3)).toString();
-  }
-
   function nearestPoint(x, y) {
     const gx = Math.floor(x / GRID_SIZE);
     const gy = Math.floor(y / GRID_SIZE);
@@ -440,7 +430,7 @@
     for (let dx = -1; dx <= 1; dx++) {
       for (let dy = -1; dy <= 1; dy++) {
         for (const point of hitGrid.get(`${gx + dx},${gy + dy}`) ?? []) {
-          if (activeLabel && point.label !== activeLabel) continue;
+          if (!pointMatchesSelection(point)) continue;
           const distanceSq = (point.sx - x) ** 2 + (point.sy - y) ** 2;
           if (distanceSq <= nearestDistanceSq) {
             nearest = point;
@@ -493,8 +483,32 @@
       .then((loaded) => {
         points = loaded;
         const counts = new Map();
-        for (const point of loaded) counts.set(point.label, (counts.get(point.label) ?? 0) + 1);
-        onwindowcounts(counts);
+        const durationBins = new Map();
+        for (const point of loaded) {
+          counts.set(point.label, (counts.get(point.label) ?? 0) + 1);
+          if (!Number.isFinite(point.windowDuration)) continue;
+          const bins = durationBins.get(point.label) ?? new Array(11).fill(0);
+          // 0–100ms through 900–1000ms, then an overflow bin for >1000ms.
+          const bin = point.windowDuration > 1
+            ? 10
+            : Math.min(9, Math.max(0, Math.floor(point.windowDuration / 0.1)));
+          bins[bin]++;
+          durationBins.set(point.label, bins);
+        }
+        const colorDomains = new Map();
+        for (const encoding of TRAINING_COLOR_ENCODINGS) {
+          if (encoding.value === 'label') continue;
+          let min = Infinity;
+          let max = -Infinity;
+          for (const point of loaded) {
+            const value = point[encoding.value];
+            if (!Number.isFinite(value)) continue;
+            if (value < min) min = value;
+            if (value > max) max = value;
+          }
+          if (Number.isFinite(min)) colorDomains.set(encoding.value, { min, max });
+        }
+        onwindowsummary({ counts, durationBins, colorDomains });
         loading = false;
         requestAnimationFrame(draw);
       })
@@ -521,7 +535,7 @@
         <button class:active={projection === 'pca'} aria-pressed={projection === 'pca'} onclick={() => selectProjection('pca')}>PCA</button>
         <button class:active={projection === 'umap'} aria-pressed={projection === 'umap'} onclick={() => selectProjection('umap')}>UMAP</button>
       </div>
-      <p>projection of the exported embedding windows. Hover a window to hear its labelled audio; click to open the parent recording at that moment.</p>
+      <p>projection of the training data. Each dot is one window of audio (explanation below). Hover a dot to hear the sound; click to open the recorded sample.</p>
     </div>
     {#if points.length}<span class="point-count">{points.length.toLocaleString()} windows</span>{/if}
   </div>
@@ -543,26 +557,9 @@
       ></canvas>
       <div class="plot-controls-overlay">
         <label class="duration-control">
-          <span>Window &lt; {durationThreshold.toFixed(1)}s</span>
-          <input type="range" min="0.1" max="2" step="0.1" bind:value={durationThreshold} />
-          <small>{highlightedDurationCount.toLocaleString()}</small>
+          <input type="checkbox" bind:checked={shortWindowsOnly} />
+          <span>Short windows only</span>
         </label>
-        <label class="color-control">
-          <span>Color</span>
-          <select bind:value={colorEncoding}>
-            <option value="label">Label</option>
-            {#each QUALITY_COLOR_ENCODINGS as encoding}
-              <option value={encoding.value}>{encoding.label}</option>
-            {/each}
-          </select>
-        </label>
-        {#if colorEncoding !== 'label' && numericColorDomain}
-          <div class="continuous-legend" aria-label={`${selectedEncodingLabel} color scale`}>
-            <small>{scaleEnd(numericColorDomain.min)}</small>
-            <i></i>
-            <small>{scaleEnd(numericColorDomain.max)}</small>
-          </div>
-        {/if}
       </div>
       {#if hovered}
         <div class="plot-tooltip" style:left={`${tooltipX}px`} style:top={`${tooltipY}px`}>
@@ -645,40 +642,15 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
   .duration-control {
-    display: inline-grid;
-    grid-template-columns: auto 110px auto;
+    display: inline-flex;
     align-items: center;
     gap: 0.35rem;
     color: #666;
     font-size: 0.72rem;
     white-space: nowrap;
+    cursor: pointer;
   }
-  .duration-control input { width: 110px; accent-color: #555; cursor: pointer; }
-  .duration-control small { min-width: 2.5rem; color: #999; font-size: 0.65rem; text-align: right; font-variant-numeric: tabular-nums; }
-  .color-control { display: inline-flex; align-items: center; gap: 0.35rem; color: #666; font-size: 0.72rem; }
-  .color-control select {
-    max-width: 12rem;
-    padding: 0.22rem 0.4rem;
-    border: 1px solid #d0d0ca;
-    border-radius: 4px;
-    background: #fff;
-    color: #222;
-    font: inherit;
-  }
-  .continuous-legend {
-    display: grid;
-    grid-template-columns: auto minmax(70px, 120px) auto;
-    align-items: center;
-    gap: 0.35rem;
-    color: #777;
-    font-size: 0.65rem;
-  }
-  .continuous-legend i {
-    height: 8px;
-    border-radius: 4px;
-    background: linear-gradient(to right, #440154, #3b528b, #21918c, #5ec962, #fde725);
-  }
-  .continuous-legend small { font-size: inherit; font-variant-numeric: tabular-nums; }
+  .duration-control input { margin: 0; accent-color: #555; cursor: pointer; }
   .plot-wrap {
     position: relative;
     width: 100%;

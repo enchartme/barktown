@@ -414,7 +414,6 @@
     margin: 0;
     font-size: 1.1rem;
     font-weight: 700;
-    letter-spacing: -0.02em;
     white-space: nowrap;
   }
 

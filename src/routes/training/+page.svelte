@@ -11,6 +11,7 @@
     formatDate,
   } from '$lib/utils.js';
   import { SAMPLE_LABELS as LABELS, SAMPLE_LABEL_GUIDELINES as LABEL_GUIDELINES, sampleLabelColor, sampleLabelShortcut, LABEL_BY_SHORTCUT } from '$lib/sample-labels.js';
+  import { TRAINING_COLOR_ENCODINGS, TRAINING_COLOR_GUIDES } from '$lib/training-color-guides.js';
   import TrainingProjectionScatterplot from '$lib/components/TrainingProjectionScatterplot.svelte';
 
   // Sample and annotation reads use the anonymous public API. Mutations still
@@ -38,10 +39,18 @@
   let filterLabel     = $state('all');
   let hoveredCorpusLabel = $state(/** @type {string|null} */ (null));
   let pinnedCorpusLabel = $state(/** @type {string|null} */ (null));
+  let hoveredSidebarSampleId = $state(/** @type {string|null} */ (null));
+  let selectedColorEncoding = $state('label');
   /** @type {Map<string, number>} */
   let windowCountsByLabel = $state(new Map());
+  /** @type {Map<string, number[]>} */
+  let windowDurationBinsByLabel = $state(new Map());
+  /** @type {Map<string, { min: number, max: number }>} */
+  let colorDomainsByEncoding = $state(new Map());
 
   const activeCorpusLabel = $derived(hoveredCorpusLabel ?? pinnedCorpusLabel);
+  const selectedColorGuide = $derived(TRAINING_COLOR_GUIDES[selectedColorEncoding] ?? TRAINING_COLOR_GUIDES.label);
+  const selectedColorDomain = $derived(colorDomainsByEncoding.get(selectedColorEncoding) ?? null);
 
   const filteredSamples = $derived(
     filterLabel === 'all'      ? samples :
@@ -69,8 +78,21 @@
     pinnedCorpusLabel = pinnedCorpusLabel === label ? null : label;
   }
 
-  function updateWindowCounts(counts) {
+  function updateWindowSummary({ counts, durationBins, colorDomains }) {
     windowCountsByLabel = new Map(counts);
+    windowDurationBinsByLabel = new Map(durationBins);
+    colorDomainsByEncoding = new Map(colorDomains);
+  }
+
+  function formatColorScaleEnd(value) {
+    if (!Number.isFinite(value)) return '—';
+    if (Number.isInteger(value) && Math.abs(value) >= 10) return value.toLocaleString();
+    if (Math.abs(value) >= 100) return Math.round(value).toLocaleString();
+    return Number(value.toPrecision(3)).toString();
+  }
+
+  function formatColorScaleStart(value) {
+    return formatColorScaleEnd(value < 0.001 ? 0 : value);
   }
 
   // Fragment-duration histogram per label, binned in 0.5s buckets from 0s up
@@ -93,18 +115,9 @@
     }
     return bins;
   });
-  // Shared domain across every label's chart: 0 to the largest bin count
-  // seen anywhere, so bar heights are comparable row to row.
-  const fragmentDurationGlobalMax = $derived.by(() => {
-    let max = 0;
-    for (const arr of fragmentDurationBinsByLabel.values()) {
-      for (const v of arr) if (v > max) max = v;
-    }
-    return max;
-  });
   function fragmentDurationChart(lbl) {
     const bins = fragmentDurationBinsByLabel.get(lbl) ?? new Array(DURATION_BIN_COUNT + 1).fill(0);
-    const max  = fragmentDurationGlobalMax;
+    const max = Math.max(0, ...bins);
     const scaled = max > 0 ? bins.map(v => Math.round((v / max) * 100)) : bins.map(() => 0);
     return `{b:${scaled.join(',')}}`;
   }
@@ -115,6 +128,19 @@
         const label = i < DURATION_BIN_COUNT ? `${(i * DURATION_BIN_SIZE).toFixed(1)}-${((i + 1) * DURATION_BIN_SIZE).toFixed(1)}s` : '>5s';
         return `${label}: ${count}`;
       })
+      .join('\n');
+  }
+
+  function windowDurationChart(lbl) {
+    const bins = windowDurationBinsByLabel.get(lbl) ?? new Array(11).fill(0);
+    const max = Math.max(0, ...bins);
+    const scaled = max > 0 ? bins.map((count) => Math.round((count / max) * 100)) : bins.map(() => 0);
+    return `{b:${scaled.join(',')}}`;
+  }
+  function windowDurationTitle(lbl) {
+    const bins = windowDurationBinsByLabel.get(lbl) ?? new Array(11).fill(0);
+    return bins
+      .map((count, i) => `${i < 10 ? `${i * 100}-${(i + 1) * 100}ms` : '>1000ms'}: ${count}`)
       .join('\n');
   }
 
@@ -454,6 +480,7 @@
     currentTime    = 0;
     duration       = sample.durationSec || 0;
     pendingSeekSec = seekSec;
+    hoveredSidebarSampleId = null;
     selected       = sample;
     selectedAnnId  = null;
     hoveredAnnId   = null;
@@ -481,6 +508,7 @@
     currentTime      = 0;
     duration         = 0;
     pendingSeekSec   = null;
+    hoveredSidebarSampleId = null;
     selected         = null;
     selectedAnnId    = null;
     hoveredAnnId     = null;
@@ -984,6 +1012,10 @@
             <button
               class="sample-row"
               class:playing={selected?.id === sample.id}
+              onpointerenter={() => (hoveredSidebarSampleId = sample.id)}
+              onpointerleave={() => {
+                if (hoveredSidebarSampleId === sample.id) hoveredSidebarSampleId = null;
+              }}
               onclick={() => toggleSample(sample)}
             >
               <span class="sample-label-pill" style:background={sampleLabelColor(sample.label)} title={sample.label}>{sample.label.slice(0, 3)}</span>
@@ -1019,14 +1051,52 @@
           <TrainingProjectionScatterplot
             {samples}
             activeLabel={activeCorpusLabel}
-            onwindowcounts={updateWindowCounts}
+            activeSampleId={hoveredSidebarSampleId}
+            bind:colorEncoding={selectedColorEncoding}
+            onwindowsummary={updateWindowSummary}
             onopen={openProjectionPoint}
           />
 
-          <div class="corpus-summary-copy">
+          <div class="corpus-summary-layout">
+            <aside class="encoding-explanation" aria-live="polite">
+              <div class="encoding-explanation-heading">
+                <label class="encoding-title-control">
+                  <span>Color dots by:</span>
+                  <select bind:value={selectedColorEncoding}>
+                    {#each TRAINING_COLOR_ENCODINGS as encoding}
+                      <option value={encoding.value}>{encoding.label}</option>
+                    {/each}
+                  </select>
+                </label>
+                {#if selectedColorDomain}
+                  <div class="explanation-color-legend" aria-label={`${selectedColorGuide.title} color scale`}>
+                    <small>{formatColorScaleStart(selectedColorDomain.min)}</small>
+                    <i></i>
+                    <small>{formatColorScaleEnd(selectedColorDomain.max)}</small>
+                  </div>
+                {/if}
+              </div>
+              <section>
+                <p>{selectedColorGuide.plain}</p>
+              </section>
+              <section>
+                <p>{selectedColorGuide.detailed}</p>
+              </section>
+            </aside>
+
+            <div class="corpus-summary-copy">
             <table class="corpus-table">
               <thead>
-                <tr><th>Label</th><th>Duration</th><th>Occupancy</th><th>Samples</th><th>Fragments</th><th>Windows</th><th>Durations</th></tr>
+                <tr>
+                  <th>Label</th>
+                  <th>Duration</th>
+                  <th>Occupancy</th>
+                  <th>Samples</th>
+                  <th>Fragments</th>
+                  <th>Fragment durations<small>0.5s bins · hover for counts</small></th>
+                  <th>Windows</th>
+                  <th>Window durations<small>0.1s bins · hover for counts</small></th>
+                </tr>
               </thead>
               <tbody>
                 {#each LABELS as lbl}
@@ -1051,22 +1121,36 @@
                       class:corpus-mid={fragCount >= 30 && fragCount < 100}
                       class:corpus-good={fragCount >= 100}
                     >{fragCount}</td>
-                    <td>{windowCountsByLabel.get(lbl)?.toLocaleString() ?? '—'}</td>
                     <td class="corpus-chart-cell" title={fragmentDurationTitle(lbl)}>
                       <span class="chart">{fragmentDurationChart(lbl)}</span>
+                    </td>
+                    <td>{windowCountsByLabel.get(lbl)?.toLocaleString() ?? '—'}</td>
+                    <td class="corpus-chart-cell" title={windowDurationTitle(lbl)}>
+                      <span class="chart window-chart">{windowDurationChart(lbl)}</span>
                     </td>
                   </tr>
                 {/each}
               </tbody>
             </table>
             <p class="corpus-summary-legend">
-              Fragments target (per docs/training-data.md): <span class="corpus-low">&lt;30 low</span> ·
-              <span class="corpus-mid">30–99 viable</span> · <span class="corpus-good">100+ good</span>
+              Desired number of fragments: <span class="corpus-low">&lt;30 not enough</span> · <span class="corpus-mid">30–99 viable</span> · <span class="corpus-good">100+ good</span>
             </p>
             <p class="corpus-summary-legend">
-              Durations: 0–0.5s bins up to 5s, then one &gt;5s bucket — hover a chart for exact counts.
+              Hover the table row above to highlight the dots in scatterplot. Click to select.
             </p>
+            </div>
           </div>
+          <h1 class="section-title">
+              Each dot is a window. What are YAMNet windows and how are they made?
+          </h1>
+          <img
+            class="windows-explanation"
+            src="/images/explanation-windows.png"
+            alt="Explanation of how labelled fragments are divided into embedding windows"
+          />
+          <p class="corpus-summary-legend">
+            <a href="https://www.youtube.com/watch?v=zD0jE6ZGeG0&t=156s" target="_blank">Learn more about YAMNET windows</a>
+          </p>
         </div>
       {:else}
         <button class="corpus-back-btn" onclick={deselectSample}>← Back to corpus overview</button>
@@ -1386,7 +1470,10 @@
   .page-title {
     margin: 0 0 0.35rem;
     font-size: 1.35rem;
-    letter-spacing: -0.025em;
+  }
+  .section-title {
+    margin: 2rem 0 0.35rem;
+    font-size: 1.35rem;
   }
 
   @media (max-width: 760px) {
@@ -1394,8 +1481,90 @@
     .samples-pane { width: 100%; position: static; height: 40vh; border-right: none; border-bottom: 1px solid #e0e0dc; }
   }
 
-  .corpus-summary { padding: 0 0.3rem 2rem; width: 100%; max-width: 90rem; }
-  .corpus-summary-copy { max-width: 52rem; margin-top: 1.5rem; }
+  .corpus-summary { container-type: inline-size; padding: 0 0.3rem 2rem; width: 100%; max-width: 90rem; }
+  .corpus-summary-layout {
+    display: grid;
+    grid-template-columns: minmax(46rem, 64rem) minmax(18rem, 24rem);
+    grid-template-areas: 'table explanation';
+    align-items: start;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  .corpus-summary-copy { grid-area: table; min-width: 0; }
+  .encoding-explanation {
+    grid-area: explanation;
+    padding: 0.85rem 1rem;
+    border: 1px solid #deded8;
+    border-radius: 6px;
+    background: #fff;
+    color: #444;
+  }
+  .encoding-explanation-heading {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.55rem;
+    margin-bottom: 0.85rem;
+  }
+  .encoding-title-control {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .encoding-title-control > span {
+    width: 100%;
+    color: #999;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .encoding-title-control select {
+    max-width: 14rem;
+    padding: 0.25rem 1.7rem 0.25rem 0.4rem;
+    border: 1px solid #d0d0ca;
+    border-radius: 4px;
+    background: #fff;
+    color: #222;
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .encoding-explanation code { padding: 0.08rem 0.3rem; border-radius: 3px; background: #f0f0ec; color: #666; font-size: 0.68rem; }
+  .explanation-color-legend {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto minmax(100px, 1fr) auto;
+    align-items: center;
+    gap: 0.4rem;
+    color: #777;
+    font-size: 0.65rem;
+  }
+  .explanation-color-legend i {
+    height: 9px;
+    border-radius: 5px;
+    background: linear-gradient(to right, #440154, #3b528b, #21918c, #5ec962, #fde725);
+  }
+  .explanation-color-legend small { font-size: inherit; font-variant-numeric: tabular-nums; }
+  .encoding-explanation section + section { margin-top: 0.85rem; padding-top: 0.75rem; border-top: 1px solid #ecece7; }
+  .encoding-explanation h2 { margin: 0 0 0.28rem; color: #777; font-size: 0.68rem; letter-spacing: 0.035em; text-transform: uppercase; }
+  .encoding-explanation p { margin: 0; font-size: 0.78rem; line-height: 1.5; }
+  @container (max-width: 1100px) {
+    .corpus-summary-layout {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: 'explanation' 'table';
+    }
+  }
+  .windows-explanation {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 350px;
+    margin-top: 0.75rem;
+    object-fit: contain;
+    object-position: left top;
+  }
   .corpus-table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
   .corpus-table th {
     text-align: left;
@@ -1405,6 +1574,17 @@
     color: #999;
     padding: 0.3rem 0.5rem;
     border-bottom: 1px solid #e0e0dc;
+  }
+  .corpus-table th small {
+    display: block;
+    margin-top: 0.2rem;
+    color: #aaa;
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.25;
+    text-transform: none;
+    white-space: normal;
   }
   .corpus-table td {
     padding: 0.35rem 0.5rem;
@@ -1460,6 +1640,7 @@
     line-height: 1;
     color: #4a7cdc;
   }
+  .window-chart { color: #2ea096; }
 
   /* ── Filter pills / list (shared look with GoblinPiStatus samples tab) ── */
   .samples-filter {
