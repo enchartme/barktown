@@ -1,7 +1,9 @@
 <script>
   import { onMount }       from 'svelte';
   import { formatDuration, formatDate, downsampleWaveform, waveformNorm, ASSET_BASE, PRIVATE_API_BASE } from '$lib/utils.js';
-  import { formatAudioPanelTitle, hitMetadataById, setHitMetadata } from '$lib/hit-metadata.js';
+  import { formatAudioPanelStats, formatAudioPanelTitle, hitMetadataById, setHitMetadata } from '$lib/hit-metadata.js';
+  import { recordingComment } from '$lib/recording-comments.js';
+  import { probeEditingAccess } from '$lib/editing-access.js';
   import { SAMPLE_LABELS, sampleLabelColor } from '$lib/sample-labels.js';
   import { fly }           from 'svelte/transition';
 
@@ -12,9 +14,13 @@
    *   onclosed?: () => void;
    *   ondelete?: (entry: import('$lib/types').Entry) => void;
    *   onmovesample?: (entry: import('$lib/types').Entry, label: string, keepInDiary: boolean) => Promise<void>;
+   *   oncommentchange?: (entry: import('$lib/types').Entry, annotations: Record<string, unknown>[]) => void;
    * }}
    */
-  let { entry, onclose, onclosed, ondelete, onmovesample } = $props();
+  let { entry, onclose, onclosed, ondelete, onmovesample, oncommentchange } = $props();
+
+  /** Tailnet-only mutation controls appear after the private API responds. */
+  let editingAccess = $state(false);
 
   // ── Audio element reference ────────────────────────────────────────────────
   /** @type {HTMLAudioElement | null} */
@@ -354,8 +360,65 @@
   let reanalyzeLoading = $state(false);
   let reanalyzeError   = $state('');
 
+  // ── Whole-recording comment ──────────────────────────────────────────────
+  let commentEditing = $state(false);
+  let commentDraft = $state('');
+  let commentSaving = $state(false);
+  let commentError = $state('');
+  /** Optimistic local value while the parent replaces its entry snapshot. */
+  let savedComment = $state(/** @type {string|null} */ (null));
+
+  $effect(() => {
+    void entry.id;
+    commentEditing = false;
+    commentDraft = '';
+    commentError = '';
+    savedComment = null;
+  });
+
+  const visibleComment = $derived(savedComment ?? recordingComment(entry));
+
+  function startCommentEdit() {
+    if (!editingAccess) return;
+    commentDraft = visibleComment;
+    commentError = '';
+    commentEditing = true;
+  }
+
+  function cancelCommentEdit() {
+    if (commentSaving) return;
+    commentEditing = false;
+    commentDraft = '';
+    commentError = '';
+  }
+
+  async function saveComment() {
+    const label = commentDraft.trim();
+    if (!editingAccess || !label || commentSaving) return;
+    commentSaving = true;
+    commentError = '';
+    try {
+      const res = await fetch(`${PRIVATE_API_BASE}/api/diary/${encodeURIComponent(entry.id)}/comment`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ label }),
+        signal: AbortSignal.timeout(8000),
+      });
+      const annotations = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(annotations?.error ?? `HTTP ${res.status}`);
+      if (!Array.isArray(annotations)) throw new Error('Comment response has an invalid shape');
+      savedComment = label;
+      commentEditing = false;
+      oncommentchange?.(entry, annotations);
+    } catch (e) {
+      commentError = e?.message ?? 'Failed to save comment';
+    } finally {
+      commentSaving = false;
+    }
+  }
+
   async function handleReanalyzeClick() {
-    if (reanalyzeLoading || !entry.reanalyzable) return;
+    if (!editingAccess || reanalyzeLoading || !entry.reanalyzable) return;
     reanalyzeLoading = true;
     reanalyzeError = '';
     try {
@@ -424,8 +487,15 @@
     }
   }
   onMount(() => {
+    let disposed = false;
+    void probeEditingAccess().then((available) => {
+      if (!disposed) editingAccess = available;
+    });
     document.addEventListener('keydown', handleGlobalKeydown);
-    return () => document.removeEventListener('keydown', handleGlobalKeydown);
+    return () => {
+      disposed = true;
+      document.removeEventListener('keydown', handleGlobalKeydown);
+    };
   });
 
   // ── Helpers ───────────────────────────────────────────────────────────────
@@ -433,6 +503,7 @@
   const formattedDur   = $derived(formatDuration(entry.durationSec));
   const formattedCur   = $derived(formatDuration(currentTime));
   const displayLabel   = $derived(formatAudioPanelTitle(entry, hitMetadata));
+  const analysisSummary = $derived(formatAudioPanelStats(hitMetadata, entry.durationSec ?? 0));
   const audioSrc       = $derived(`${ASSET_BASE}/${entry.audioPath}`);
 </script>
 
@@ -450,7 +521,7 @@
 <div
   class="player-panel"
   role="dialog"
-  aria-label="Audio player: {displayLabel}"
+  aria-label="Audio player: {visibleComment || displayLabel}"
   aria-modal="true"
   transition:fly={{ y: 200, duration: 220 }}
   onoutroend={onclosed}
@@ -462,30 +533,31 @@
       <span class="panel-datetime">{entry.date} · {entry.time}</span>
       <span class="panel-dur">{formattedDur}</span>
     </div>
-    <h2 class="panel-title">{displayLabel}</h2>
-    {#if deleteConfirm}
+    {#if editingAccess && deleteConfirm}
       <span class="delete-confirm">
         <span class="delete-confirm-text">Delete?</span>
         <button class="delete-confirm-yes" onclick={handleDeleteConfirm} aria-label="Confirm delete">Yes</button>
         <button class="delete-confirm-no"  onclick={handleDeleteCancel} aria-label="Cancel delete">No</button>
       </span>
     {:else}
-      {#if onmovesample && !entry.sampleId}
+      {#if editingAccess && onmovesample && !entry.sampleId}
         <button class="false-positive-btn" onclick={handleFalsePositiveClick} aria-label="Mark as false positive" title="Move this false positive to training samples">👎</button>
       {/if}
-      <button
-        class="reanalyze-btn"
-        onclick={handleReanalyzeClick}
-        disabled={reanalyzeLoading || !entry.reanalyzable}
-        aria-label="Re-analyze recording"
-        title={entry.reanalyzable
-          ? 'Re-run deterministic bark-window classification against the source WAV'
-          : 'Source WAV is not available for re-analysis'}
-      >{reanalyzeLoading ? '⏳' : '🔁'}</button>
+      {#if editingAccess}
+        <button
+          class="reanalyze-btn"
+          onclick={handleReanalyzeClick}
+          disabled={reanalyzeLoading || !entry.reanalyzable}
+          aria-label="Re-analyze recording"
+          title={entry.reanalyzable
+            ? 'Re-run deterministic bark-window classification against the source WAV'
+            : 'Source WAV is not available for re-analysis'}
+        >{reanalyzeLoading ? '⏳' : '🔁'}</button>
+      {/if}
       {#if entry.sampleId}
         <a class="cross-link-btn" href="/training#{entry.sampleId}" title="View linked training sample">🔬</a>
       {/if}
-      {#if ondelete}
+      {#if editingAccess && ondelete}
         <button class="delete-btn" onclick={handleDeleteClick} aria-label="Delete entry" title="Delete this recording">🗑</button>
       {/if}
     {/if}
@@ -498,6 +570,49 @@
     >{downloadLoading ? '⏳' : '📥'}</button>
     <button class="close-btn" onclick={handleClose} aria-label="Close player">✕</button>
   </div>
+
+  {#if editingAccess && commentEditing}
+    <form class="comment-editor" onsubmit={(event) => { event.preventDefault(); saveComment(); }}>
+      <input
+        class="comment-input"
+        bind:value={commentDraft}
+        aria-label="Recording comment"
+        placeholder="Add a comment…"
+        disabled={commentSaving}
+        onkeydown={(event) => {
+          event.stopPropagation();
+          if (event.key === 'Escape') {
+            event.preventDefault();
+            cancelCommentEdit();
+          }
+        }}
+      />
+      <button class="comment-save" type="submit" disabled={!commentDraft.trim() || commentSaving}>
+        {commentSaving ? 'Saving…' : 'Save'}
+      </button>
+      <button class="comment-cancel" type="button" onclick={cancelCommentEdit} disabled={commentSaving}>Cancel</button>
+    </form>
+  {:else if editingAccess}
+    <button
+      class="panel-comment"
+      class:empty={!visibleComment}
+      onclick={startCommentEdit}
+      title={visibleComment ? 'Edit comment' : 'Add comment'}
+    >
+      <span>{visibleComment || 'Add comment'}</span>
+      <span class="comment-edit-icon" aria-hidden="true">✎</span>
+    </button>
+  {:else if visibleComment}
+    <p class="panel-comment-readonly">{visibleComment}</p>
+  {/if}
+
+  {#if analysisSummary}
+    <p class="panel-analysis">{analysisSummary}</p>
+  {/if}
+
+  {#if commentError}
+    <p class="comment-error" role="alert">{commentError}</p>
+  {/if}
 
   {#if reanalyzeError}
     <p class="reanalyze-error">{reanalyzeError}</p>
@@ -812,17 +927,72 @@
     color: #999;
   }
 
-  .panel-title {
-    position: absolute;
-    left: 0;
-    right: 5.5rem;
-    top: 1.5rem;
+  .panel-comment {
+    width: fit-content;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    border: 0;
+    background: transparent;
+    color: #1a1a1a;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: left;
+  }
+  .panel-comment:hover { color: #2255bb; }
+  .panel-comment.empty { color: #888; font-weight: 500; }
+  .comment-edit-icon { color: #999; font-size: 0.8rem; }
+  .panel-comment-readonly {
+    width: fit-content;
+    max-width: 100%;
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  }
+
+  .comment-editor {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .comment-input {
+    min-width: 0;
+    flex: 1;
+    border: 1px solid #b9c7df;
+    border-radius: 5px;
+    padding: 0.42rem 0.55rem;
+    font: inherit;
+    font-size: 0.9rem;
+  }
+  .comment-input:focus { outline: 2px solid #4a7cdc; outline-offset: 1px; }
+  .comment-save,
+  .comment-cancel {
+    border: 1px solid #c8c8c3;
+    border-radius: 5px;
+    padding: 0.38rem 0.65rem;
+    background: #fff;
+    color: #444;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.78rem;
+  }
+  .comment-save { border-color: #2255bb; background: #2255bb; color: #fff; }
+  .comment-save:disabled,
+  .comment-cancel:disabled { cursor: default; opacity: 0.5; }
+  .panel-analysis {
+    margin: -0.45rem 0 0;
+    color: #888;
+    font-size: 0.72rem;
+  }
+  .comment-error {
+    margin: -0.4rem 0 0;
+    color: #c0392b;
+    font-size: 0.78rem;
   }
 
   .close-btn {
@@ -999,7 +1169,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
-    margin-top: 1.5rem; /* accommodate absolutely-placed title */
   }
 
   .player-waveform-wrap {

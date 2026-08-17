@@ -15,6 +15,10 @@
     startOfIsoWeek,
   } from '$lib/utils.js';
   import { hitMetadataById, loadHitMetadata } from '$lib/hit-metadata.js';
+  import {
+    hydrateRecordingCommentAnnotations,
+    withRecordingCommentAnnotations,
+  } from '$lib/recording-comments.js';
   import { summarizeEntries } from '$lib/report-summary.js';
 
   // Svelte 5 runes
@@ -125,7 +129,8 @@
     if (endDate) url.searchParams.set('endDate', endDate);
     const res = await fetch(url);
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-    return res.json();
+    const nextEntries = await res.json();
+    return hydrateRecordingCommentAnnotations(nextEntries, PUBLIC_API_BASE);
   }
 
   async function fetchLatestDiaryDate() {
@@ -183,6 +188,14 @@
   /** Called by AudioPlayerPanel after its exit transition finishes. */
   function handlePanelClosed() {
     panelEntry = null;  // now safe to clear – component is gone from DOM
+  }
+
+  /** Refresh the diary, report flags and open popup after a comment save. */
+  function handleCommentChange(entry, annotations) {
+    const updated = withRecordingCommentAnnotations(entry, annotations);
+    entries = entries.map(item => item.id === entry.id ? updated : item);
+    if (selectedEntry?.id === entry.id) selectedEntry = updated;
+    if (panelEntry?.id === entry.id) panelEntry = updated;
   }
 
   /**
@@ -362,6 +375,7 @@
     onclosed={handlePanelClosed}
     ondelete={deleteEntry}
     onmovesample={moveEntryToSamples}
+    oncommentchange={handleCommentChange}
   />
 {/if}
 

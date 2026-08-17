@@ -4,6 +4,7 @@ import { get } from 'svelte/store';
 
 import {
   formatAudioPanelTitle,
+  formatAudioPanelStats,
   formatAutoDetectionLabel,
   formatDiaryEntryTitle,
   formatHitMetadataStats,
@@ -104,6 +105,17 @@ test('audio panel title expands sample hit stats for display', () => {
       loudnesses: [2.1, 2.4, 2.8, 2.9, 3.0, 3.1, 3.2, 3.4, 3.6],
     }),
     'SAMPLE bark: Barks: 9, Density: 18 bpm, Loudness Peak: 3.6x, Median: 3.0x',
+  );
+});
+
+test('audio panel stats can be shown without treating a filename descriptor as a comment', () => {
+  assert.equal(
+    formatAudioPanelStats({
+      timestamps: [1, 3],
+      confidences: [0.91, 0.99],
+      loudnesses: [1.5, 2.5],
+    }, 10),
+    'Barks: 2, Density: 12 bpm, Loudness Peak: 2.5x, Median: 2.0x',
   );
 });
 

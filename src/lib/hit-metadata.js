@@ -123,10 +123,16 @@ export function formatAudioPanelTitle(entry, metadata) {
   const descriptor = diaryEntryDescriptor(entry);
   if (!metadata) return descriptor;
 
-  const { hitCount, maximumLoudness, medianLoudness, density } =
-    hitMetadataStats(metadata, entry.durationSec ?? 0);
-  const stats = `Barks: ${hitCount}, Density: ${density} bpm, Loudness Peak: ${maximumLoudness.toFixed(1)}x, Median: ${medianLoudness.toFixed(1)}x`;
+  const stats = formatAudioPanelStats(metadata, entry.durationSec ?? 0);
   return `${descriptor}${descriptor ? ': ' : ''}${stats}`;
+}
+
+/** Expanded playback statistics without a filename/sample descriptor. */
+export function formatAudioPanelStats(metadata, durationSec) {
+  if (!metadata) return '';
+  const { hitCount, maximumLoudness, medianLoudness, density } =
+    hitMetadataStats(metadata, durationSec);
+  return `Barks: ${hitCount}, Density: ${density} bpm, Loudness Peak: ${maximumLoudness.toFixed(1)}x, Median: ${medianLoudness.toFixed(1)}x`;
 }
 
 /**

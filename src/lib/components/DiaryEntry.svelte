@@ -1,5 +1,6 @@
 <script>
   import { formatDiaryEntryTitle, hitMetadataById } from '$lib/hit-metadata.js';
+  import { recordingComment } from '$lib/recording-comments.js';
 
   /**
    * @type {{
@@ -50,12 +51,7 @@
 
   const baseColor = $derived(labelBase(entry.label));
 
-  // Strip leading "still " (case-insensitive) – redundant once pins are seen in sequence.
-  const displayLabel = $derived(entry.label.replace(/^still\s+/i, '').replace('barking', 'bark').replace('yapping', 'yap'));
-
-  // "-A- ..." still controls the compact label treatment, independently of
-  // whether analysis metadata exists for the clip.
-  const isAutoDetected = $derived(/^-A-/.test((entry.label ?? '').trim()));
+  const displayComment = $derived(recordingComment(entry));
 
   // Metadata presence controls the radial hit-map. It is populated
   // asynchronously by the page-level bulk loader; resizes only redraw the
@@ -175,13 +171,13 @@
   class:flag--audio={entry.kind === 'audio'}
   role="button"
   tabindex="0"
-  aria-label="{entry.kind === 'audio' ? 'Audio' : 'Note'}: {titleLabel} at {entry.time}"
+  aria-label="{entry.kind === 'audio' ? 'Audio' : 'Note'} at {entry.time}{displayComment ? `: ${displayComment}` : ''}"
   onclick={handleClick}
   onkeydown={handleKeydown}
   onmouseenter={() => (knobHovered = true)}
   onmouseleave={() => (knobHovered = false)}
   style="height: {height}px; --c-base: {baseColor}; z-index: {displayZIndex};"
-  title="{entry.time}  {titleLabel}  ({entry.kind})"
+  title="{entry.time}{displayComment ? `  ${displayComment}` : ''}{titleLabel ? `  ${titleLabel}` : ''}  ({entry.kind})"
 >
   {#if !hitMetadata}
     <span class="flag-stem"></span>
@@ -196,12 +192,9 @@
     ></canvas>
   {/if}
   <span class="flag-tag">
-    {#if isAutoDetected}
-      <span class="flag-time">{entry.time}</span>
-    {:else if displayLabel}
-      <span class="flag-label-text">{displayLabel}</span>
-    {:else}
-      <span class="flag-time">{entry.time}</span>
+    <span class="flag-time">{entry.time}</span>
+    {#if displayComment}
+      <span class="flag-label-text">{displayComment}</span>
     {/if}
   </span>
   {#if entry.kind === 'audio'}

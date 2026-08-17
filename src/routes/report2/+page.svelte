@@ -4,7 +4,12 @@
   import GoblinPiStatus from '$lib/components/GoblinPiStatus.svelte';
   import ReportBarcode from '$lib/components/ReportBarcode.svelte';
   import { hitMetadataById, loadHitMetadata } from '$lib/hit-metadata.js';
-  import { groupReportNoteLabels, reportSentenceNeedsPeriod } from '$lib/report-annotations.js';
+  import { reportSentenceNeedsPeriod } from '$lib/report-annotations.js';
+  import {
+    hydrateRecordingCommentAnnotations,
+    recordingCommentLabels,
+    withRecordingCommentAnnotations,
+  } from '$lib/recording-comments.js';
   import { formatPrintReportRange, reportBounds } from '$lib/report-range.js';
   import {
     formatDisturbedTime,
@@ -14,6 +19,7 @@
   import { DIARY_NIGHT_COLOR, isNighttimeRecording } from '$lib/sun-time.js';
   import {
     addDays,
+    PRIVATE_API_BASE,
     PUBLIC_API_BASE,
     formatDate,
     groupByDateRange,
@@ -25,9 +31,6 @@
 
   /** @type {import('$lib/types').Entry[]} */
   let entries = $state([]);
-  /** Whole-recording note labels keyed by the linked training sample ID. */
-  /** @type {Map<string, string[]>} */
-  let noteLabelsBySampleId = $state(new Map());
   let loading = $state(true);
   /** @type {string | null} */
   let loadError = $state(null);
@@ -124,7 +127,8 @@
     url.searchParams.set('endDate', bounds.endDate);
     const response = await fetch(url);
     if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-    return response.json();
+    const nextEntries = await response.json();
+    return hydrateRecordingCommentAnnotations(nextEntries, PUBLIC_API_BASE);
   }
 
   async function fetchLatestDiaryDate() {
@@ -134,14 +138,6 @@
     return isIsoDate(body?.date) ? body.date : null;
   }
 
-  async function fetchAnnotations() {
-    const response = await fetch(`${PUBLIC_API_BASE}/api/annotations`);
-    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-    const body = await response.json();
-    if (!Array.isArray(body)) throw new Error('Annotations response has an invalid shape');
-    return body;
-  }
-
   async function loadReport(weekStart) {
     const bounds = reportBounds(weekStart, rangeWeeks);
     const requestId = ++reportRequestId;
@@ -149,18 +145,9 @@
     loadError = null;
 
     try {
-      const [nextEntries, annotations] = await Promise.all([
-        fetchDiary(bounds),
-        fetchAnnotations(),
-      ]);
+      const nextEntries = await fetchDiary(bounds);
       if (requestId !== reportRequestId) return;
       entries = nextEntries;
-      const displayedSampleIds = new Set(
-        nextEntries
-          .filter((entry) => entry.kind === 'audio' && entry.sampleId)
-          .map((entry) => entry.sampleId),
-      );
-      noteLabelsBySampleId = groupReportNoteLabels(annotations, displayedSampleIds);
       void loadHitMetadata(bounds).catch((error) => {
         console.error('Failed to load hit metadata:', error);
       });
@@ -243,6 +230,54 @@
 
   function handlePanelClosed() {
     panelEntry = null;
+  }
+
+  function handleCommentChange(entry, annotations) {
+    const updated = withRecordingCommentAnnotations(entry, annotations);
+    entries = entries.map(item => item.id === entry.id ? updated : item);
+    if (panelEntry?.id === entry.id) panelEntry = updated;
+  }
+
+  async function deleteEntry(entry) {
+    try {
+      const response = await fetch(
+        `${PRIVATE_API_BASE}/api/diary/${encodeURIComponent(entry.id)}`,
+        { method: 'DELETE' },
+      );
+      if (!response.ok && response.status !== 204) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Failed to delete entry:', error);
+    }
+    entries = entries.filter((item) => item.id !== entry.id);
+    closePanel();
+  }
+
+  async function moveEntryToSamples(entry, label, keepInDiary = false) {
+    const response = await fetch(
+      `${PRIVATE_API_BASE}/api/diary/${encodeURIComponent(entry.id)}/move-to-samples`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ label, keepInDiary }),
+      },
+    );
+    if (!response.ok) {
+      let message = `${response.status} ${response.statusText}`;
+      try {
+        const body = await response.json();
+        if (body?.error) message = body.error;
+      } catch {
+        // Keep the HTTP status text when the response is not JSON.
+      }
+      throw new Error(message);
+    }
+
+    if (!keepInDiary) {
+      entries = entries.filter((item) => item.id !== entry.id);
+      closePanel();
+    }
   }
 
   function countLabel(count, singular, plural = `${singular}s`) {
@@ -401,9 +436,7 @@
             {#if day.entries.length}
               <p class="recordings">
                 {#each day.entries as entry (entry.id)}
-                  {@const noteLabels = entry.sampleId
-                    ? (noteLabelsBySampleId.get(entry.sampleId) ?? [])
-                    : []}
+                  {@const noteLabels = recordingCommentLabels(entry)}
                   {@const needsPeriod = reportSentenceNeedsPeriod(noteLabels)}
                   <span
                     class="recording-sentence"
@@ -455,6 +488,9 @@
       entry={panelEntry}
       onclose={closePanel}
       onclosed={handlePanelClosed}
+      ondelete={deleteEntry}
+      onmovesample={moveEntryToSamples}
+      oncommentchange={handleCommentChange}
     />
   </div>
 {/if}
