@@ -15,7 +15,7 @@
         <span>Recent bark report, 1 week at a time</span>
       </a>
       <a href="/diary">
-        <strong>Explore the diary</strong>
+        <strong>Explore the full diary</strong>
         <span>The complete bark disturbance timeline starting from 2021</span>
       </a>
       <a href="/training">

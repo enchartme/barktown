@@ -136,6 +136,51 @@ export function formatAudioPanelStats(metadata, durationSec) {
 }
 
 /**
+ * Format the small, stable subset of analysis provenance shown in the audio
+ * panel. Values are kept verbatim so the line can be used for diagnostics.
+ *
+ * @param {HitMetadata | null | undefined} metadata
+ */
+export function formatAudioPanelAnalysisParameters(metadata) {
+  const settings = metadata?.analysisSettings;
+  if (!settings || typeof settings !== 'object') return '';
+
+  const classifier = settings.classifier;
+  const monitor = settings.monitor;
+  const parameters = [
+    ['Trigger', metadata.analysisTrigger],
+    ['Trained', formatLocalAnalysisTimestamp(classifier?.trained_at)],
+    ['Threshold', monitor?.candidate_threshold],
+    ['Refractory', formatSeconds(monitor?.hit_refractory_s)],
+    ['Window', formatSeconds(monitor?.inference_window_s)],
+    ['Step', formatSeconds(monitor?.score_interval_s)],
+  ];
+
+  const details = parameters
+    .filter(([, value]) => value !== null && value !== undefined && value !== '')
+    .map(([name, value]) => `${name}: ${String(value)}`)
+    .join(' · ');
+  return details ? `Model info · ${details}` : '';
+}
+
+function formatSeconds(value) {
+  return value === null || value === undefined || value === '' ? value : `${value}s`;
+}
+
+function formatLocalAnalysisTimestamp(value) {
+  if (value === null || value === undefined || value === '') return value;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+/**
  * Build the compact auto-detection label from the current hit-metadata row.
  * Non-auto labels and auto labels whose metadata has not loaded are returned
  * unchanged.

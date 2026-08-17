@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { get } from 'svelte/store';
 
 import {
+  formatAudioPanelAnalysisParameters,
   formatAudioPanelTitle,
   formatAudioPanelStats,
   formatAutoDetectionLabel,
@@ -117,6 +118,50 @@ test('audio panel stats can be shown without treating a filename descriptor as a
     }, 10),
     'Barks: 2, Density: 12 bpm, Loudness Peak: 2.5x, Median: 2.0x',
   );
+});
+
+test('audio panel shows readable analysis parameters in display order', () => {
+  const trainedAt = '2026-08-17T08:54:17Z';
+  const localTrainedAt = new Date(trainedAt).toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+  assert.equal(
+    formatAudioPanelAnalysisParameters({
+      analysisTrigger: 'manual',
+      analysisSettings: {
+        classifier: {
+          trained_at: trainedAt,
+          model_filename: 'not-shown.tflite',
+        },
+        monitor: {
+          candidate_threshold: 0.92,
+          hit_refractory_s: 1.5,
+          inference_window_s: 1.5,
+          score_interval_s: 0.25,
+          confirmation_hits: 3,
+        },
+      },
+    }),
+    `Model info · Trigger: manual · Trained: ${localTrainedAt} · Threshold: 0.92 · Refractory: 1.5s · Window: 1.5s · Step: 0.25s`,
+  );
+});
+
+test('audio panel analysis parameters omit missing values and retain zero', () => {
+  assert.equal(
+    formatAudioPanelAnalysisParameters({
+      analysisSettings: {
+        classifier: { trained_at: null },
+        monitor: { candidate_threshold: 0, hit_refractory_s: undefined },
+      },
+    }),
+    'Model info · Threshold: 0',
+  );
+  assert.equal(formatAudioPanelAnalysisParameters(null), '');
+  assert.equal(formatAudioPanelAnalysisParameters({ analysisSettings: {} }), '');
 });
 
 test('audio panel title expands auto-detected hit stats for display', () => {

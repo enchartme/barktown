@@ -1,7 +1,7 @@
 <script>
   import { onMount }       from 'svelte';
   import { formatDuration, formatDate, downsampleWaveform, waveformNorm, ASSET_BASE, PRIVATE_API_BASE } from '$lib/utils.js';
-  import { formatAudioPanelStats, formatAudioPanelTitle, hitMetadataById, setHitMetadata } from '$lib/hit-metadata.js';
+  import { formatAudioPanelAnalysisParameters, formatAudioPanelStats, formatAudioPanelTitle, hitMetadataById, setHitMetadata } from '$lib/hit-metadata.js';
   import { recordingComment } from '$lib/recording-comments.js';
   import { probeEditingAccess } from '$lib/editing-access.js';
   import { SAMPLE_LABELS, sampleLabelColor } from '$lib/sample-labels.js';
@@ -504,6 +504,7 @@
   const formattedCur   = $derived(formatDuration(currentTime));
   const displayLabel   = $derived(formatAudioPanelTitle(entry, hitMetadata));
   const analysisSummary = $derived(formatAudioPanelStats(hitMetadata, entry.durationSec ?? 0));
+  const analysisParameters = $derived(formatAudioPanelAnalysisParameters(hitMetadata));
   const audioSrc       = $derived(`${ASSET_BASE}/${entry.audioPath}`);
 </script>
 
@@ -748,11 +749,18 @@
       </div>
     {/if}
 
-    <!-- Time display -->
-    <div class="time-display">
-      <span>{formattedCur}</span>
-      <span class="time-sep">/</span>
-      <span>{formattedDur}</span>
+    <div class="line-under-waveform">
+      <!-- Time display -->
+      <div class="time-display">
+        <span>{formattedCur}</span>
+        <span class="time-sep">/</span>
+        <span>{formattedDur}</span>
+      </div>
+
+      
+      {#if analysisParameters}
+        <div class="analysis-parameters">{analysisParameters}</div>
+      {/if}
     </div>
   </div>
 
@@ -1327,5 +1335,18 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
+  }
+
+  .line-under-waveform {
+    display: flex;
+    justify-content:space-between;
+    align-items: end;
+  }
+  .analysis-parameters {
+    margin: 0 0 0;
+    color: #888;
+    font-size: 0.65rem;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
   }
 </style>
