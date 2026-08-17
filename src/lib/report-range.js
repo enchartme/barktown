@@ -1,7 +1,7 @@
 import { addDays } from './utils.js';
 
 /**
- * Return the inclusive date bounds for a Report2 window ending with the
+ * Return the inclusive date bounds for a report window ending with the
  * selected ISO week. Unsupported values fall back to the one-week default.
  *
  * @param {string} weekStart Monday in YYYY-MM-DD form

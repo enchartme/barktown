@@ -1,30 +1,30 @@
 <svelte:head>
   <title>Barktown</title>
-  <meta name="description" content="Explore Barktown's diary, reports and research method." />
+  <meta name="description" content="Explore Barktown's diary, report, training data and research method." />
 </svelte:head>
 
 <main class="intro">
   <section class="intro-card">
     <p class="eyebrow">🐕 Barktown</p>
-    <h1>Welcome to Barktown</h1>
-    <p class="lede">Choose a view to get started.</p>
+    <h1>Project «Barktown»</h1>
+    <p class="lede">Bark disturbance diary</p>
 
     <nav aria-label="Barktown views">
-      <a href="/diary">
-        <strong>Diary</strong>
-        <span>Browse the complete recording timeline.</span>
-      </a>
       <a href="/report">
-        <strong>Report</strong>
-        <span>Review recordings two weeks at a time.</span>
+        <strong>See the report</strong>
+        <span>Recent bark report, 1 week at a time</span>
       </a>
-      <a href="/report2">
-        <strong>Report2</strong>
-        <span>Read two weeks of recordings as flowing text.</span>
+      <a href="/diary">
+        <strong>Explore the diary</strong>
+        <span>The complete bark disturbance timeline starting from 2021</span>
+      </a>
+      <a href="/training">
+        <strong>See training data</strong>
+        <span>Audit how the model was trained to detect barks</span>
       </a>
       <a href="/method">
-        <strong>Method</strong>
-        <span>See how sounds become reviewable evidence.</span>
+        <strong>About the project</strong>
+        <span>Technology and science of bark detection</span>
       </a>
     </nav>
   </section>

@@ -12,7 +12,7 @@ const sunEntry = {
   sunset: '2026-08-14T18:30:00',
 };
 
-test('Report2 identifies recordings before sunrise and after sunset', () => {
+test('Report identifies recordings before sunrise and after sunset', () => {
   assert.equal(isNighttimeRecording('06:29', sunEntry), true);
   assert.equal(isNighttimeRecording('06:30', sunEntry), false);
   assert.equal(isNighttimeRecording('12:00', sunEntry), false);
@@ -26,6 +26,6 @@ test('missing or invalid sun data leaves recordings unmarked', () => {
   assert.equal(sunTimeToLocalMinutes('invalid'), null);
 });
 
-test('Report2 and the diary share the same night-blue color', () => {
+test('Report and the diary share the same night-blue color', () => {
   assert.equal(DIARY_NIGHT_COLOR, '#dce8f8');
 });

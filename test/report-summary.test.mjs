@@ -32,7 +32,7 @@ test('disturbed time truncates seconds and uses hour/minute units', () => {
   assert.equal(formatDisturbedTime(0), '0 min');
 });
 
-test('Report2 totals sum the three additive day metrics', () => {
+test('Report totals sum the three additive day metrics', () => {
   assert.deepEqual(sumReportSummaries([
     { disturbances: 2, totalDurationSec: 90, barks: 4, worstDensityBpm: 5 },
     { disturbances: 3, totalDurationSec: 150, barks: 7, worstDensityBpm: 20 },

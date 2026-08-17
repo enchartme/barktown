@@ -6,7 +6,7 @@ import {
   reportSentenceNeedsPeriod,
 } from '../src/lib/report-annotations.js';
 
-test('Report2 keeps only whole-recording note annotations for displayed samples', () => {
+test('Report keeps only whole-recording note annotations for displayed samples', () => {
   const rows = [
     { sampleId: 'sample-a', source: 'note', startSec: 0, endSec: 0, label: 'First note' },
     { sampleId: 'sample-a', type: 'note', start_sec: 0, end_sec: 0, label: 'Second note!' },
@@ -22,7 +22,7 @@ test('Report2 keeps only whole-recording note annotations for displayed samples'
   );
 });
 
-test('Report2 appends a period only when the last note has no sentence punctuation', () => {
+test('Report appends a period only when the last note has no sentence punctuation', () => {
   assert.equal(reportSentenceNeedsPeriod([]), true);
   assert.equal(reportSentenceNeedsPeriod(['Needs punctuation']), true);
   assert.equal(reportSentenceNeedsPeriod(['Already done.']), false);

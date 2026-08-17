@@ -32,7 +32,7 @@ export function summarizeEntries(entries, metadataById = new Map()) {
 }
 
 /**
- * Sum the three additive metrics shown in Report2 day headings.
+ * Sum the three additive metrics shown in report day headings.
  *
  * @param {Array<{disturbances?: number, totalDurationSec?: number, barks?: number}>} summaries
  */

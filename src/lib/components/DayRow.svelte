@@ -2,7 +2,6 @@
   import { assignLanes, parseTimeToMinutes, formatDate } from '$lib/utils.js';
   import { DIARY_DAY_COLOR, DIARY_NIGHT_COLOR, sunTimeToLocalMinutes } from '$lib/sun-time.js';
   import DiaryEntry from './DiaryEntry.svelte';
-  import ReportMetrics from './ReportMetrics.svelte';
 
   /**
    * @type {{
@@ -12,10 +11,9 @@
    *   endHour: number;
    *   selectedId: string | null;
    *   onselect: (entry: import('$lib/types').Entry) => void;
-   *   reportSummary?: {disturbances: number, totalDurationSec: number, barks: number, worstDensityBpm: number} | null;
    * }}
    */
-  let { date, entries, startHour, endHour, selectedId, onselect, sunEntry = null, reportSummary = null } = $props();
+  let { date, entries, startHour, endHour, selectedId, onselect, sunEntry = null } = $props();
 
   // ── Layout constants ───────────────────────────────────────────────────────
   const RULER_HEIGHT     = 22;  // px – the hour-tick ruler row
@@ -220,11 +218,6 @@
     </div>
   </div>
 
-  {#if reportSummary}
-    <aside class="day-summary">
-      <ReportMetrics summary={reportSummary} compact={true} label={`Summary for ${date}`} />
-    </aside>
-  {/if}
 </div>
 
 <style>
@@ -325,15 +318,6 @@
     position: absolute;
   }
 
-  .day-summary {
-    width: 210px;
-    flex-shrink: 0;
-    align-self: stretch;
-    padding: 0.25rem 0;
-    border-left: 1px solid #ccc;
-    background: #fafaf8;
-  }
-
   /* ── Mobile ── */
   @media (max-width: 520px) {
     .date-label { width: 56px; padding: 6px 4px 6px 6px; }
@@ -341,6 +325,5 @@
     .date-daym        { display: block; font-size: 0.7rem; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .date-year-mobile { display: block; font-size: 0.65rem; color: #999; }
     .tick-mm          { display: none; }
-    .day-summary { width: 145px; }
   }
 </style>

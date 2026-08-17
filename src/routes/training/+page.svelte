@@ -12,6 +12,7 @@
   } from '$lib/utils.js';
   import { SAMPLE_LABELS as LABELS, SAMPLE_LABEL_GUIDELINES as LABEL_GUIDELINES, sampleLabelColor, sampleLabelShortcut, LABEL_BY_SHORTCUT } from '$lib/sample-labels.js';
   import { TRAINING_COLOR_ENCODINGS, TRAINING_COLOR_GUIDES } from '$lib/training-color-guides.js';
+  import GoblinPiStatus from '$lib/components/GoblinPiStatus.svelte';
   import TrainingProjectionScatterplot from '$lib/components/TrainingProjectionScatterplot.svelte';
 
   // Sample and annotation reads use the anonymous public API. Mutations still
@@ -974,11 +975,14 @@
 
 <div class="app">
   <header class="site-header">
-    <span class="site-brand">🐕 Barktown</span>
-    <a class="back-link" href="/diary">‹ Back to the diary</a>
-    <a class="back-link" href="/report">Report</a>
-    <a class="back-link" href="/report2">Report2</a>
-    <a class="back-link" href="/method">Method</a>
+    <a class="brand" href="/">🐕 Barktown</a>
+    <nav aria-label="Barktown views">
+      <a href="/diary">Diary</a>
+      <a href="/report">Report</a>
+      <a class="current" aria-current="page" href="/training">Training</a>
+      <a href="/method">Method</a>
+    </nav>
+    <GoblinPiStatus />
   </header>
 
   <div class="training-body">
@@ -1424,23 +1428,44 @@
   .site-header {
     position: sticky;
     top: 0;
-    z-index: 10;
-    background: #fff;
-    border-bottom: 1px solid #e0e0dc;
+    z-index: 1000;
+    min-height: 48px;
     padding: 0.6rem 1rem;
     display: flex;
     align-items: center;
     gap: 1rem;
+    border-bottom: 1px solid #e0e0dc;
+    background: #fff;
   }
-  .site-brand { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; }
-  .back-link {
-    font-size: 0.78rem;
-    color: #555;
+
+  .brand {
+    color: inherit;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
     text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .site-header nav {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .site-header nav a {
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
+    color: #555;
+    font-size: 0.78rem;
+    text-decoration: none;
+    white-space: nowrap;
   }
-  .back-link:hover { background: #f0f0ec; color: #1a1a1a; }
+
+  .site-header nav a:hover,
+  .site-header nav a.current { background: #f0f0ec; color: #1a1a1a; }
+  .site-header nav a.current { font-weight: 650; }
 
   /* ── Layout ── */
   .training-body {
@@ -1477,6 +1502,8 @@
   }
 
   @media (max-width: 760px) {
+    .site-header { align-items: flex-start; flex-wrap: wrap; gap: 0.45rem 0.8rem; }
+    .site-header nav { width: 100%; order: 3; overflow-x: auto; margin-left: 0; }
     .training-body { flex-direction: column; }
     .samples-pane { width: 100%; position: static; height: 40vh; border-right: none; border-bottom: 1px solid #e0e0dc; }
   }

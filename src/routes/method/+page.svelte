@@ -128,7 +128,6 @@
     <nav aria-label="Barktown views">
       <a href="/diary">Diary</a>
       <a href="/report">Report</a>
-      <a href="/report2">Report2</a>
       <a href="/training">Training</a>
       <a class="current" aria-current="page" href="/method">Method</a>
     </nav>

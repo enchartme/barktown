@@ -11,7 +11,7 @@ function annotationType(annotation) {
 /**
  * Collect whole-recording note labels by sample ID. Only annotations that are
  * notes at the exact 0..0 range are retained. When provided, `sampleIds`
- * limits the result to samples linked to entries in the displayed report.
+ * Limits the result to samples linked to entries in the displayed report.
  *
  * @param {Record<string, unknown>[]} annotations
  * @param {Set<string> | null} [sampleIds]
@@ -44,7 +44,7 @@ export function groupReportNoteLabels(annotations, sampleIds = null) {
 }
 
 /**
- * A Report2 recording sentence supplies its own final period unless its last
+ * A report recording sentence supplies its own final period unless its last
  * displayed note already ends in sentence punctuation.
  *
  * @param {string[]} noteLabels

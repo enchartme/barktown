@@ -1,23 +1,43 @@
-// Server-side load — runs during prerender, bypassing browser CORS enforcement.
-// Diary entries remain live; only optional sunrise/sunset data is prerendered.
+// Load optional sunrise/sunset data and public recording context for reports.
 
-import { ASSET_BASE } from '$lib/utils.js';
+import { ASSET_BASE, PUBLIC_API_BASE } from '$lib/utils.js';
 
-export const prerender = true;
+// The print query parameter controls the initial server-rendered layout.
+export const prerender = false;
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ fetch }) {
+export async function load({ fetch, url }) {
   /** @type {Record<string, { date: string, sunrise: string|null, sunset: string|null }>} */
-  let sunByDate = {};
+  const sunByDate = {};
+  let recordingContext = {
+    album: '',
+    location: '',
+    direction: '',
+    copyright: '',
+  };
+
   try {
-    const sunRes = await fetch(`${ASSET_BASE}/sun.json`);
-    if (sunRes.ok) {
-      const sunArr = await sunRes.json();
-      for (const entry of sunArr) {
+    const response = await fetch(`${ASSET_BASE}/sun.json`);
+    if (response.ok) {
+      const entries = await response.json();
+      for (const entry of entries) {
         if (entry?.date) sunByDate[entry.date] = entry;
       }
     }
-  } catch { /* sun data is optional */ }
+  } catch {
+    // Sun data is an optional visual enhancement.
+  }
 
-  return { sunByDate };
+  try {
+    const response = await fetch(`${PUBLIC_API_BASE}/api/recording-context`);
+    if (response.ok) recordingContext = await response.json();
+  } catch {
+    // Keep the report available if its optional descriptive context is offline.
+  }
+
+  return {
+    sunByDate,
+    initialPrintMode: url.searchParams.get('print') === '1',
+    recordingContext,
+  };
 }

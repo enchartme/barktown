@@ -4,25 +4,24 @@
   import AudioPlayerPanel from '$lib/components/AudioPlayerPanel.svelte';
   import OverviewPanel    from '$lib/components/OverviewPanel.svelte';
   import GoblinPiStatus   from '$lib/components/GoblinPiStatus.svelte';
-  import ReportMetrics    from '$lib/components/ReportMetrics.svelte';
   import {
-    addDays,
-    groupByDate,
-    groupByDateRange,
     isIsoDate,
     PRIVATE_API_BASE,
     PUBLIC_API_BASE,
-    startOfIsoWeek,
   } from '$lib/utils.js';
-  import { hitMetadataById, loadHitMetadata } from '$lib/hit-metadata.js';
+  import { loadHitMetadata } from '$lib/hit-metadata.js';
+  import {
+    diaryEntriesForDays,
+    recentDiaryBounds,
+    selectDiaryDays,
+  } from '$lib/diary-range.js';
   import {
     hydrateRecordingCommentAnnotations,
     withRecordingCommentAnnotations,
   } from '$lib/recording-comments.js';
-  import { summarizeEntries } from '$lib/report-summary.js';
 
   // Svelte 5 runes
-  let { data, report = false } = $props();
+  let { data } = $props();
 
   /** Entries fetched live from the diary API on every page load. */
   /** @type {import('$lib/types').Entry[]} */
@@ -30,17 +29,12 @@
   let loading   = $state(true);
   /** @type {string | null} */
   let loadError = $state(null);
-
-  /** Monday of the newer week in the report's rolling two-week window. */
-  /** @type {string | null} */
-  let reportWeekStart = $state(null);
-  let reportRequestId = 0;
-
-  const reportStartDate = $derived(reportWeekStart ? addDays(reportWeekStart, -7) : null);
-  const reportEndDate   = $derived(reportWeekStart ? addDays(reportWeekStart, 6) : null);
+  let rangeLoading = $state(false);
+  let rangeError = $state('');
 
   /** Entry kind filter. */
   let kindFilter = $state('both'); // 'text' | 'audio' | 'both'
+  let showAllDays = $state(false);
 
   const filteredEntries = $derived(
     kindFilter === 'both'  ? entries :
@@ -48,25 +42,8 @@
     entries.filter(e => e.kind !== 'audio')
   );
 
-  const days = $derived.by(() => (
-    report && reportStartDate && reportEndDate
-      ? groupByDateRange(filteredEntries, reportStartDate, reportEndDate)
-      : groupByDate(filteredEntries)
-  ));
-  const reportEntries = $derived(
-    report && reportStartDate && reportEndDate
-      ? entries.filter(entry => entry.date >= reportStartDate && entry.date <= reportEndDate)
-      : []
-  );
-  const reportSummary = $derived(summarizeEntries(reportEntries, $hitMetadataById));
-  const reportSummariesByDate = $derived.by(() => (
-    report && reportStartDate && reportEndDate
-      ? new Map(groupByDateRange(reportEntries, reportStartDate, reportEndDate).map(day => [
-          day.date,
-          summarizeEntries(day.entries, $hitMetadataById),
-        ]))
-      : new Map()
-  ));
+  const days = $derived(selectDiaryDays(filteredEntries));
+  const visibleEntries = $derived(diaryEntriesForDays(days));
   const sunByDate = $derived(data.sunByDate ?? {});
 
   /** @type {import('$lib/types').Entry | null} */
@@ -94,35 +71,6 @@
     { label: '9 to 20', startHour: 9,  endHour: 20 },
   ];
 
-  function reportBounds(weekStart) {
-    return { startDate: addDays(weekStart, -7), endDate: addDays(weekStart, 6) };
-  }
-
-  function todayInStockholm() {
-    return new Intl.DateTimeFormat('sv-SE', {
-      timeZone: 'Europe/Stockholm',
-      year: 'numeric', month: '2-digit', day: '2-digit',
-    }).format(new Date());
-  }
-
-  function formatRangeDate(dateStr, includeYear = false) {
-    return new Date(`${dateStr}T12:00:00`).toLocaleDateString(undefined, {
-      month: 'short', day: 'numeric', ...(includeYear ? { year: 'numeric' } : {}),
-    });
-  }
-
-  const reportRangeLabel = $derived(
-    reportStartDate && reportEndDate
-      ? `${formatRangeDate(reportStartDate)} – ${formatRangeDate(reportEndDate, true)}`
-      : ''
-  );
-
-  function updateReportUrl(weekStart) {
-    const url = new URL(window.location.href);
-    url.searchParams.set('week', weekStart);
-    history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
-  }
-
   async function fetchDiary({ startDate, endDate } = {}) {
     const url = new URL('/api/diary', PUBLIC_API_BASE);
     if (startDate) url.searchParams.set('startDate', startDate);
@@ -140,29 +88,42 @@
     return isIsoDate(body?.date) ? body.date : null;
   }
 
-  async function changeReportWeek(deltaWeeks) {
-    if (!reportWeekStart || loading) return;
-    const nextWeekStart = addDays(reportWeekStart, deltaWeeks * 7);
-    const bounds = reportBounds(nextWeekStart);
-    const requestId = ++reportRequestId;
-
-    closePanel();
-    reportWeekStart = nextWeekStart;
-    loading = true;
-    loadError = null;
-    updateReportUrl(nextWeekStart);
-
+  async function showAllDiaryDays() {
+    if (rangeLoading || showAllDays) return;
+    rangeLoading = true;
+    rangeError = '';
     try {
-      const nextEntries = await fetchDiary(bounds);
-      if (requestId !== reportRequestId) return;
+      const nextEntries = await fetchDiary();
       entries = nextEntries;
-      void loadHitMetadata(bounds).catch((e) => {
-        console.error('Failed to load hit metadata:', e);
+      showAllDays = true;
+      void loadHitMetadata().catch((error) => {
+        console.error('Failed to load all hit metadata:', error);
       });
-    } catch (e) {
-      if (requestId === reportRequestId) loadError = e?.message ?? 'Failed to load report';
+    } catch (error) {
+      rangeError = error?.message ?? 'Failed to load the complete diary';
     } finally {
-      if (requestId === reportRequestId) loading = false;
+      rangeLoading = false;
+    }
+  }
+
+  async function showRecentDiaryDays() {
+    if (rangeLoading || !showAllDays) return;
+    rangeLoading = true;
+    rangeError = '';
+    try {
+      const latestDate = await fetchLatestDiaryDate();
+      const bounds = latestDate ? recentDiaryBounds(latestDate) : null;
+      entries = bounds ? await fetchDiary(bounds) : [];
+      showAllDays = false;
+      if (bounds) {
+        void loadHitMetadata(bounds).catch((error) => {
+          console.error('Failed to load recent hit metadata:', error);
+        });
+      }
+    } catch (error) {
+      rangeError = error?.message ?? 'Failed to load recent diary days';
+    } finally {
+      rangeLoading = false;
     }
   }
 
@@ -245,31 +206,18 @@
   // On mount: fetch diary entries live from the API, then handle deep-link hash.
   onMount(async () => {
     try {
-      let metadataBounds = {};
-
-      if (report) {
-        const requestedWeek = new URL(window.location.href).searchParams.get('week');
-        if (requestedWeek && isIsoDate(requestedWeek)) {
-          reportWeekStart = startOfIsoWeek(requestedWeek);
-          metadataBounds = reportBounds(reportWeekStart);
-          entries = await fetchDiary(metadataBounds);
-        } else {
-          const latestDate = await fetchLatestDiaryDate();
-          reportWeekStart = startOfIsoWeek(latestDate || todayInStockholm());
-          metadataBounds = reportBounds(reportWeekStart);
-          entries = await fetchDiary(metadataBounds);
-        }
-        updateReportUrl(reportWeekStart);
-      } else {
-        entries = await fetchDiary();
-      }
+      const latestDate = await fetchLatestDiaryDate();
+      const bounds = latestDate ? recentDiaryBounds(latestDate) : null;
+      entries = bounds ? await fetchDiary(bounds) : [];
 
       // Progressive enhancement: do not await metadata. This runs only for a
       // page mount, not from layout/resize effects, and follows every page the
       // bulk API advertises through links.next.
-      void loadHitMetadata(metadataBounds).catch((e) => {
-        console.error('Failed to load hit metadata:', e);
-      });
+      if (bounds) {
+        void loadHitMetadata(bounds).catch((e) => {
+          console.error('Failed to load hit metadata:', e);
+        });
+      }
     } catch (e) {
       loadError = e.message;
     } finally {
@@ -279,27 +227,29 @@
     const hash = window.location.hash.slice(1);
     if (hash) {
       const entry = entries.find((e) => e.id === hash);
-      if (entry) { selectedEntry = entry; panelEntry = entry; showPanel = true; }
+      if (entry) {
+        selectedEntry = entry;
+        panelEntry = entry;
+        showPanel = true;
+      }
     }
   });
 </script>
 
 <svelte:head>
-  <title>{report ? 'Report · Barktown' : 'Diary · Barktown'}</title>
+  <title>Diary · Barktown</title>
 </svelte:head>
 
 <div class="app">
   <header class="site-header">
     <h1>🐕 Barktown</h1>
-    {#if !report}
-      <button
-        class="subtitle recordings-toggle"
-        class:active={showOverview}
-        onclick={() => (showOverview = !showOverview)}
-        aria-pressed={showOverview}
-        title="Toggle overview chart"
-      >{#if loading}Loading…{:else if loadError}Error{:else}{entries.length} recorded events{/if}</button>
-    {/if}
+    <button
+      class="subtitle recordings-toggle"
+      class:active={showOverview}
+      onclick={() => (showOverview = !showOverview)}
+      aria-pressed={showOverview}
+      title="Toggle overview chart"
+    >{#if loading}Loading…{:else if loadError}Error{:else}{visibleEntries.length} recorded events{/if}</button>
 
     <div class="kind-controls" role="group" aria-label="Entry type filter">
       {#each ['text', 'audio', 'both'] as k (k)}
@@ -325,9 +275,8 @@
       {/each}
     </div>
 
-    <a class="nav-link" class:current={!report} aria-current={!report ? 'page' : undefined} href="/diary">Diary</a>
-    <a class="nav-link" class:current={report} aria-current={report ? 'page' : undefined} href="/report">Report</a>
-    <a class="nav-link" href="/report2">Report2</a>
+    <a class="nav-link current" aria-current="page" href="/diary">Diary</a>
+    <a class="nav-link" href="/report">Report</a>
     <a class="nav-link" href="/training">Training</a>
     <a class="nav-link" href="/method">Method</a>
 
@@ -335,18 +284,20 @@
   </header>
 
   <main class="diary-main">
-    {#if report && reportWeekStart}
-      <div class="report-summary-banner">
-        <ReportMetrics summary={reportSummary} label={`Summary for ${reportRangeLabel}`} />
+    {#if !loading && !loadError}
+      <div class="diary-range-controls">
+        <span>{showAllDays ? 'showing all days with records starting from 2021' : 'showing records from the last 14 calendar days'}</span>
+        <button
+          disabled={rangeLoading}
+          onclick={showAllDays ? showRecentDiaryDays : showAllDiaryDays}
+        >
+          {#if rangeLoading}Loading…{:else if showAllDays}Show the last 14 calendar days{:else}Show all days starting from 2021{/if}
+        </button>
       </div>
-      <div class="report-toolbar" aria-label="Report weeks">
-        <button class="week-btn" disabled={loading} onclick={() => changeReportWeek(-1)}>← Earlier</button>
-        <strong>{reportRangeLabel}</strong>
-        <button class="week-btn" disabled={loading} onclick={() => changeReportWeek(1)}>Later →</button>
-      </div>
+      {#if rangeError}<p class="range-error" role="alert">{rangeError}</p>{/if}
     {/if}
-    {#if !report && showOverview}
-      <OverviewPanel entries={filteredEntries} />
+    {#if showOverview}
+      <OverviewPanel entries={visibleEntries} />
     {/if}
     {#if loading}
       <p class="status-msg">Loading recordings…</p>
@@ -360,7 +311,6 @@
       selectedId={selectedEntry?.id ?? null}
       onselect={selectEntry}
       {sunByDate}
-      summaries={report ? reportSummariesByDate : null}
     />
     {/if}
   </main>
@@ -477,8 +427,8 @@
     padding: 0.5rem 0;
   }
 
-  .report-toolbar {
-    min-height: 42px;
+  .diary-range-controls {
+    min-height: 38px;
     padding: 0 1rem 0.5rem;
     display: flex;
     align-items: center;
@@ -488,18 +438,7 @@
     font-size: 0.82rem;
   }
 
-  .report-summary-banner {
-    width: min(720px, calc(100% - 2rem));
-    margin: 0 auto 0.5rem;
-  }
-
-  .report-toolbar strong {
-    min-width: 150px;
-    color: #333;
-    text-align: center;
-  }
-
-  .week-btn {
+  .diary-range-controls button {
     background: #fff;
     border: 1px solid #d0d0cc;
     border-radius: 4px;
@@ -507,8 +446,15 @@
     color: #555;
     cursor: pointer;
   }
-  .week-btn:hover:not(:disabled) { background: #f0f0ec; color: #1a1a1a; }
-  .week-btn:disabled { opacity: 0.5; cursor: wait; }
+  .diary-range-controls button:hover { background: #f0f0ec; color: #1a1a1a; }
+  .diary-range-controls button:disabled { opacity: 0.55; cursor: wait; }
+
+  .range-error {
+    margin: -0.1rem 1rem 0.5rem;
+    color: #c0392b;
+    font-size: 0.78rem;
+    text-align: center;
+  }
 
   .status-msg {
     padding: 3rem 1.5rem;
@@ -517,4 +463,13 @@
     font-size: 0.9rem;
   }
   .status-msg.error { color: #c0392b; }
+
+  @media (max-width: 620px) {
+    .diary-range-controls {
+      align-items: stretch;
+      flex-direction: column;
+      gap: 0.4rem;
+      text-align: center;
+    }
+  }
 </style>
