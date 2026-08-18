@@ -1,5 +1,5 @@
 <script>
-  import { tick } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import {
     ASSET_BASE,
     PRIVATE_API_BASE,
@@ -12,6 +12,7 @@
   } from '$lib/utils.js';
   import { SAMPLE_LABELS as LABELS, SAMPLE_LABEL_GUIDELINES as LABEL_GUIDELINES, sampleLabelColor, sampleLabelShortcut, LABEL_BY_SHORTCUT } from '$lib/sample-labels.js';
   import { TRAINING_COLOR_ENCODINGS, TRAINING_COLOR_GUIDES } from '$lib/training-color-guides.js';
+  import { probeEditingAccess } from '$lib/editing-access.js';
   import GoblinPiStatus from '$lib/components/GoblinPiStatus.svelte';
   import TrainingProjectionScatterplot from '$lib/components/TrainingProjectionScatterplot.svelte';
 
@@ -23,6 +24,9 @@
   // only — goblinpi just uploads to masmopi and has no ingest API of its own).
   const ALL_LABELS = ['all', ...LABELS, 'unmarked'];
   const NOTE_COLOR = '#f1c40f';
+
+  /** Tailnet-only mutation controls appear after the private API responds. */
+  let editingAccess = $state(false);
 
   // Virtual SVG dimensions for the waveform editor (viewBox units).
   const VW = 1000;
@@ -437,7 +441,7 @@
   }
 
   async function handleRegenWaveform(pps) {
-    if (!selected || regenLoading) return;
+    if (!editingAccess || !selected || regenLoading) return;
     regenLoading = true;
     try {
       const res = await fetch(
@@ -553,6 +557,7 @@
    * if nothing is focused yet, right picks the first fragment and left
    * picks the last. */
   function selectAdjacentFragment(delta) {
+    if (!editingAccess) return;
     const list = sortedFragments;
     if (!list.length) return;
     const idx = list.findIndex(f => f.id === selectedAnnId);
@@ -608,6 +613,11 @@
   function onWaveMouseDown(e) {
     if (!selected || !duration) return;
     const sec  = svgFraction(e.clientX) * duration;
+    if (!editingAccess) {
+      if (audioEl) audioEl.currentTime = sec;
+      currentTime = sec;
+      return;
+    }
     const role = e.target?.dataset?.role;
     const annId = e.target?.dataset?.annId ? Number(e.target.dataset.annId) : null;
 
@@ -680,6 +690,7 @@
   // ── Annotation mutations ────────────────────────────────────────────────────
 
   async function commitAnnotationBounds(ann, startSec, endSec) {
+    if (!editingAccess) return;
     mutationError = '';
     try {
       const res = await fetch(`${PRIVATE_API_BASE}/api/annotations/${ann.id}`, {
@@ -698,7 +709,7 @@
   }
 
   async function commitFragment() {
-    if (!pending || !selected) return;
+    if (!editingAccess || !pending || !selected) return;
     mutationError = '';
     try {
       const res = await fetch(`${PRIVATE_API_BASE}/api/samples/${encodeURIComponent(selected.id)}/annotations`, {
@@ -718,7 +729,7 @@
   }
 
   async function commitNote() {
-    if (!pending || !selected || !pendingNoteText.trim()) return;
+    if (!editingAccess || !pending || !selected || !pendingNoteText.trim()) return;
     mutationError = '';
     try {
       const res = await fetch(`${PRIVATE_API_BASE}/api/samples/${encodeURIComponent(selected.id)}/annotations`, {
@@ -751,6 +762,7 @@
   }
 
   async function relabelSelected(newLabel) {
+    if (!editingAccess) return;
     const ann = annotations.find(a => a.id === selectedAnnId);
     if (!ann) return;
     mutationError = '';
@@ -773,12 +785,14 @@
   // ── Note editing (inline, in the notes panel) ──────────────────────────────
 
   function startEditNote(ann) {
+    if (!editingAccess) return;
     selectedAnnId = ann.id;
     editingNoteId = ann.id;
     editLabel     = ann.label;
   }
 
   async function saveNoteLabel(annId, text) {
+    if (!editingAccess) return;
     const ann     = annotations.find(a => a.id === annId);
     editingNoteId = null;
     const trimmed = text.trim();
@@ -803,7 +817,7 @@
   // ── Sample-wide note (time code 0ms) — no fragment/selection needed ───────
 
   function startSampleWideNote() {
-    if (hasSampleWideNote || addingSampleNote || !selected) return;
+    if (!editingAccess || hasSampleWideNote || addingSampleNote || !selected) return;
     addingSampleNote  = true;
     newSampleNoteText = '';
   }
@@ -814,7 +828,7 @@
   }
 
   async function commitSampleWideNote() {
-    if (!addingSampleNote) return;
+    if (!editingAccess || !addingSampleNote) return;
     const text = newSampleNoteText.trim();
     addingSampleNote = false;
     if (!text || !selected) return;
@@ -838,6 +852,7 @@
   // ── Deletion (any annotation, by id) ───────────────────────────────────────
 
   async function deleteAnnotationById(annId) {
+    if (!editingAccess) return;
     const ann = annotations.find(a => a.id === annId);
     if (!ann) return;
     mutationError = '';
@@ -857,13 +872,13 @@
   }
 
   async function deleteSelectedAnnotation() {
-    if (selectedAnnId != null) await deleteAnnotationById(selectedAnnId);
+    if (editingAccess && selectedAnnId != null) await deleteAnnotationById(selectedAnnId);
   }
 
   // ── Sample-level mutations ─────────────────────────────────────────────────
 
   async function confirmDeleteSample() {
-    if (!selected) return;
+    if (!editingAccess || !selected) return;
     deleteBusy = true;
     try {
       const res = await fetch(`${PRIVATE_API_BASE}/api/samples/${encodeURIComponent(selected.id)}`, {
@@ -881,7 +896,7 @@
   }
 
   async function changeCategory(newLabel) {
-    if (!selected || newLabel === selected.label) return;
+    if (!editingAccess || !selected || newLabel === selected.label) return;
     renameBusy  = true;
     renameError = '';
     try {
@@ -912,15 +927,15 @@
   function handleKeydown(e) {
     const inField = e.target?.tagName === 'INPUT' || e.target?.tagName === 'SELECT' || e.target?.tagName === 'TEXTAREA';
 
-    if (e.key === 'Escape') {
+    if (editingAccess && e.key === 'Escape') {
       if (pending) { pending = null; return; }
       if (selectedAnnId != null) { selectedAnnId = null; return; }
     }
-    if (!inField && (e.key === 'Delete' || e.key === 'Backspace') && selectedAnnId != null) {
+    if (editingAccess && !inField && (e.key === 'Delete' || e.key === 'Backspace') && selectedAnnId != null) {
       e.preventDefault();
       deleteSelectedAnnotation();
     }
-    if (!inField && e.key === 'Enter' && pending) {
+    if (editingAccess && !inField && e.key === 'Enter' && pending) {
       e.preventDefault();
       commitFragment();
     }
@@ -932,12 +947,12 @@
       e.preventDefault();
       selectAdjacentSample((e.key === 'ArrowDown' || e.key === 'w') ? 1 : -1);
     }
-    if (!inField && selected && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+    if (editingAccess && !inField && selected && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
       e.preventDefault();
       selectAdjacentFragment(e.key === 'ArrowRight' ? 1 : -1);
     }
     // Label shortcuts: classify a pending fragment or relabel the selected one.
-    if (!inField && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    if (editingAccess && !inField && !e.ctrlKey && !e.metaKey && !e.altKey) {
       const labelForKey = LABEL_BY_SHORTCUT.get(e.key);
       if (labelForKey) {
         if (pending) {
@@ -954,6 +969,16 @@
       }
     }
   }
+
+  onMount(() => {
+    let disposed = false;
+    void probeEditingAccess().then((available) => {
+      if (!disposed) editingAccess = available;
+    });
+    return () => {
+      disposed = true;
+    };
+  });
 
   fetchSamples();
   fetchSidebarAnnotationSummary();
@@ -1167,21 +1192,23 @@
             <a class="cross-link-btn" href="/diary#{selected.diaryId}" title="View source diary entry">📖</a>
           {/if}
 
-          <label class="category-control">
-            <span>Category</span>
-            <select value={selected.label} disabled={renameBusy} onchange={(e) => changeCategory(e.currentTarget.value)}>
-              {#each LABELS as lbl}
-                <option value={lbl}>{lbl}</option>
-              {/each}
-            </select>
-          </label>
+          {#if editingAccess}
+            <label class="category-control">
+              <span>Category</span>
+              <select value={selected.label} disabled={renameBusy} onchange={(e) => changeCategory(e.currentTarget.value)}>
+                {#each LABELS as lbl}
+                  <option value={lbl}>{lbl}</option>
+                {/each}
+              </select>
+            </label>
 
-          <button class="danger-btn" onclick={() => (deleteConfirm = true)}>Delete sample</button>
+            <button class="danger-btn" onclick={() => (deleteConfirm = true)}>Delete sample</button>
+          {/if}
         </div>
 
-        {#if renameError}<div class="error-msg">{renameError}</div>{/if}
+        {#if editingAccess && renameError}<div class="error-msg">{renameError}</div>{/if}
 
-        {#if deleteConfirm}
+        {#if editingAccess && deleteConfirm}
           <div class="confirm-bar">
             <span>Delete this sample and its annotations? This cannot be undone.</span>
             <button class="danger-btn" disabled={deleteBusy} onclick={confirmDeleteSample}>
@@ -1210,8 +1237,10 @@
         <div class="player-controls">
           <button class="play-pause-btn" onclick={togglePlay}>{isPlaying ? '⏸' : '▶'}</button>
           <span class="mini-time">{formatDuration(currentTime)} / {formatDuration(duration)}</span>
-          <span class="hint">Drag on the waveform to select a fragment · click a fragment to edit it · Delete removes the selection</span>
-          {#if selected}
+          {#if editingAccess}
+            <span class="hint">Drag on the waveform to select a fragment · click a fragment to edit it · Delete removes the selection</span>
+          {/if}
+          {#if editingAccess && selected}
             <span class="regen-label">Resolution:</span>
             <button class="regen-btn" onclick={() => handleRegenWaveform(20)}  disabled={regenLoading} title="20 px/s (default)">20/s</button>
             <button class="regen-btn" onclick={() => handleRegenWaveform(50)}  disabled={regenLoading} title="50 px/s">50/s</button>
@@ -1227,12 +1256,13 @@
           <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
           <svg
             class="wave-editor"
+            class:readonly={!editingAccess}
             viewBox="0 0 {VW} {VH}"
             preserveAspectRatio="none"
             bind:this={waveSvgEl}
             onmousedown={onWaveMouseDown}
             role="img"
-            aria-label="Waveform editor — drag to select a fragment"
+            aria-label={editingAccess ? 'Waveform editor — drag to select a fragment' : 'Audio waveform — click to seek'}
           >
             {#if !waveData}
               <line x1="0" y1={VH / 2} x2={VW} y2={VH / 2} stroke={waveLoading ? '#c0d0f0' : '#e0e0e0'} stroke-width="1" />
@@ -1246,13 +1276,13 @@
                 x={x} y="0" width={w} height={VH}
                 fill={sampleLabelColor(ann.label)}
                 opacity={selectedAnnId === ann.id ? 0.5 : hoveredAnnId === ann.id ? 0.4 : 0.3}
-                data-role="fragment-body"
-                data-ann-id={ann.id}
+                data-role={editingAccess ? 'fragment-body' : undefined}
+                data-ann-id={editingAccess ? ann.id : undefined}
                 role="presentation"
                 onmouseenter={() => (hoveredAnnId = ann.id)}
                 onmouseleave={() => (hoveredAnnId = null)}
               ></rect>
-              {#if selectedAnnId === ann.id}
+              {#if editingAccess && selectedAnnId === ann.id}
                 <rect class="frag-handle" x={x - 3} y={VH * (2 / 3)} width="6" height={VH / 3} data-role="handle-start" data-ann-id={ann.id}></rect>
                 <rect class="frag-handle" x={x + w - 3} y={VH * (2 / 3)} width="6" height={VH / 3} data-role="handle-end" data-ann-id={ann.id}></rect>
               {/if}
@@ -1300,14 +1330,16 @@
         <div class="notes-panel">
           <div class="notes-panel-header">
             <span class="notes-panel-title">Notes</span>
-            <button
-              class="action-btn"
-              disabled={hasSampleWideNote || addingSampleNote}
-              onclick={startSampleWideNote}
-              title={hasSampleWideNote ? 'This sample already has a sample-wide note' : ''}
-            >
-              + Add a note
-            </button>
+            {#if editingAccess}
+              <button
+                class="action-btn"
+                disabled={hasSampleWideNote || addingSampleNote}
+                onclick={startSampleWideNote}
+                title={hasSampleWideNote ? 'This sample already has a sample-wide note' : ''}
+              >
+                + Add a note
+              </button>
+            {/if}
           </div>
 
           {#if addingSampleNote}
@@ -1330,7 +1362,7 @@
           {#each sortedNotes as note (note.id)}
             <div class="note-row-item" class:selected={selectedAnnId === note.id}>
               <span class="note-time">{isSampleWideNote(note) ? 'Sample-wide' : formatDuration(note.startSec)}</span>
-              {#if editingNoteId === note.id}
+              {#if editingAccess && editingNoteId === note.id}
                 <input
                   class="note-input"
                   bind:value={editLabel}
@@ -1341,10 +1373,14 @@
                   }}
                   onblur={() => { if (editingNoteId === note.id) saveNoteLabel(note.id, editLabel); }}
                 />
-              {:else}
+              {:else if editingAccess}
                 <button class="note-text-btn" onclick={() => startEditNote(note)}>{note.label}</button>
+              {:else}
+                <span class="note-text-static">{note.label}</span>
               {/if}
-              <button class="note-delete-btn" title="Delete note" onclick={() => deleteAnnotationById(note.id)}>×</button>
+              {#if editingAccess}
+                <button class="note-delete-btn" title="Delete note" onclick={() => deleteAnnotationById(note.id)}>×</button>
+              {/if}
             </div>
           {/each}
 
@@ -1362,15 +1398,19 @@
               <div class="oob-row">
                 <span class="sample-label-pill" style:background={sampleLabelColor(ann.label)}>{ann.label.slice(0, 3)}</span>
                 <span class="oob-range">{formatDuration(ann.startSec)} – {formatDuration(ann.endSec)}</span>
-                <button class="note-delete-btn" title="Delete fragment" onclick={() => deleteAnnotationById(ann.id)}>×</button>
+                {#if editingAccess}
+                  <button class="note-delete-btn" title="Delete fragment" onclick={() => deleteAnnotationById(ann.id)}>×</button>
+                {/if}
               </div>
             {/each}
           </div>
         {/if}
 
-        <div class="shortcuts-hint">Use shortcuts! [Space] Play/Pause · [Delete] Remove fragment · [↑][↓] or [Q][W] Navigate · [←][→] Focus fragment · [Enter] Apply · see also the hotkeys for every label</div>
+        {#if editingAccess}
+          <div class="shortcuts-hint">Use shortcuts! [Space] Play/Pause · [Delete] Remove fragment · [↑][↓] or [Q][W] Navigate · [←][→] Focus fragment · [Enter] Apply · see also the hotkeys for every label</div>
+        {/if}
 
-        {#if pending}
+        {#if editingAccess && pending}
           <div class="pending-toolbar">
             <span class="pending-range">{formatDuration(pending.startSec)} – {formatDuration(pending.endSec)} selected</span>
             <div class="pending-labels">
@@ -1389,7 +1429,7 @@
           </div>
         {/if}
 
-        {#if selectedAnnId != null}
+        {#if editingAccess && selectedAnnId != null}
           {@const ann = annotations.find(a => a.id === selectedAnnId)}
           {#if ann && ann.source !== 'note'}
             <div class="selection-toolbar">
@@ -1925,8 +1965,10 @@
     cursor: crosshair;
     user-select: none;
   }
+  .wave-editor.readonly { cursor: pointer; }
 
   .fragment-band { cursor: pointer; }
+  .wave-editor.readonly .fragment-band { cursor: inherit; }
   .frag-handle { fill: #1a1a1a; opacity: 0.35; cursor: ew-resize; }
 
   /* HTML overlay for fragment labels — a fixed font-size here always renders
@@ -2034,6 +2076,15 @@
     white-space: nowrap;
   }
   .note-text-btn:hover { background: #f4f4ee; }
+  .note-text-static {
+    flex: 1;
+    min-width: 0;
+    padding: 0.15rem 0.3rem;
+    font-size: 0.8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .note-delete-btn {
     background: none;
     border: none;
