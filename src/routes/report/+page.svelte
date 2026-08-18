@@ -507,7 +507,7 @@
   :global(*, *::before, *::after) { box-sizing: border-box; }
   :global(body) {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--font-body);
     background: #f7f7f5;
     color: #1a1a1a;
   }
@@ -532,7 +532,7 @@
 
   .brand {
     color: inherit;
-    font-size: 1.1rem;
+    font-size: var(--font-size-medium);
     font-weight: 700;
     text-decoration: none;
     white-space: nowrap;
@@ -549,7 +549,7 @@
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
     color: #555;
-    font-size: 0.78rem;
+    font-size: var(--font-size-tiny);
     text-decoration: none;
     white-space: nowrap;
   }
@@ -574,16 +574,16 @@
   .eyebrow {
     margin: 0 0 0.25rem;
     color: #8a3d20;
-    font-size: 0.72rem;
+    font-size: var(--font-size-tiny);
     font-weight: 750;
     text-transform: uppercase;
   }
 
   h1 {
     margin: 0;
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: clamp(2.4rem, 7vw, 4.8rem);
-    font-weight: 500;
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xlarge);
+    font-weight: var(--font-heading-weight);
     line-height: 0.95;
   }
 
@@ -592,7 +592,7 @@
     align-items: center;
     gap: 0.75rem;
     color: #555;
-    font-size: 0.82rem;
+    font-size: var(--font-size-small);
   }
 
   .range-controls strong {
@@ -632,7 +632,7 @@
     align-items: center;
     gap: 0.45rem;
     color: #777;
-    font-size: 0.75rem;
+    font-size: var(--font-size-tiny);
     font-weight: 650;
   }
 
@@ -652,7 +652,7 @@
     color: #777;
     cursor: pointer;
     font: inherit;
-    font-size: 0.75rem;
+    font-size: var(--font-size-tiny);
   }
 
   .week-count-controls button:hover:not(:disabled) { background: #f0f0ec; color: #1a1a1a; }
@@ -662,7 +662,7 @@
   select {
     padding: 0.25rem 1.8rem 0.25rem 0.45rem;
     cursor: pointer;
-    font-size: 0.75rem;
+    font-size: var(--font-size-tiny);
   }
 
   .report-days {
@@ -694,13 +694,13 @@
 
   .total-metric span {
     color: #777;
-    font-size: 0.72rem;
+    font-size: var(--font-size-tiny);
     font-weight: 650;
   }
 
   .total-metric strong {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 1.2rem;
+    font-family: var(--font-body);
+    font-size: var(--font-size-medium);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
@@ -728,15 +728,15 @@
     display: block;
     margin-top: 1.5rem;
     color: #777;
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 0.8rem;
+    font-family: var(--font-body);
+    font-size: var(--font-size-tiny);
   }
 
   .app.print-layout .recording-sentence { margin-right: 0; }
 
   .print-intro h1 {
     margin: 0;
-    font-size: clamp(2rem, 6vw, 3.4rem);
+    font-size: var(--font-size-xlarge);
     line-height: 1;
   }
 
@@ -744,15 +744,15 @@
     max-width: 780px;
     margin: 0.75rem 0 0;
     color: #333;
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 0.96rem;
+    font-family: var(--font-body);
+    font-size: var(--font-size-small);
     line-height: 1.55;
   }
 
   .print-intro .print-range {
     margin-top: 0.35rem;
     color: #777;
-    font-size: 1rem;
+    font-size: var(--font-size-medium);
   }
 
   .print-intro a { color: #2255bb; }
@@ -777,9 +777,9 @@
     gap: 0.8rem 1.5rem;
     border-bottom: 1px solid #ecece8;
     padding-bottom: 0.55rem;
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 1.12rem;
-    font-weight: 600;
+    font-family: var(--font-heading);
+    font-size: var(--font-size-medium);
+    font-weight: var(--font-heading-weight);
   }
 
   h2 small {
@@ -788,8 +788,8 @@
     justify-content: flex-end;
     gap: 0.35rem;
     color: #777;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 0.72rem;
+    font-family: var(--font-body);
+    font-size: var(--font-size-tiny);
     font-weight: 500;
   }
 
@@ -797,8 +797,8 @@
   .no-recordings {
     margin: 0;
     color: #2d2d2a;
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 1rem;
+    font-family: var(--font-body);
+    font-size: var(--font-size-small);
     line-height: 2;
   }
 
@@ -844,7 +844,7 @@
     margin-inline: 0.2rem;
     color: #5d514c;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 0.72rem;
+    font-size: var(--font-size-tiny);
     font-variant-numeric: tabular-nums;
   }
 

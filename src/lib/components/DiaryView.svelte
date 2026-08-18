@@ -342,7 +342,7 @@
   :global(*, *::before, *::after) { box-sizing: border-box; }
   :global(body) {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--font-body);
     background: #f7f7f5;
     color: #1a1a1a;
   }
@@ -371,14 +371,14 @@
 
   .site-header h1 {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: var(--font-size-medium);
     font-weight: 700;
     white-space: nowrap;
   }
 
   .subtitle {
     margin: 0;
-    font-size: 0.8rem;
+    font-size: var(--font-size-tiny);
     color: #888;
     white-space: nowrap;
   }
@@ -411,7 +411,7 @@
     border: 1px solid #d0d0cc;
     border-radius: 4px;
     padding: 0.2rem 0.55rem;
-    font-size: 0.75rem;
+    font-size: var(--font-size-tiny);
     cursor: pointer;
     color: #555;
     transition: background 0.1s, color 0.1s;
@@ -420,7 +420,7 @@
   .zoom-btn.active  { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
 
   .nav-link {
-    font-size: 0.78rem;
+    font-size: var(--font-size-tiny);
     color: #555;
     text-decoration: none;
     white-space: nowrap;
@@ -444,7 +444,7 @@
     justify-content: center;
     gap: 0.8rem;
     color: #555;
-    font-size: 0.82rem;
+    font-size: var(--font-size-small);
   }
 
   .diary-range-controls button {
@@ -461,7 +461,7 @@
   .range-error {
     margin: -0.1rem 1rem 0.5rem;
     color: #c0392b;
-    font-size: 0.78rem;
+    font-size: var(--font-size-tiny);
     text-align: center;
   }
 
@@ -469,7 +469,7 @@
     padding: 3rem 1.5rem;
     text-align: center;
     color: #999;
-    font-size: 0.9rem;
+    font-size: var(--font-size-small);
   }
   .status-msg.error { color: #c0392b; }
 

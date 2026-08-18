@@ -905,7 +905,7 @@
                 <text
                   x={hx - 3}
                   y="14"
-                  font-size="14"
+                  font-size="var(--font-size-small)"
                   font-family="monospace"
                   text-anchor="end"
                   fill="rgba(200, 90, 0, {tickAlpha})"
@@ -914,7 +914,7 @@
                 <text
                   x={hx - 3}
                   y="28"
-                  font-size="14"
+                  font-size="var(--font-size-small)"
                   font-family="monospace"
                   text-anchor="end"
                   fill="rgba(200, 90, 0, {tickAlpha})"
@@ -1184,7 +1184,7 @@
   }
 
   .panel-kind {
-    font-size: 0.65rem;
+    font-size: var(--font-size-tiny);
     font-weight: 700;
     text-transform: uppercase;
     padding: 1px 6px;
@@ -1195,12 +1195,12 @@
   .panel-kind--empty { background: #ebebeb; color: #666; }
 
   .panel-datetime {
-    font-size: 0.8rem;
+    font-size: var(--font-size-tiny);
     color: #666;
   }
 
   .panel-dur {
-    font-size: 0.8rem;
+    font-size: var(--font-size-tiny);
     color: #999;
   }
 
@@ -1217,18 +1217,18 @@
     color: #1a1a1a;
     cursor: pointer;
     font-family: inherit;
-    font-size: 1rem;
+    font-size: var(--font-size-medium);
     font-weight: 600;
     text-align: left;
   }
   .panel-comment:hover { color: #2255bb; }
   .panel-comment.empty { color: #888; font-weight: 500; }
-  .comment-edit-icon { color: #999; font-size: 0.8rem; }
+  .comment-edit-icon { color: #999; font-size: var(--font-size-tiny); }
   .panel-comment-readonly {
     width: fit-content;
     max-width: 100%;
     margin: 0;
-    font-size: 1rem;
+    font-size: var(--font-size-medium);
     font-weight: 600;
   }
 
@@ -1244,7 +1244,7 @@
     border-radius: 5px;
     padding: 0.42rem 0.55rem;
     font: inherit;
-    font-size: 0.9rem;
+    font-size: var(--font-size-small);
   }
   .comment-input:focus { outline: 2px solid #4a7cdc; outline-offset: 1px; }
   .comment-save,
@@ -1256,7 +1256,7 @@
     color: #444;
     cursor: pointer;
     font: inherit;
-    font-size: 0.78rem;
+    font-size: var(--font-size-tiny);
   }
   .comment-save { border-color: #2255bb; background: #2255bb; color: #fff; }
   .comment-save:disabled,
@@ -1264,19 +1264,19 @@
   .panel-analysis {
     margin: -0.45rem 0 0;
     color: #888;
-    font-size: 0.72rem;
+    font-size: var(--font-size-tiny);
   }
   .comment-error {
     margin: -0.4rem 0 0;
     color: #c0392b;
-    font-size: 0.78rem;
+    font-size: var(--font-size-tiny);
   }
 
   .close-btn {
     flex-shrink: 0;
     background: none;
     border: none;
-    font-size: 1rem;
+    font-size: var(--font-size-medium);
     color: #888;
     cursor: pointer;
     padding: 0.1rem 0.35rem;
@@ -1293,7 +1293,7 @@
     flex-shrink: 0;
     background: none;
     border: none;
-    font-size: 1rem;
+    font-size: var(--font-size-medium);
     color: #aaa;
     cursor: pointer;
     padding: 0.1rem 0.35rem;
@@ -1306,7 +1306,7 @@
   .reanalyze-btn:disabled:hover { background: none; color: #aaa; }
   .cross-link-btn {
     display: inline-flex; align-items: center; justify-content: center;
-    font-size: 1rem; line-height: 1; padding: 0.2rem 0.3rem;
+    font-size: var(--font-size-medium); line-height: 1; padding: 0.2rem 0.3rem;
     border-radius: 6px; text-decoration: none; color: inherit;
     border: 1px solid transparent;
   }
@@ -1319,7 +1319,7 @@
 
   .reanalyze-error {
     margin: 0 1rem 0.5rem;
-    font-size: 0.85rem;
+    font-size: var(--font-size-small);
     color: #c0392b;
   }
 
@@ -1330,12 +1330,12 @@
     margin-left: auto;
     flex-shrink: 0;  }
   .delete-confirm-text {
-    font-size: 0.8rem;
+    font-size: var(--font-size-tiny);
     color: #c0392b;
     font-weight: 600;
   }
   .delete-confirm-yes {
-    font-size: 0.75rem;
+    font-size: var(--font-size-tiny);
     padding: 0.15rem 0.5rem;
     background: #c0392b;
     color: #fff;
@@ -1345,7 +1345,7 @@
   }
   .delete-confirm-yes:hover { background: #a93226; }
   .delete-confirm-no {
-    font-size: 0.75rem;
+    font-size: var(--font-size-tiny);
     padding: 0.15rem 0.5rem;
     background: #f0f0ec;
     color: #333;
@@ -1389,7 +1389,7 @@
   }
   .sample-picker-header h2 {
     margin: 0;
-    font-size: 1.05rem;
+    font-size: var(--font-size-medium);
   }
   .sample-picker-close {
     border: none;
@@ -1397,7 +1397,7 @@
     background: none;
     color: #888;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: var(--font-size-medium);
     line-height: 1;
     padding: 0.3rem;
   }
@@ -1414,8 +1414,8 @@
     border-radius: 999px;
     color: #fff;
     cursor: pointer;
-    font: inherit;
-    font-size: 0.78rem;
+    font-family: var(--font-monospace);
+    font-size: var(--font-size-tiny);
     font-weight: 700;
     padding: 0.45rem 0.75rem;
     text-transform: uppercase;
@@ -1425,7 +1425,7 @@
   .sample-picker-error {
     margin: 0.8rem 0 0;
     color: #c0392b;
-    font-size: 0.78rem;
+    font-size: var(--font-size-tiny);
   }
 
   .keep-in-diary-label {
@@ -1433,7 +1433,7 @@
     align-items: center;
     gap: 0.4rem;
     margin-top: 0.9rem;
-    font-size: 0.82rem;
+    font-size: var(--font-size-small);
     color: #555;
     cursor: pointer;
     user-select: none;
@@ -1498,7 +1498,7 @@
   .trim-status {
     min-height: 1rem;
     color: #777;
-    font-size: 0.68rem;
+    font-size: var(--font-size-tiny);
   }
   .trim-status.error { color: #c0392b; }
 
@@ -1507,7 +1507,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
+    font-size: var(--font-size-tiny);
     color: #aaa;
     background: #f4f6fb;
     border-radius: 4px;
@@ -1531,7 +1531,7 @@
   .time-display {
     display: flex;
     gap: 0.25rem;
-    font-size: 0.75rem;
+    font-size: var(--font-size-tiny);
     color: #888;
     font-variant-numeric: tabular-nums;
   }
@@ -1569,7 +1569,7 @@
   }
 
   .vol-label {
-    font-size: 0.72rem;
+    font-size: var(--font-size-tiny);
     font-variant-numeric: tabular-nums;
     color: #555;
     min-width: 5.5ch;
@@ -1588,7 +1588,7 @@
     display: flex;
     align-items: center;
     gap: 0.3rem;
-    font-size: 0.72rem;
+    font-size: var(--font-size-tiny);
     color: #555;
     cursor: pointer;
     flex-shrink: 0;
@@ -1597,7 +1597,7 @@
   .auto-label input { cursor: pointer; accent-color: #1a1a1a; }
 
   .norm-label {
-    font-size: 0.72rem;
+    font-size: var(--font-size-tiny);
     font-variant-numeric: tabular-nums;
     color: #555;
     min-width: 7.5ch;
@@ -1642,7 +1642,7 @@
   .analysis-parameters {
     margin: 0 0 0;
     color: #888;
-    font-size: 0.65rem;
+    font-size: var(--font-size-tiny);
     font-variant-numeric: tabular-nums;
     overflow-wrap: anywhere;
   }

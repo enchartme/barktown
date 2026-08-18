@@ -1457,7 +1457,7 @@
   :global(*, *::before, *::after) { box-sizing: border-box; }
   :global(body) {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--font-body);
     background: #f7f7f5;
     color: #1a1a1a;
   }
@@ -1480,7 +1480,7 @@
 
   .brand {
     color: inherit;
-    font-size: 1.1rem;
+    font-size: var(--font-size-medium);
     font-weight: 700;
     text-decoration: none;
     white-space: nowrap;
@@ -1497,7 +1497,7 @@
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
     color: #555;
-    font-size: 0.78rem;
+    font-size: var(--font-size-tiny);
     text-decoration: none;
     white-space: nowrap;
   }
@@ -1533,11 +1533,11 @@
 
   .page-title {
     margin: 0 0 0.35rem;
-    font-size: 1.35rem;
+    font-size: var(--font-size-large);
   }
   .section-title {
     margin: 2rem 0 0.35rem;
-    font-size: 1.35rem;
+    font-size: var(--font-size-large);
   }
 
   @media (max-width: 760px) {
@@ -1581,7 +1581,7 @@
   .encoding-title-control > span {
     width: 100%;
     color: #999;
-    font-size: 0.62rem;
+    font-size: var(--font-size-tiny);
     font-weight: 700;
     text-transform: uppercase;
   }
@@ -1593,10 +1593,10 @@
     background: #fff;
     color: #222;
     font: inherit;
-    font-size: 1rem;
+    font-size: var(--font-size-medium);
     font-weight: 700;
   }
-  .encoding-explanation code { padding: 0.08rem 0.3rem; border-radius: 3px; background: #f0f0ec; color: #666; font-size: 0.68rem; }
+  .encoding-explanation code { padding: 0.08rem 0.3rem; border-radius: 3px; background: #f0f0ec; color: #666; font-size: var(--font-size-tiny); }
   .explanation-color-legend {
     width: 100%;
     display: grid;
@@ -1604,7 +1604,7 @@
     align-items: center;
     gap: 0.4rem;
     color: #777;
-    font-size: 0.65rem;
+    font-size: var(--font-size-tiny);
   }
   .explanation-color-legend i {
     height: 9px;
@@ -1613,8 +1613,8 @@
   }
   .explanation-color-legend small { font-size: inherit; font-variant-numeric: tabular-nums; }
   .encoding-explanation section + section { margin-top: 0.85rem; padding-top: 0.75rem; border-top: 1px solid #ecece7; }
-  .encoding-explanation h2 { margin: 0 0 0.28rem; color: #777; font-size: 0.68rem; text-transform: uppercase; }
-  .encoding-explanation p { margin: 0; font-size: 0.78rem; line-height: 1.5; }
+  .encoding-explanation h2 { margin: 0 0 0.28rem; color: #777; font-size: var(--font-size-tiny); text-transform: uppercase; }
+  .encoding-explanation p { margin: 0; font-size: var(--font-size-tiny); line-height: 1.5; }
   @container (max-width: 1100px) {
     .corpus-summary-layout {
       grid-template-columns: minmax(0, 1fr);
@@ -1630,10 +1630,10 @@
     object-fit: contain;
     object-position: left top;
   }
-  .corpus-table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
+  .corpus-table { border-collapse: collapse; width: 100%; font-size: var(--font-size-small); }
   .corpus-table th {
     text-align: left;
-    font-size: 0.68rem;
+    font-size: var(--font-size-tiny);
     text-transform: uppercase;
     color: #999;
     padding: 0.3rem 0.5rem;
@@ -1643,7 +1643,7 @@
     display: block;
     margin-top: 0.2rem;
     color: #aaa;
-    font-size: 0.6rem;
+    font-size: var(--font-size-tiny);
     font-weight: 400;
     line-height: 1.25;
     text-transform: none;
@@ -1667,7 +1667,7 @@
   .corpus-mid  { color: #b8860b; }
   .corpus-good { color: #27ae60; }
 
-  .corpus-summary-legend { font-size: 0.72rem; color: #999; margin-top: 1rem; }
+  .corpus-summary-legend { font-size: var(--font-size-tiny); color: #999; margin-top: 1rem; }
 
   .corpus-back-btn {
     display: block;
@@ -1679,7 +1679,7 @@
     background: #fff;
     color: #1a1a1a;
     font-family: inherit;
-    font-size: 1rem;
+    font-size: var(--font-size-medium);
     font-weight: 700;
     text-align: left;
     cursor: pointer;
@@ -1689,17 +1689,12 @@
   .corpus-back-btn:focus-visible { outline: 3px solid rgba(74, 124, 220, 0.3); outline-offset: 2px; }
 
   /* ── Duration histogram sparkline (Datatype font bar-chart ligatures) ── */
-  @font-face {
-    font-family: 'Datatype';
-    src: url('/Datatype.woff2') format('woff2');
-    font-display: swap;
-  }
   .corpus-chart-cell { white-space: nowrap; }
   .chart {
-    font-family: 'Datatype', sans-serif;
+    font-family: var(--font-data);
     font-variation-settings: 'wdth' 15;
     font-weight: 400;
-    font-size: 1.4rem;
+    font-size: var(--font-size-large);
     line-height: 1;
     color: #4a7cdc;
   }
@@ -1717,8 +1712,8 @@
   }
 
   .filter-pill {
-    font-family: inherit;
-    font-size: 0.7rem;
+    font-family: var(--font-monospace);
+    font-size: var(--font-size-tiny);
     font-weight: 500;
     padding: 0.2rem 0.55rem;
     border: 1px solid #d8d8d4;
@@ -1732,7 +1727,7 @@
   .filter-pill.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
   .reload-pill { border-style: dashed; }
 
-  .samples-msg { padding: 1rem 0.9rem; font-size: 0.78rem; color: #999; }
+  .samples-msg { padding: 1rem 0.9rem; font-size: var(--font-size-tiny); color: #999; }
   .samples-err { color: #c0392b; }
 
   .samples-list { padding-bottom: 0.5rem; overflow-y: auto; flex: 1; }
@@ -1757,7 +1752,7 @@
 
   .day-header {
     padding: 0.45rem 0.9rem 0.2rem;
-    font-size: 0.68rem;
+    font-size: var(--font-size-tiny);
     font-weight: 800;
     color: #222;
     text-transform: uppercase;
@@ -1781,19 +1776,14 @@
   }
 
   .sample-label-pill {
-    font-size: 0.6rem;
+    font-family: var(--font-monospace);
+    font-size: var(--font-size-tiny);
     font-weight: 700;
     text-transform: uppercase;
     padding: 0.1rem 0.4rem;
     border-radius: 8px;
     flex-shrink: 0;
     color: #fff;
-  }
-  /* Sidebar list rows show only a 3-letter abbreviation (see template) --
-     monospace keeps every pill the same width without forcing a fixed
-     width/padding that looked ragged with proportional fonts. */
-  .sample-row .sample-label-pill {
-    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   }
   .sample-name {
     flex: 1;
@@ -1803,7 +1793,7 @@
     gap: 0.05rem;
   }
   .sample-name-main {
-    font-size: 0.76rem;
+    font-size: var(--font-size-tiny);
     color: #333;
     white-space: nowrap;
     overflow: hidden;
@@ -1811,19 +1801,19 @@
     font-variant-numeric: tabular-nums;
   }
   .sample-diary-icon {
-    font-size: 0.65rem;
+    font-size: var(--font-size-tiny);
     opacity: 0.6;
     margin-left: 0.25rem;
     vertical-align: middle;
   }
   .sample-note-preview {
-    font-size: 0.64rem;
+    font-size: var(--font-size-tiny);
     color: #a8860a;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .sample-dur { font-size: 0.68rem; color: #aaa; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+  .sample-dur { font-size: var(--font-size-tiny); color: #aaa; flex-shrink: 0; font-variant-numeric: tabular-nums; }
 
   /* ── Editor header ── */
   .editor-header {
@@ -1833,10 +1823,10 @@
     flex-wrap: wrap;
     margin-bottom: 0.6rem;
   }
-  .editor-title { font-size: 0.85rem; font-weight: 600; }
-  .editor-dur { font-size: 0.78rem; color: #888; font-variant-numeric: tabular-nums; }
+  .editor-title { font-size: var(--font-size-small); font-weight: 600; }
+  .editor-dur { font-size: var(--font-size-tiny); color: #888; font-variant-numeric: tabular-nums; }
   .cross-link-btn {
-    font-size: 0.9rem; padding: 0.1rem 0.25rem; border-radius: 5px;
+    font-size: var(--font-size-small); padding: 0.1rem 0.25rem; border-radius: 5px;
     text-decoration: none; color: inherit; border: 1px solid transparent;
     margin-left: 0.15rem;
   }
@@ -1846,13 +1836,13 @@
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    font-size: 0.74rem;
+    font-size: var(--font-size-tiny);
     color: #666;
     margin-left: auto;
   }
   .category-control select {
     font-family: inherit;
-    font-size: 0.78rem;
+    font-size: var(--font-size-tiny);
     padding: 0.2rem 0.4rem;
     border: 1px solid #d0d0cc;
     border-radius: 4px;
@@ -1865,7 +1855,7 @@
     border: none;
     border-radius: 4px;
     padding: 0.32rem 0.75rem;
-    font-size: 0.76rem;
+    font-size: var(--font-size-tiny);
     font-family: inherit;
     cursor: pointer;
   }
@@ -1877,7 +1867,7 @@
     border: none;
     border-radius: 4px;
     padding: 0.32rem 0.75rem;
-    font-size: 0.76rem;
+    font-size: var(--font-size-tiny);
     font-family: inherit;
     cursor: pointer;
   }
@@ -1892,14 +1882,14 @@
     border: 1px solid #f5c6c0;
     border-radius: 6px;
     padding: 0.5rem 0.7rem;
-    font-size: 0.78rem;
+    font-size: var(--font-size-tiny);
     margin-bottom: 0.7rem;
     flex-wrap: wrap;
   }
 
   .error-msg {
     color: #c0392b;
-    font-size: 0.78rem;
+    font-size: var(--font-size-tiny);
     margin: 0.4rem 0;
   }
 
@@ -1917,16 +1907,16 @@
     border-radius: 50%;
     width: 32px;
     height: 32px;
-    font-size: 0.8rem;
+    font-size: var(--font-size-tiny);
     cursor: pointer;
     flex-shrink: 0;
   }
   .play-pause-btn:hover { opacity: 0.8; }
-  .mini-time { font-size: 0.74rem; color: #666; font-variant-numeric: tabular-nums; flex-shrink: 0; }
-  .hint { font-size: 0.7rem; color: #aaa; }
-  .regen-label { font-size: 0.7rem; color: #aaa; margin-left: auto; }
+  .mini-time { font-size: var(--font-size-tiny); color: #666; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+  .hint { font-size: var(--font-size-tiny); color: #aaa; }
+  .regen-label { font-size: var(--font-size-tiny); color: #aaa; margin-left: auto; }
   .regen-btn {
-    font-size: 0.68rem; padding: 0.1rem 0.35rem;
+    font-size: var(--font-size-tiny); padding: 0.1rem 0.35rem;
     border: 1px solid #c0c8d8; border-radius: 4px;
     background: #f4f6fa; color: #445; cursor: pointer;
     line-height: 1.4;
@@ -1983,7 +1973,7 @@
     line-height: 1.15;
     white-space: nowrap;
   }
-  .fragment-label-text { font-size: 18px; color: #1a1a1a; }
+  .fragment-label-text { font-size: var(--font-size-medium); color: #1a1a1a; }
   .fragment-label-text.fragment-dur { color: rgba(0, 0, 0, 0.5); }
 
   /* ── Toolbars ── */
@@ -1998,7 +1988,7 @@
     border-radius: 6px;
     padding: 0.6rem 0.8rem;
     margin-top: 0.6rem;
-    font-size: 0.78rem;
+    font-size: var(--font-size-tiny);
   }
 
   .pending-range, .ann-range { color: #666; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -2007,7 +1997,7 @@
   .note-row { display: flex; align-items: center; gap: 0.4rem; }
   .note-input {
     font-family: inherit;
-    font-size: 0.78rem;
+    font-size: var(--font-size-tiny);
     padding: 0.3rem 0.5rem;
     border: 1px solid #d0d0cc;
     border-radius: 4px;
@@ -2030,7 +2020,7 @@
     margin-bottom: 0.35rem;
   }
   .notes-panel-title {
-    font-size: 0.72rem;
+    font-size: var(--font-size-tiny);
     font-weight: 700;
     text-transform: uppercase;
     color: #999;
@@ -2046,7 +2036,7 @@
   .note-row-item.selected { background: #fdf6d8; }
   .note-row-item .note-input { flex: 1; min-width: 0; }
   .note-time {
-    font-size: 0.68rem;
+    font-size: var(--font-size-tiny);
     color: #a8860a;
     font-variant-numeric: tabular-nums;
     flex-shrink: 0;
@@ -2059,7 +2049,7 @@
     background: none;
     border: none;
     font-family: inherit;
-    font-size: 0.8rem;
+    font-size: var(--font-size-tiny);
     color: #1a1a1a;
     cursor: pointer;
     padding: 0.15rem 0.3rem;
@@ -2073,7 +2063,7 @@
     flex: 1;
     min-width: 0;
     padding: 0.15rem 0.3rem;
-    font-size: 0.8rem;
+    font-size: var(--font-size-tiny);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -2082,15 +2072,15 @@
     background: none;
     border: none;
     color: #c0392b;
-    font-size: 0.95rem;
+    font-size: var(--font-size-small);
     line-height: 1;
     cursor: pointer;
     padding: 0.1rem 0.3rem;
     flex-shrink: 0;
   }
   .note-delete-btn:hover { opacity: 0.7; }
-  .notes-empty { font-size: 0.74rem; color: #aaa; padding: 0.2rem 0; }
-  .shortcuts-hint { font-size: 0.72rem; color: #aaa; margin-top: 0.6rem; line-height: 1.5; }
+  .notes-empty { font-size: var(--font-size-tiny); color: #aaa; padding: 0.2rem 0; }
+  .shortcuts-hint { font-size: var(--font-size-tiny); color: #aaa; margin-top: 0.6rem; line-height: 1.5; }
 
   /* ── Out-of-bounds fragments panel ── */
   .oob-panel {
@@ -2101,14 +2091,14 @@
     background: #fff8f8;
   }
   .oob-panel-header { margin-bottom: 0.4rem; }
-  .oob-panel-title { font-size: 0.78rem; font-weight: 600; color: #c0392b; margin-right: 0.5rem; }
-  .oob-panel-hint { font-size: 0.72rem; color: #a0402a; }
+  .oob-panel-title { font-size: var(--font-size-tiny); font-weight: 600; color: #c0392b; margin-right: 0.5rem; }
+  .oob-panel-hint { font-size: var(--font-size-tiny); color: #a0402a; }
   .oob-row {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     padding: 0.2rem 0;
-    font-size: 0.8rem;
+    font-size: var(--font-size-tiny);
   }
   .oob-range { flex: 1; font-variant-numeric: tabular-nums; color: #555; }
 </style>

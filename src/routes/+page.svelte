@@ -34,7 +34,7 @@
   :global(*, *::before, *::after) { box-sizing: border-box; }
   :global(body) {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--font-body);
     background: #f7f7f5;
     color: #1a1a1a;
   }
@@ -57,7 +57,7 @@
 
   h1 {
     margin: 0;
-    font-size: clamp(2rem, 8vw, 3.6rem);
+    font-size: var(--font-size-xlarge);
   }
 
   .lede {
@@ -92,8 +92,8 @@
     box-shadow: 0 8px 24px rgb(0 0 0 / 7%);
   }
 
-  a strong { font-size: 1.15rem; }
-  a span { color: #777; font-size: 0.86rem; line-height: 1.4; }
+  a strong { font-size: var(--font-size-medium); }
+  a span { color: #777; font-size: var(--font-size-small); line-height: 1.4; }
 
   @media (max-width: 620px) {
     nav { grid-template-columns: 1fr; }

@@ -212,7 +212,7 @@
     width: 108px;
     padding: 6px 10px 6px 14px;
     border-right: 1px solid #ccc;
-    font-size: 0.85rem;
+    font-size: var(--font-size-small);
     font-weight: 700;
     color: #1a1a1a;
     display: flex;
@@ -230,7 +230,7 @@
     position: absolute;
     top: 6px;
     left: 6px;
-    font-size: 0.65rem;
+    font-size: var(--font-size-tiny);
     color: #1a1a1a;
     pointer-events: none;
     line-height: 1;
@@ -246,7 +246,7 @@
   .overview-caption {
     margin: 0;
     padding: 4px 14px 6px;
-    font-size: 0.75rem;
+    font-size: var(--font-size-tiny);
     color: #1a1a1a;
     line-height: 2;
     display: flex;
@@ -266,7 +266,7 @@
     border: 1px solid #d0d0cc;
     border-radius: 4px;
     padding: 0.1rem 0.4rem;
-    font-size: 0.72rem;
+    font-size: var(--font-size-tiny);
     cursor: pointer;
     color: #666;
     font-family: inherit;
@@ -278,6 +278,6 @@
 
   /* ── Mobile ── */
   @media (max-width: 520px) {
-    .year-label { width: 56px; padding: 6px 4px 6px 8px; font-size: 0.75rem; }
+    .year-label { width: 56px; padding: 6px 4px 6px 8px; font-size: var(--font-size-tiny); }
   }
 </style>
