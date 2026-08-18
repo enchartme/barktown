@@ -1,4 +1,35 @@
 <script>
+  import { onMount } from 'svelte';
+  import { fetchDiarySummary } from '$lib/diary-summary.js';
+  import { formatDisturbedTime } from '$lib/report-summary.js';
+
+  let recentSummary = $state({ records: 0, disturbedTimeSec: 0, barks: 0 });
+  let summaryState = $state('loading');
+
+  function todayInStockholm() {
+    return new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'Europe/Stockholm',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(new Date());
+  }
+
+  onMount(async () => {
+    const endDate = todayInStockholm();
+    try {
+      const summary = await fetchDiarySummary({
+        startDate: '2026-08-01',
+        endDate,
+      });
+      recentSummary = summary.totals;
+      summaryState = 'ready';
+    } catch (error) {
+      console.error('Failed to load recent Barktown summary:', error);
+      summaryState = 'error';
+    }
+  });
+
   const sections = [
     {
       number: '01',
@@ -155,10 +186,10 @@
           <small>Wide image · 3:2 recommended</small>
         </div>
         <dl class="evidence-facts">
-          <div><dt>Target</dt><dd>Dog-like sound events</dd></div>
-          <div><dt>Primary record</dt><dd>Playable, dated audio</dd></div>
-          <div><dt>Operation</dt><dd>Designed for continuous listening</dd></div>
-          <div><dt>Final judgment</dt><dd>Human review</dd></div>
+          <div><dt>Barks detected</dt><dd>{summaryState === 'ready' ? recentSummary.barks.toLocaleString() : summaryState === 'error' ? 'Unavailable' : 'Loading…'}</dd></div>
+          <div><dt>Time barking</dt><dd>{summaryState === 'ready' ? formatDisturbedTime(recentSummary.disturbedTimeSec) : summaryState === 'error' ? 'Unavailable' : 'Loading…'}</dd></div>
+          <div><dt>Disturbance events</dt><dd>{summaryState === 'ready' ? recentSummary.records.toLocaleString() : summaryState === 'error' ? 'Unavailable' : 'Loading…'}</dd></div>
+          <div><dt>Counting since</dt><dd>1 August 2026</dd></div>
         </dl>
       </div>
     </section>

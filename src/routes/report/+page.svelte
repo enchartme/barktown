@@ -3,6 +3,7 @@
   import AudioPlayerPanel from '$lib/components/AudioPlayerPanel.svelte';
   import GoblinPiStatus from '$lib/components/GoblinPiStatus.svelte';
   import ReportBarcode from '$lib/components/ReportBarcode.svelte';
+  import { fetchDiarySummary } from '$lib/diary-summary.js';
   import { hitMetadataById, loadHitMetadata } from '$lib/hit-metadata.js';
   import { reportSentenceNeedsPeriod } from '$lib/report-annotations.js';
   import {
@@ -11,11 +12,7 @@
     withRecordingCommentAnnotations,
   } from '$lib/recording-comments.js';
   import { formatPrintReportRange, reportBounds } from '$lib/report-range.js';
-  import {
-    formatDisturbedTime,
-    summarizeEntries,
-    sumReportSummaries,
-  } from '$lib/report-summary.js';
+  import { formatDisturbedTime } from '$lib/report-summary.js';
   import { DIARY_NIGHT_COLOR, isNighttimeRecording } from '$lib/sun-time.js';
   import {
     addDays,
@@ -31,6 +28,12 @@
 
   /** @type {import('$lib/types').Entry[]} */
   let entries = $state([]);
+  let periodSummary = $state({
+    startDate: null,
+    endDate: null,
+    days: [],
+    totals: { records: 0, disturbedTimeSec: 0, barks: 0 },
+  });
   let loading = $state(true);
   /** @type {string | null} */
   let loadError = $state(null);
@@ -54,6 +57,7 @@
   const reportStartDate = $derived(reportDateBounds?.startDate ?? null);
   const reportEndDate = $derived(reportDateBounds?.endDate ?? null);
   const sunByDate = $derived(data.sunByDate ?? {});
+  const summaryByDate = $derived(new Map(periodSummary.days.map((day) => [day.date, day])));
 
   const days = $derived.by(() => {
     if (!reportStartDate || !reportEndDate) return [];
@@ -69,14 +73,23 @@
       const orderedEntries = recordingOrder === 'asc'
         ? day.entries
         : [...day.entries].reverse();
+      const serverSummary = summaryByDate.get(day.date);
       return {
         ...day,
         entries: orderedEntries,
-        summary: summarizeEntries(orderedEntries, $hitMetadataById),
+        summary: {
+          disturbances: serverSummary?.records ?? 0,
+          totalDurationSec: serverSummary?.disturbedTimeSec ?? 0,
+          barks: serverSummary?.barks ?? 0,
+        },
       };
     });
   });
-  const reportTotals = $derived(sumReportSummaries(days.map((day) => day.summary)));
+  const reportTotals = $derived({
+    disturbances: periodSummary.totals.records,
+    totalDurationSec: periodSummary.totals.disturbedTimeSec,
+    barks: periodSummary.totals.barks,
+  });
 
   function todayInStockholm() {
     return new Intl.DateTimeFormat('sv-SE', {
@@ -138,6 +151,20 @@
     return isIsoDate(body?.date) ? body.date : null;
   }
 
+  async function refreshPeriodSummary(bounds = reportDateBounds) {
+    if (!bounds) return;
+    const requestedPeriod = `${bounds.startDate}:${bounds.endDate}`;
+    try {
+      const nextSummary = await fetchDiarySummary(bounds);
+      const currentPeriod = reportDateBounds
+        ? `${reportDateBounds.startDate}:${reportDateBounds.endDate}`
+        : '';
+      if (requestedPeriod === currentPeriod) periodSummary = nextSummary;
+    } catch (error) {
+      console.error('Failed to refresh diary summary:', error);
+    }
+  }
+
   async function loadReport(weekStart) {
     const bounds = reportBounds(weekStart, rangeWeeks);
     const requestId = ++reportRequestId;
@@ -145,9 +172,13 @@
     loadError = null;
 
     try {
-      const nextEntries = await fetchDiary(bounds);
+      const [nextEntries, nextSummary] = await Promise.all([
+        fetchDiary(bounds),
+        fetchDiarySummary(bounds),
+      ]);
       if (requestId !== reportRequestId) return;
       entries = nextEntries;
+      periodSummary = nextSummary;
       void loadHitMetadata(bounds).catch((error) => {
         console.error('Failed to load hit metadata:', error);
       });
@@ -242,6 +273,7 @@
     const updated = { ...entry, ...trim };
     entries = entries.map(item => item.id === entry.id ? { ...item, ...trim } : item);
     if (panelEntry?.id === entry.id) panelEntry = updated;
+    void refreshPeriodSummary();
   }
 
   async function deleteEntry(entry) {
@@ -257,6 +289,7 @@
       console.error('Failed to delete entry:', error);
     }
     entries = entries.filter((item) => item.id !== entry.id);
+    void refreshPeriodSummary();
     closePanel();
   }
 
@@ -282,6 +315,7 @@
 
     if (!keepInDiary) {
       entries = entries.filter((item) => item.id !== entry.id);
+      void refreshPeriodSummary();
       closePanel();
     }
   }
