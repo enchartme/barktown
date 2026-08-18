@@ -35,87 +35,99 @@
       number: '01',
       id: 'purpose',
       label: 'Purpose',
-      title: 'What Barktown is — and is not',
-      simple: 'Barktown listens for repeated dog-like sounds at one fixed location and turns them into a dated, reviewable diary. It does not identify a dog, decide where a sound came from, or determine whether it is legally significant.',
-      more: 'The aim is consistent observation: preserve the time, surrounding audio and detector measurements for events that may be barking, then let a person inspect the evidence. This makes recurring patterns easier to discuss without presenting an automated score as a fact.',
+      title: "What Barktown is and isn't",
+      simple: 'Barktown listens for repeated dog-like sounds at one fixed location and turns them into a dated, reviewable diary. It does not identify a dog or decide where a sound came from.',
+      more: 'The aim is consistent observation: preserve the time, surrounding audio and loudness measurements for sound events that are likely barks. The detector is trained to ignore people, birds, traffic and other noises, but it is not 100% accurate. A human would review and delete any mistakes.',
       technical: [
         'The measured target is a binary acoustic classification — wanted dog sounds (bark or yap) versus other local sounds — followed by a deterministic event-assembly step. The classifier emits a probability-like score; that score is evidence about acoustic similarity, not a calibrated probability that a particular dog barked.',
         'Each retained event has an audio clip and timestamps, so the automated result remains falsifiable by listening. The system performs no speaker identification, animal identification, direction finding or source localisation. A Barktown record is therefore a candidate acoustic event, not an attribution or legal conclusion.'
       ],
-      media: 'Monitoring context or site photograph',
-      mediaNote: 'Suggested: a wide photograph showing the monitored setting without revealing private areas.',
+      media: '/images/mic-hanging.jpg',
+      mediaNote: 'Directional microphone',
+      mediaFullWidth: false,
       reverse: false
     },
     {
       number: '02',
-      id: 'setup',
-      label: 'Setup',
-      title: 'A fixed instrument with visible health',
-      simple: 'A microphone in a fixed position feeds a dedicated small computer that is designed to listen continuously. Built-in health checks show when the microphone, audio stream or connection is not working, so missing data is not silently treated as quiet.',
-      more: 'The current instrument is a RØDE VideoMic NTG connected to a Raspberry Pi. Its position and settings are kept stable, while test recordings compare gain, wind protection and filtering before a configuration is adopted. The device reports signal level, clipping, dropped audio and upload health during operation.',
+      id: 'history',
+      label: 'History',
+      title: '6 years of barking disturbance',
+      simple: 'This project started out of a frustration of not being able to rest at home. The problem did not appear yesterday. See the history below:',
+      more: 'The dog disturbances were collected manually since 2021 and piled up on hard drives. Only in February 2026 have we made the Barktown visual diary to browse and listen the collected recordings. Later same year we acquired hardware and built the automatic AI detector.',
       technical: [
-        'Capture is mono at the microphone’s native 48 kHz rate, in 2,048-frame callback blocks (about 42 ms). Calibration records controlled setting permutations and ranks them using explicit measurements: RMS/dBFS, peak level, clipping rate, x-runs and low-frequency energy as a wind-rumble proxy. Those values make setup decisions inspectable rather than anecdotal.',
-        'Operational status includes microphone presence, stream state, sample rate, recent RMS and peak levels, clipping, x-runs, CPU temperature, storage, network reachability and upload counters. The monitor and its status service run separately, so observation of the instrument does not share the detector’s main process.'
+        '4120 manual disturbance text notes',
+        '1295 manual disturbance audio recordings of disturbances'
       ],
-      media: 'Installation photograph',
-      mediaNote: 'Suggested: microphone, wind protection, mounting height and orientation.',
+      media: '/images/six-years-of-bark-disturbance.png',
+      mediaNote: 'Project timeline',
+      mediaFullWidth: true,
       reverse: true
     },
     {
       number: '03',
       id: 'sampling',
       label: 'Sampling',
-      title: 'Keep the evidence, not the whole day',
-      simple: 'The system listens throughout operation but saves audio only around suspected events. Every saved recording can be played, corrected and reused to make later versions less likely to repeat the same mistake.',
-      more: 'Recent sound is held temporarily in memory. A clip is retained only after several bark-like observations support one event, with a small amount of sound before and after it for context. Reviewers also collect examples of wind, traffic, wildlife, tools and other dogs because convincing look-alikes are essential for finding false alarms.',
+      title: 'Collecting examples of barks',
+      simple: 'The AI bark detector had to learn from local examples of sounds, so we made a system to record and label those. Apart of actual barks and yaps we have also collected examples of everything that is not a bark: traffic, wind, wildlife, homestead, etc',
+      more: 'In each sample recordig we have manually labeled fragments that sound representative. These fragments are later sliced into yet finer portions called "windows" by the learning model called YAMNet, see the next section',
       technical: [
-        'The live device uses an in-memory ring buffer, avoiding continuous day-long audio storage and unnecessary writes to the Pi’s SD card. In the current bootstrap configuration the buffer holds 700 seconds, confirmed events can extend to 570 seconds, and 1.5 seconds of padding is added at each end before upload. Live detector parameters are versioned in the API and can differ from these boot defaults.',
-        'This is event-triggered sampling. It is efficient and privacy-conscious, but it has an important evidentiary limit: saved clips can confirm what the detector captured, while the absence of a clip does not by itself prove the absence of barking. Training fragments retain their parent recording and time bounds so their provenance can be traced.'
+        'We have manually collected 679 sound samples using the exact hardware setup and location that would be later used for detection. Collecting samples took about a month and labeling fragments took about a week of work.', 
+        'Manually labeled fragments are sliced into Windows that have a fixed length of 0.96s, as required by the sound classification neural network YAMNet. We discard windows that may have not enough information, such as the incomplete ones in the end of fragments — those may just include silence after barks'
       ],
-      media: 'Annotated recording example',
-      mediaNote: 'Suggested: waveform with one bark, its marked bounds and the retained context.',
-      reverse: false
+      media: '/images/explanation-windows.png',
+      mediaNote: 'Example of samples, fragmets and windows',
+      mediaFullWidth: true,
+      reverse: true
     },
     {
       number: '04',
       id: 'training',
       label: 'Training',
-      title: 'Teach with local examples and hard mistakes',
-      simple: 'People mark real recordings as the target dog, other dogs or ordinary local sounds. The model learns from one portion and is checked against a held-back portion; each deployed version carries its own dated results.',
-      more: 'Short fragments are labelled as bark, yap, background, wind, traffic, wildlife, homestead sounds, gunshots or a different dog. A general sound model first turns each fragment into a numerical sound fingerprint. A smaller Barktown model then learns the local distinction between bark/yap and everything else, with confusing negative examples deliberately included.',
+      title: 'How the AI was trained',
+      simple: "YAMNet is a pre-trained deep learning model by Google that identifies 521 different audio event classes — like animal sounds, speech, or sirens — from an audio waveform. The Barktown learning happens on top of YAMNet's existing learning. This is called transfer learning. It lets us train a useful local detector with far fewer examples than would be required to build an audio model from scratch. An analogy would be hiring someone who already understands sound generally, then training them on the specific distinction that matters at this location.", 
+      more: "Barktown uses YAMNet model as a sound-feature extractor: each short audio fragment is converted into a 1024-number “sound fingerprint” describing patterns YAMNet has already learned, such as rhythm, pitch and texture. Our labelled samples then train a much smaller Barktown classifier to interpret those fingerprints and learn the local distinction between bark/yap and everything else, with confusing negative examples deliberately included",      
       technical: [
-        'Audio is mixed to mono, resampled to 16 kHz and passed through YAMNet. Its overlapping analysis windows are approximately 0.975 seconds long with a 0.48-second hop, each producing a 1,024-dimensional embedding. The custom head is Dense(128, ReLU) → Dropout(0.3) → Dense(1, sigmoid), trained with Adam and binary cross-entropy. Early stopping monitors validation AUC; the decision threshold is selected for the best positive-class F1, preferring the higher threshold on an exact tie.',
-        'The model bundle records a SHA-256 digest, UTC training time, class lists, train/validation window counts, epochs, threshold, accuracy and per-class precision, recall and F1. One current limitation is explicit: the trainer’s seeded stratified 80/20 split is made at window level, so correlated windows from one recording can appear on both sides and make validation optimistic. The inspection export already provides a deterministic parent-recording split for leakage-resistant review; adopting that split in the final trainer is a methodological improvement still to be completed.'
+        'Audio is mixed to mono, resampled to 16 kHz and passed through YAMNet. Its overlapping analysis windows are approximately 0.96 seconds long with a 0.48-second step, each producing a 1024-dimensional embedding. The custom part is that Barktown then trains a small classifier that combines 128 learned sound patterns and produces a single score for how bark-like the audio is. During training, some signals are randomly hidden to reduce memorisation. Training stops when performance on held-back audio no longer improves. The final cutoff balances detected barks against false alarms, favouring fewer false alarms when undecided.'
       ],
-      media: 'Training-set quality diagram',
-      mediaNote: 'Suggested: class balance or the labelled PCA/UMAP inspection plot.',
+      links: [{label: "YAMNet", href: "https://www.kaggle.com/models/google/yamnet"}],
+      media: '/images/training-windows.png',
+      mediaNote: 'Training quality diagram',
+      mediaFullWidth: true,
       reverse: true
     },
     {
       number: '05',
-      id: 'pipeline',
-      label: 'Pipeline',
-      title: 'From sound to a reviewable event',
-      simple: 'Barktown repeatedly checks recent sound, waits for several matching observations, then preserves one recording for the whole episode. The result is uploaded, organised and placed in the diary for a person to review.',
-      more: 'A single high score is not enough. The detector asks for repeated evidence within a time window, prevents one bark from being counted several times, and joins nearby barks into one episode. When the episode is over, it saves the surrounding audio and sends both the recording and its measurements to the archive.',
+      id: 'detection',
+      label: 'Detection',
+      title: 'From sound to a diary record',
+      simple: 'Barktown repeatedly checks recent sound, waits for several matching observations, then preserves a recording of the whole session. The result is uploaded, organised and placed in the diary for a human review.',
+      more: 'Recent sound is held temporarily in memory. A clip is retained only after several bark-like observations support one event, with a small amount of sound before and after it for context. A single high score is not enough. The detector asks for repeated evidence within a time window, prevents one bark from being counted several times and joins nearby barks into one session. When the session is over, it saves the surrounding audio and sends both the recording and its measurements to the archive.',
       technical: [
-        'The live stream is captured at 48 kHz and resampled to 16 kHz for YAMNet. A trailing 1.5-second buffer is scored every 0.25 seconds. Current bootstrap defaults require a score of at least 0.92, four accepted hits within a 30-second sliding window and at least 1.5 seconds between counted hits. That minimum separation — called hit refractory in the code — stops overlapping analysis windows from multiplying one physical bark.',
-        'A deterministic state machine moves through IDLE → ACTIVE_CANDIDATE → ACTIVE_CONFIRMED → COOLDOWN. A 120-second sub-threshold gap closes the current episode in the boot configuration; renewed barking during cooldown reopens it. Audio is encoded in memory, uploaded to MinIO, validated by the ingest service, indexed in SQLite and exposed to the UI with waveform and per-hit metadata.'
+        'The current instrument is a RØDE VideoMic NTG connected to a Raspberry Pi. The live stream is captured at 48 kHz and resampled to 16 kHz for YAMNet. A trailing 1.5-second buffer is scored every 0.25 seconds. Current bootstrap defaults require a score of at least 0.92, four accepted hits within a 30-second sliding window and at least 1.5 seconds between counted hits. That minimum separation — called hit refractory in the code — stops overlapping analysis windows from double-counting barks.',
+
+        'A deterministic state machine moves through IDLE → ACTIVE_CANDIDATE → ACTIVE_CONFIRMED → COOLDOWN. A 120-second sub-threshold gap closes the current session in the boot configuration; renewed barking during cooldown reopens it. Audio is encoded in memory, uploaded to MinIO, validated by the ingest service, indexed in SQLite and exposed to the UI with waveform and per-hit metadata.',
+
+      
+        'The live device uses an in-memory ring buffer, avoiding continuous day-long audio storage and unnecessary writes to the Pi’s SD card. In the current bootstrap configuration the buffer holds 700 seconds, confirmed events can extend to 570 seconds, and 1.5 seconds of padding is added at each end before upload. Detector parameters are stored in the API/database and can be updated during runtime.',
+
+     
       ],
-      media: 'Detection pipeline diagram',
-      mediaNote: 'Suggested: microphone → scoring → confirmation → evidence clip → diary.',
-      reverse: false
+      media: '/images/detection-flow.png',
+      mediaNote: 'Detection pipeline',
+      mediaFullWidth: true,
+      reverse: true
     },
     {
       number: '06',
       id: 'architecture',
       label: 'Architecture',
-      title: 'Separate parts, traceable hand-offs',
-      simple: 'Listening, storage and presentation are separate parts of the system. The detector can keep working if the web page is closed, while recordings and settings remain available for later review.',
+      title: 'It got complicated',
+      simple: 'Listening, storage and presentation are separate parts of the system. The detector can keep working if the web page is closed, while recordings remain available for later review.',
       more: 'The field device runs the microphone and detector. A second service validates uploads, stores audio and metadata, and provides the application interface. The Barktown website reads that interface to show the diary, reports and training workspace; laptop tools handle calibration, data inspection and model training.',
       technical: [
         'The runtime is split across four version-controlled repositories: the SvelteKit UI, the Python Raspberry Pi monitor, the Node/SQLite ingest API and the Python training/calibration utilities. Audio objects live in S3-compatible MinIO storage; diary, annotation, detector-parameter and provenance records live in SQLite. The API is the persistent source of truth for live tuning, while checked configuration supplies validated first-boot fallbacks.',
-        'Model artifacts are deployed as a TFLite classifier plus adjacent metadata; the runtime verifies the declared filename and SHA-256 before loading a new bundle. The same scoring and hit-gating core is reused for live inference and offline re-analysis, reducing the risk that the review path silently applies different rules.'
+        'Model artifacts are deployed as a TFLite classifier plus adjacent metadata; the runtime verifies the declared filename and SHA-256 before loading a new bundle. The same scoring and hit-gating core is reused for live inference and offline re-analysis, reducing the risk that the review path silently applies different rules.',
+        'Operational status includes microphone presence, stream state, sample rate, recent RMS and peak levels, clipping, x-runs, CPU temperature, storage, network reachability and upload counters. The monitor and its status service run separately, so observation of the instrument does not share the detector’s main process.'
       ],
       links: [
         { label: 'UI', href: 'https://github.com/enchartme/barktown-ui' },
@@ -123,15 +135,16 @@
         { label: 'Server', href: 'https://github.com/enchartme/barktown-server' },
         { label: 'Training tools', href: 'https://github.com/enchartme/barktown-utils' }
       ],
-      media: 'System architecture diagram',
-      mediaNote: 'Suggested: field device, archive/API, training workstation and browser.',
+      media: '/images/system-architecture.png',
+      mediaNote: 'System Architecture',
+      mediaFullWidth: true,
       reverse: true
     },
     {
       number: '07',
       id: 'presentation',
       label: 'Presentation',
-      title: 'Lead with the recording, not the score',
+      title: 'Visual presentations',
       simple: 'The diary shows when a suspected event happened, and the report shows patterns across two weeks. Every result leads back to playable audio so a reviewer can check the system rather than trust a number on its own.',
       more: 'Recordings appear on a time-of-day timeline with waveforms, labels and notes. Weekly summaries count events and describe their distribution, while confidence and relative loudness help find recordings worth closer inspection. Reviewers can correct false positives and re-run archived material with the current model.',
       technical: [
@@ -140,6 +153,21 @@
       ],
       media: 'Diary and report screenshots',
       mediaNote: 'Suggested: one diary event beside its corresponding two-week summary.',
+      mediaFullWidth: false,
+      reverse: false
+    },{
+      number: '08',
+      id: 'limitations',
+      label: 'Limitations',
+      title: 'No free lunch',
+      simple: 'The system hsa imperfections',
+      more: '',
+      technical: [
+        'This is event-triggered sampling. It is efficient and privacy-conscious, but it has an important evidentiary limit: saved clips can confirm what the detector captured, while the absence of a clip does not by itself prove the absence of barking. Training fragments retain their parent recording and time bounds so their provenance can be traced.'
+      ],
+      media: 'Diary and report screenshots',
+      mediaNote: 'Suggested: one diary event beside its corresponding two-week summary.',
+      mediaFullWidth: false,
       reverse: false
     }
   ];
@@ -168,23 +196,22 @@
     <section class="hero" aria-labelledby="method-title">
       <div class="hero-copy">
         <p class="eyebrow">Research method · August 2026</p>
-        <h1 id="method-title">From a sound in the air<br />to evidence you can inspect.</h1>
+        <h1 id="method-title">AI-powered dog bark detector</h1>
         <p class="lede">
-          Barktown is a field instrument for documenting possible dog-barking events over time.
-          This page explains how the evidence is captured, tested and presented — and where its claims stop.
+          Barktown is a field instrument for documenting dog barks over time.
+          This page explains how the bark sounds are detected, captured and presented.
         </p>
         <p class="reading-note">
-          Each section starts with the short version. Open <strong>Learn more</strong> for context,
-          then <strong>Technical details</strong> for the implementation and limitations.
+          Designed and built by Angie Hjort, <a href="https://enchart.me">Encharted Media AB</a>
         </p>
       </div>
 
       <div class="hero-side">
-        <div class="hero-placeholder" aria-label="Reserved space for a field photograph">
-          <span class="slot-kicker">Image space</span>
-          <strong>Field instrument in context</strong>
-          <small>Wide image · 3:2 recommended</small>
-        </div>
+        <img
+          class="hero-image"
+          src="/images/angie-fixing.jpg"
+          alt="Angie adjusting the Barktown field instrument outdoors"
+        />
         <dl class="evidence-facts">
           <div><dt>Barks detected</dt><dd>{summaryState === 'ready' ? recentSummary.barks.toLocaleString() : summaryState === 'error' ? 'Unavailable' : 'Loading…'}</dd></div>
           <div><dt>Time barking</dt><dd>{summaryState === 'ready' ? formatDisturbedTime(recentSummary.disturbedTimeSec) : summaryState === 'error' ? 'Unavailable' : 'Loading…'}</dd></div>
@@ -203,7 +230,12 @@
 
     <div class="method-sections">
       {#each sections as section}
-        <section class:reverse={section.reverse} class="method-section" id={section.id}>
+        <section
+          class:reverse={section.reverse}
+          class:media-full-width={section.mediaFullWidth}
+          class="method-section"
+          id={section.id}
+        >
           <article class="section-copy">
             <div class="section-heading">
               <span class="section-number">{section.number}</span>
@@ -247,10 +279,19 @@
           </article>
 
           <figure class="media-slot">
-            <div class="media-placeholder">
-              <span class="slot-kicker">Picture / diagram space</span>
-              <strong>{section.media}</strong>
-            </div>
+            {#if section.media.startsWith('/')}
+              <img
+                class="section-media"
+                src={section.media}
+                alt={section.mediaAlt ?? section.title}
+                loading="lazy"
+              />
+            {:else}
+              <div class="media-placeholder">
+                <span class="slot-kicker">Picture / diagram space</span>
+                <strong>{section.media}</strong>
+              </div>
+            {/if}
             <figcaption>{section.mediaNote}</figcaption>
           </figure>
         </section>
@@ -386,7 +427,6 @@
   .reading-note strong { color: #384740; }
 
   .hero-side { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
-  .hero-placeholder,
   .media-placeholder {
     position: relative;
     display: flex;
@@ -402,12 +442,15 @@
     background-size: 32px 32px;
   }
 
-  .hero-placeholder {
+  .hero-image {
+    width: 100%;
     min-height: 310px;
-    padding: 1.4rem;
+    aspect-ratio: 3 / 2;
+    display: block;
+    object-fit: cover;
+    object-position: center;
   }
 
-  .hero-placeholder::after,
   .media-placeholder::after {
     content: '';
     position: absolute;
@@ -416,10 +459,7 @@
     pointer-events: none;
   }
 
-  .hero-placeholder > *,
   .media-placeholder > * { position: relative; z-index: 1; }
-  .hero-placeholder strong { max-width: 270px; font-family: var(--font-heading); font-size: var(--font-size-large); font-weight: var(--font-heading-weight); }
-  .hero-placeholder small { color: #6f7a74; }
 
   .evidence-facts {
     margin: 0;
@@ -463,6 +503,28 @@
   }
   .method-section.reverse .section-copy { order: 2; }
   .method-section.reverse .media-slot { order: 1; }
+  .method-section.media-full-width {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(2.5rem, 5vw, 5rem);
+  }
+  .method-section.media-full-width .section-copy,
+  .method-section.media-full-width .media-slot {
+    order: initial;
+  }
+  .method-section.media-full-width .media-slot {
+    width: 100%;
+    max-width: none;
+  }
+  .method-section.media-full-width .section-media {
+    height: auto;
+    aspect-ratio: auto;
+  }
+  .method-section.media-full-width .media-placeholder {
+    width: 100%;
+    min-height: 320px;
+    aspect-ratio: 16 / 7;
+  }
 
   .section-copy { max-width: 720px; }
   .section-heading { display: flex; align-items: flex-start; gap: 1rem; }
@@ -511,6 +573,13 @@
   .code-links a:hover { background: #e3e8e2; border-color: #8da295; }
 
   .media-slot { margin: 0; }
+  .section-media {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    display: block;
+    background: #e5e7df;
+    object-fit: contain;
+  }
   .media-placeholder { aspect-ratio: 4 / 3; padding: 1.2rem; }
   .media-placeholder strong { max-width: 280px; font-family: var(--font-heading); font-size: var(--font-size-large); font-weight: var(--font-heading-weight); }
   figcaption { margin-top: 0.7rem; color: #78817d; font-size: var(--font-size-tiny); line-height: 1.45; }
@@ -559,7 +628,7 @@
     .site-header nav a:first-child { margin-left: -0.6rem; }
     .hero { padding-top: 4rem; }
     h1 { font-size: var(--font-size-xlarge); }
-    .hero-placeholder { min-height: 230px; }
+    .hero-image { min-height: 230px; }
     .contents { margin-inline: 1rem; }
     .contents > span { display: none; }
     .method-sections { padding-inline: 1rem; }
