@@ -1482,7 +1482,6 @@
     color: inherit;
     font-size: 1.1rem;
     font-weight: 700;
-    letter-spacing: -0.02em;
     text-decoration: none;
     white-space: nowrap;
   }
@@ -1584,7 +1583,6 @@
     color: #999;
     font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 0.05em;
     text-transform: uppercase;
   }
   .encoding-title-control select {
@@ -1615,7 +1613,7 @@
   }
   .explanation-color-legend small { font-size: inherit; font-variant-numeric: tabular-nums; }
   .encoding-explanation section + section { margin-top: 0.85rem; padding-top: 0.75rem; border-top: 1px solid #ecece7; }
-  .encoding-explanation h2 { margin: 0 0 0.28rem; color: #777; font-size: 0.68rem; letter-spacing: 0.035em; text-transform: uppercase; }
+  .encoding-explanation h2 { margin: 0 0 0.28rem; color: #777; font-size: 0.68rem; text-transform: uppercase; }
   .encoding-explanation p { margin: 0; font-size: 0.78rem; line-height: 1.5; }
   @container (max-width: 1100px) {
     .corpus-summary-layout {
@@ -1637,7 +1635,6 @@
     text-align: left;
     font-size: 0.68rem;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
     color: #999;
     padding: 0.3rem 0.5rem;
     border-bottom: 1px solid #e0e0dc;
@@ -1648,7 +1645,6 @@
     color: #aaa;
     font-size: 0.6rem;
     font-weight: 400;
-    letter-spacing: 0;
     line-height: 1.25;
     text-transform: none;
     white-space: normal;
@@ -1765,7 +1761,6 @@
     font-weight: 800;
     color: #222;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
     border-bottom: 1px solid #cccccc;
     margin-top: 1.3rem;
   }
@@ -1788,7 +1783,6 @@
   .sample-label-pill {
     font-size: 0.6rem;
     font-weight: 700;
-    letter-spacing: 0.04em;
     text-transform: uppercase;
     padding: 0.1rem 0.4rem;
     border-radius: 8px;
@@ -2038,7 +2032,6 @@
   .notes-panel-title {
     font-size: 0.72rem;
     font-weight: 700;
-    letter-spacing: 0.03em;
     text-transform: uppercase;
     color: #999;
   }

@@ -534,7 +534,6 @@
     color: inherit;
     font-size: 1.1rem;
     font-weight: 700;
-    letter-spacing: -0.02em;
     text-decoration: none;
     white-space: nowrap;
   }
@@ -577,7 +576,6 @@
     color: #8a3d20;
     font-size: 0.72rem;
     font-weight: 750;
-    letter-spacing: 0.11em;
     text-transform: uppercase;
   }
 
@@ -586,7 +584,6 @@
     font-family: Georgia, 'Times New Roman', serif;
     font-size: clamp(2.4rem, 7vw, 4.8rem);
     font-weight: 500;
-    letter-spacing: -0.055em;
     line-height: 0.95;
   }
 

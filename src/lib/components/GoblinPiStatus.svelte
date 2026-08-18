@@ -1273,7 +1273,6 @@
     color: #fff;
     font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 0.1em;
     text-transform: uppercase;
     padding: 0.3rem 0.9rem;
   }
@@ -1301,7 +1300,6 @@
     font-weight: 400;
     color: #666;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
     opacity: 0.8;
   }
 
@@ -1394,7 +1392,6 @@
     color: #26312f;
     font-size: 0.68rem;
     font-weight: 750;
-    letter-spacing: 0.09em;
     text-transform: uppercase;
   }
 
@@ -1422,7 +1419,6 @@
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.56rem;
     font-weight: 700;
-    letter-spacing: 0.035em;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -1551,7 +1547,6 @@
   .channel-copy small {
     color: #7c8c89;
     font-size: 0.51rem;
-    letter-spacing: 0.04em;
     text-transform: uppercase;
   }
   .channel-copy strong {
@@ -1620,7 +1615,6 @@
     background: transparent;
     color: #ddd;
     font: inherit;
-    letter-spacing: 0.04em;
     text-transform: uppercase;
     cursor: pointer;
   }
@@ -1781,7 +1775,6 @@
     font-size: 0.72rem;
     font-weight: 600;
     font-family: inherit;
-    letter-spacing: 0.04em;
     cursor: pointer;
     color: #aaa;
     transition: color 0.1s;
@@ -1815,7 +1808,6 @@
   .manual-section-title {
     font-size: 0.65rem;
     font-weight: 700;
-    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: #999;
     border-bottom: 1px solid #e8e8e4;
@@ -1906,7 +1898,7 @@
     animation: rec-blink 1s step-end infinite;
   }
 
-  .rec-label { color: #e74c3c; letter-spacing: 0.05em; }
+  .rec-label { color: #e74c3c; }
   .rec-countdown { color: #555; font-variant-numeric: tabular-nums; }
 
   @keyframes rec-blink {
@@ -1972,7 +1964,6 @@
   .recent-recordings-title {
     font-size: 0.64rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
     color: #999;
     margin-bottom: 0.35rem;
   }
@@ -1995,7 +1986,6 @@
   .sample-label-pill {
     font-size: 0.6rem;
     font-weight: 700;
-    letter-spacing: 0.04em;
     text-transform: uppercase;
     padding: 0.1rem 0.4rem;
     border-radius: 8px;

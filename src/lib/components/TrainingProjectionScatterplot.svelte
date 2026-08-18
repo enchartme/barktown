@@ -688,7 +688,6 @@
     color: #fff;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
     font-size: 0.58rem;
   }
   .quality-grid {
@@ -706,7 +705,6 @@
     color: #777;
     font-size: 0.58rem;
     font-weight: 700;
-    letter-spacing: 0.04em;
     text-transform: uppercase;
   }
   .quality-grid small { color: #888; font-size: 0.6rem; white-space: nowrap; }

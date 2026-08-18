@@ -284,7 +284,6 @@
     color: #17211d;
     font-size: 1.05rem;
     font-weight: 750;
-    letter-spacing: -0.025em;
     text-decoration: none;
     white-space: nowrap;
   }
@@ -319,7 +318,6 @@
     color: #2d7058;
     font-size: 0.7rem;
     font-weight: 800;
-    letter-spacing: 0.13em;
     text-transform: uppercase;
   }
 
@@ -327,7 +325,6 @@
   h2 {
     font-family: Georgia, 'Times New Roman', serif;
     font-weight: 500;
-    letter-spacing: -0.045em;
   }
 
   h1 {
@@ -402,7 +399,7 @@
   }
   .evidence-facts div { min-height: 82px; padding: 1rem; border-right: 1px solid #d1d4cc; border-top: 1px solid #d1d4cc; }
   .evidence-facts div:nth-child(even) { border-right: 0; }
-  .evidence-facts dt { margin-bottom: 0.35rem; color: #7a847f; font-size: 0.65rem; font-weight: 750; letter-spacing: 0.08em; text-transform: uppercase; }
+  .evidence-facts dt { margin-bottom: 0.35rem; color: #7a847f; font-size: 0.65rem; font-weight: 750; text-transform: uppercase; }
   .evidence-facts dd { margin: 0; font-size: 0.83rem; font-weight: 650; line-height: 1.35; }
 
   .contents {
@@ -417,7 +414,7 @@
     scrollbar-width: none;
   }
   .contents::-webkit-scrollbar { display: none; }
-  .contents > span { margin-right: auto; color: #7a817d; font-size: 0.7rem; font-weight: 750; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+  .contents > span { margin-right: auto; color: #7a817d; font-size: 0.7rem; font-weight: 750; text-transform: uppercase; white-space: nowrap; }
   .contents a { display: inline-flex; align-items: baseline; gap: 0.3rem; color: #34433c; font-size: 0.78rem; font-weight: 650; text-decoration: none; white-space: nowrap; }
   .contents a:hover { color: #2d7058; }
   .contents small { color: #97a09b; font-size: 0.58rem; font-variant-numeric: tabular-nums; }
@@ -499,7 +496,7 @@
   .claim-boundary .eyebrow { color: #9fceb9; }
   .claim-boundary h2 { max-width: 420px; margin: 0.8rem 0 0; font-size: clamp(2.2rem, 4vw, 4.2rem); line-height: 0.98; }
   .boundary-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; }
-  .boundary-grid h3 { margin: 0 0 0.7rem; color: #b8dccb; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  .boundary-grid h3 { margin: 0 0 0.7rem; color: #b8dccb; font-size: 0.72rem; text-transform: uppercase; }
   .boundary-grid p { margin: 0; color: #d5e0db; font-size: 0.94rem; line-height: 1.7; }
 
   footer {

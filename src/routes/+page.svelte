@@ -58,7 +58,6 @@
   h1 {
     margin: 0;
     font-size: clamp(2rem, 8vw, 3.6rem);
-    letter-spacing: -0.05em;
   }
 
   .lede {
