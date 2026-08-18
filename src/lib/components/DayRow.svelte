@@ -1,6 +1,7 @@
 <script>
   import { assignLanes, parseTimeToMinutes, formatDate } from '$lib/utils.js';
   import { DIARY_DAY_COLOR, DIARY_NIGHT_COLOR, sunTimeToLocalMinutes } from '$lib/sun-time.js';
+  import { diaryTrimBounds } from '$lib/diary-trim.js';
   import DiaryEntry from './DiaryEntry.svelte';
 
   /**
@@ -76,7 +77,7 @@
    */
   function entryWidthPct(entry) {
     const minPct = (MIN_SLOT_MINS / domainWidthMin) * 100;
-    return Math.max(minPct, ((entry.durationSec ?? 0) / 60 / domainWidthMin) * 100);
+    return Math.max(minPct, (diaryTrimBounds(entry).durationSec / 60 / domainWidthMin) * 100);
   }
 
   /**

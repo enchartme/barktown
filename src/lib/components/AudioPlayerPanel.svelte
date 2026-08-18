@@ -3,6 +3,7 @@
   import { formatDuration, formatDate, downsampleWaveform, waveformNorm, ASSET_BASE, PRIVATE_API_BASE } from '$lib/utils.js';
   import { formatAudioPanelAnalysisParameters, formatAudioPanelStats, formatAudioPanelTitle, hitMetadataById, setHitMetadata } from '$lib/hit-metadata.js';
   import { recordingComment } from '$lib/recording-comments.js';
+  import { diaryTrimBounds, trimHitMetadata } from '$lib/diary-trim.js';
   import { probeEditingAccess } from '$lib/editing-access.js';
   import { SAMPLE_LABELS, sampleLabelColor } from '$lib/sample-labels.js';
   import { fly }           from 'svelte/transition';
@@ -15,9 +16,10 @@
    *   ondelete?: (entry: import('$lib/types').Entry) => void;
    *   onmovesample?: (entry: import('$lib/types').Entry, label: string, keepInDiary: boolean) => Promise<void>;
    *   oncommentchange?: (entry: import('$lib/types').Entry, annotations: Record<string, unknown>[]) => void;
+   *   ontrimchange?: (entry: import('$lib/types').Entry, trim: {trimStartMs: number|null, trimStopMs: number|null}) => void;
    * }}
    */
-  let { entry, onclose, onclosed, ondelete, onmovesample, oncommentchange } = $props();
+  let { entry, onclose, onclosed, ondelete, onmovesample, oncommentchange, ontrimchange } = $props();
 
   /** Tailnet-only mutation controls appear after the private API responds. */
   let editingAccess = $state(false);
@@ -31,12 +33,34 @@
   let currentTime = $state(0);
   let duration    = $state(0);
 
+  const trimBounds = $derived(diaryTrimBounds(entry));
+  const visibleDuration = $derived(trimBounds.durationSec);
+  const visibleCurrentTime = $derived(
+    Math.max(0, Math.min(visibleDuration, currentTime - trimBounds.startSec)),
+  );
+  const waveformStartMs = $derived(editingAccess ? 0 : trimBounds.startMs);
+  const waveformStopMs = $derived(editingAccess ? trimBounds.sourceDurationMs : trimBounds.stopMs);
+  const waveformDurationMs = $derived(Math.max(0, waveformStopMs - waveformStartMs));
+  const waveformDuration = $derived(waveformDurationMs / 1000);
+  const waveformCurrentTime = $derived(
+    Math.max(0, Math.min(waveformDuration, currentTime - waveformStartMs / 1000)),
+  );
+
   // rAF-based playhead: sample audioEl.currentTime at ~60 fps while playing so
   // the playhead moves smoothly. ontimeupdate (~4 Hz) stays as a seek fallback.
   $effect(() => {
     if (!isPlaying || !audioEl) return;
     let id = 0;
-    const tick = () => { currentTime = audioEl.currentTime; id = requestAnimationFrame(tick); };
+    const tick = () => {
+      currentTime = audioEl.currentTime;
+      if (currentTime >= trimBounds.stopSec - 0.01) {
+        audioEl.pause();
+        audioEl.currentTime = trimBounds.startSec;
+        currentTime = trimBounds.startSec;
+        return;
+      }
+      id = requestAnimationFrame(tick);
+    };
     id = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(id);
   });
@@ -44,10 +68,10 @@
   // ── Waveform data ──────────────────────────────────────────────────────────
   // Module-level cache shared with WaveformPreview (avoids second fetch when
   // the user opens the panel for an already-previewed entry).
-  /** @type {Map<string, { mins: number[], maxs: number[], norm: number, rawLength: number } | 'error'>} */
+  /** @type {Map<string, { data: number[], mins: number[], maxs: number[], norm: number, rawLength: number } | 'error'>} */
   const waveformCache = new Map();
 
-  /** @type {{ mins: number[], maxs: number[], norm: number, rawLength: number } | null} */
+  /** @type {{ data: number[], mins: number[], maxs: number[], norm: number, rawLength: number } | null} */
   let waveData   = $state(null);
   let wfLoading  = $state(false);
 
@@ -65,10 +89,20 @@
   const PLAYER_BARS = 500;
 
   // ── Derived waveform bars ─────────────────────────────────────────────────
-  const bars = $derived(() => {
+  const bars = $derived.by(() => {
     if (!waveData) return [];
-    const { mins, maxs, norm } = waveData;
-    const count   = mins.length;
+    const { data, norm } = waveData;
+    const rawCount = Math.floor(data.length / 2);
+    const sourceDurationMs = trimBounds.sourceDurationMs;
+    const firstRawIndex = sourceDurationMs > 0
+      ? Math.max(0, Math.floor((waveformStartMs / sourceDurationMs) * rawCount))
+      : 0;
+    const endRawIndex = sourceDurationMs > 0
+      ? Math.min(rawCount, Math.ceil((waveformStopMs / sourceDurationMs) * rawCount))
+      : rawCount;
+    const visibleData = data.slice(firstRawIndex * 2, endRawIndex * 2);
+    const { mins, maxs } = downsampleWaveform(visibleData, PLAYER_BARS);
+    const count = mins.length;
     if (!count)    return [];
 
     const barW    = VW / count;
@@ -79,14 +113,25 @@
     // to always fill the full height regardless of how flat the gain curve is.
     let visualPeak = 0;
     for (let i = 0; i < count; i++) {
-      const v = (maxs[i] / norm) * (gc ? gc[i] : 1);
+      const gainIndex = gc
+        ? Math.min(gc.length - 1, Math.floor(
+          ((firstRawIndex + (i / count) * (endRawIndex - firstRawIndex)) / Math.max(1, rawCount)) * gc.length,
+        ))
+        : 0;
+      const v = (maxs[i] / norm) * (gc ? gc[gainIndex] : 1);
       if (v > visualPeak) visualPeak = v;
     }
     const yScale = visualPeak > 0 ? 1 / visualPeak : 1;
 
-    return mins.map((lo, i) => {
-      const gain    = gc ? gc[i] : 1;
-      const hi      = maxs[i];
+    return Array.from({ length: count }, (_, i) => {
+      const gainIndex = gc
+        ? Math.min(gc.length - 1, Math.floor(
+          ((firstRawIndex + (i / count) * (endRawIndex - firstRawIndex)) / Math.max(1, rawCount)) * gc.length,
+        ))
+        : 0;
+      const lo = mins[i];
+      const gain = gc ? gc[gainIndex] : 1;
+      const hi = maxs[i];
       const yTop    = centerY - (hi / norm) * gain * yScale * centerY;
       const yBottom = centerY - (lo / norm) * gain * yScale * centerY;
       return {
@@ -100,7 +145,7 @@
 
   // Playhead x position in virtual SVG units.
   const playheadX = $derived(
-    duration > 0 ? (currentTime / duration) * VW : 0
+    waveformDuration > 0 ? (waveformCurrentTime / waveformDuration) * VW : 0
   );
 
   /** Paints `bars()` onto the canvas layer at native pixel resolution
@@ -120,14 +165,14 @@
     const scaleX = w / VW;
     const scaleY = h / VH;
     const px = playheadX;
-    for (const bar of bars()) {
+    for (const bar of bars) {
       ctx.fillStyle = bar.x <= px ? '#2255bb' : '#a0b8e8';
       ctx.fillRect(bar.x * scaleX, bar.y * scaleY, Math.max(1, bar.w * scaleX), Math.max(1, bar.h * scaleY));
     }
   }
 
   $effect(() => {
-    bars(); // reactive dependency: redraw whenever bars or the playhead change
+    bars; // reactive dependency: redraw whenever bars or the playhead change
     playheadX;
     drawWaveCanvas();
   });
@@ -160,7 +205,13 @@
       .then((json) => {
         const norm   = waveformNorm(json.bits ?? 8);
         const ds     = downsampleWaveform(json.data, PLAYER_BARS);
-        const result = { mins: ds.mins, maxs: ds.maxs, norm, rawLength: json.length };
+        const result = {
+          data: json.data,
+          mins: ds.mins,
+          maxs: ds.maxs,
+          norm,
+          rawLength: json.length,
+        };
         waveformCache.set(path, result);
         if (entry.waveformPath === path) waveData = result;
       })
@@ -172,13 +223,15 @@
   $effect(() => {
     // Reading `entry` makes this re-run on entry change.
     void entry.id;
-    currentTime = 0;
-    duration    = 0;
+    currentTime = trimBounds.startSec;
+    duration    = audioEl?.duration || entry.durationSec || 0;
     isPlaying   = false;
   });
 
   // ── Hit metadata (bark timestamps + confidence + loudness from goblin) ────
   const hitMetadata = $derived($hitMetadataById.get(entry.id) ?? null);
+  const visibleHitMetadata = $derived(trimHitMetadata(hitMetadata, entry));
+  const waveformHitMetadata = $derived(editingAccess ? hitMetadata : visibleHitMetadata);
   // Hit whose confidence/loudness labels are shown — only on hover, since
   // they'd otherwise overlap when hits are close together.
   let hoveredHitIndex = $state(/** @type {number|null} */ (null));
@@ -272,6 +325,10 @@
     if (isPlaying) {
       audioEl.pause();
     } else {
+      if (audioEl.currentTime < trimBounds.startSec || audioEl.currentTime >= trimBounds.stopSec - 0.01) {
+        audioEl.currentTime = trimBounds.startSec;
+        currentTime = trimBounds.startSec;
+      }
       audioEl.play().catch(() => {}); // ignore AbortError on rapid toggling
     }
   }
@@ -360,6 +417,131 @@
   let reanalyzeLoading = $state(false);
   let reanalyzeError   = $state('');
 
+  // ── Non-destructive trim ──────────────────────────────────────────────────
+  let draftTrimStartMs = $state(0);
+  let draftTrimStopMs = $state(0);
+  let trimDragging = $state(/** @type {'start'|'stop'|null} */ (null));
+  let trimSaving = $state(false);
+  let trimError = $state('');
+
+  $effect(() => {
+    void entry.id;
+    void entry.trimStartMs;
+    void entry.trimStopMs;
+    if (trimDragging || trimSaving) return;
+    draftTrimStartMs = trimBounds.startMs;
+    draftTrimStopMs = trimBounds.stopMs;
+    trimError = '';
+  });
+
+  const trimStartX = $derived(waveformDurationMs > 0
+    ? ((draftTrimStartMs - waveformStartMs) / waveformDurationMs) * VW
+    : 0);
+  const trimStopX = $derived(waveformDurationMs > 0
+    ? ((draftTrimStopMs - waveformStartMs) / waveformDurationMs) * VW
+    : VW);
+
+  async function saveTrim(trimStartMs, trimStopMs) {
+    if (!editingAccess || trimSaving) return;
+    if (trimStartMs === trimBounds.startMs && trimStopMs === trimBounds.stopMs) return;
+    trimSaving = true;
+    trimError = '';
+    try {
+      const res = await fetch(`${PRIVATE_API_BASE}/api/diary/${encodeURIComponent(entry.id)}/trim`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ trimStartMs, trimStopMs }),
+        signal: AbortSignal.timeout(8000),
+      });
+      const saved = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(saved?.error ?? `HTTP ${res.status}`);
+      ontrimchange?.(entry, {
+        trimStartMs: saved?.trimStartMs ?? null,
+        trimStopMs: saved?.trimStopMs ?? null,
+      });
+      if (audioEl) {
+        audioEl.pause();
+        audioEl.currentTime = trimStartMs / 1000;
+        currentTime = trimStartMs / 1000;
+      }
+    } catch (e) {
+      draftTrimStartMs = trimBounds.startMs;
+      draftTrimStopMs = trimBounds.stopMs;
+      trimError = e?.message ?? 'Could not save the trim.';
+    } finally {
+      trimSaving = false;
+    }
+  }
+
+  function trimPointerMilliseconds(event) {
+    const svg = event.currentTarget.ownerSVGElement;
+    if (!svg || waveformDurationMs <= 0) return waveformStartMs;
+    const rect = svg.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+    return Math.round(waveformStartMs + ratio * waveformDurationMs);
+  }
+
+  function handleTrimPointerDown(side, event) {
+    if (!editingAccess || trimSaving || waveformDurationMs <= 1) return;
+    event.preventDefault();
+    event.stopPropagation();
+    trimDragging = side;
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function handleTrimPointerMove(side, event) {
+    if (trimDragging !== side) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const value = trimPointerMilliseconds(event);
+    const minGap = Math.min(100, Math.max(1, waveformDurationMs));
+    if (side === 'start') {
+      draftTrimStartMs = Math.max(waveformStartMs, Math.min(value, draftTrimStopMs - minGap));
+    } else {
+      draftTrimStopMs = Math.min(waveformStopMs, Math.max(value, draftTrimStartMs + minGap));
+    }
+  }
+
+  function handleTrimPointerUp(side, event) {
+    if (trimDragging !== side) return;
+    event.preventDefault();
+    event.stopPropagation();
+    trimDragging = null;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    void saveTrim(draftTrimStartMs, draftTrimStopMs);
+  }
+
+  function handleTrimPointerCancel(event) {
+    if (!trimDragging) return;
+    event.stopPropagation();
+    trimDragging = null;
+    draftTrimStartMs = trimBounds.startMs;
+    draftTrimStopMs = trimBounds.stopMs;
+  }
+
+  function handleTrimKeydown(side, event) {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    event.stopPropagation();
+    const direction = event.key === 'ArrowRight' ? 1 : -1;
+    const step = event.shiftKey ? 10000 : 1000;
+    const minGap = Math.min(100, Math.max(1, waveformDurationMs));
+    if (side === 'start') {
+      draftTrimStartMs = Math.max(
+        waveformStartMs,
+        Math.min(draftTrimStartMs + direction * step, draftTrimStopMs - minGap),
+      );
+    } else {
+      draftTrimStopMs = Math.min(
+        waveformStopMs,
+        Math.max(draftTrimStopMs + direction * step, draftTrimStartMs + minGap),
+      );
+    }
+    void saveTrim(draftTrimStartMs, draftTrimStopMs);
+  }
+
   // ── Whole-recording comment ──────────────────────────────────────────────
   let commentEditing = $state(false);
   let commentDraft = $state('');
@@ -426,6 +608,16 @@
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error ?? `HTTP ${res.status}`);
       setHitMetadata(entry.id, data);
+      ontrimchange?.(entry, {
+        trimStartMs: data?.trimStartMs ?? null,
+        trimStopMs: data?.trimStopMs ?? null,
+      });
+      if (audioEl) {
+        audioEl.pause();
+        const nextStart = Number.isInteger(data?.trimStartMs) ? data.trimStartMs / 1000 : 0;
+        audioEl.currentTime = nextStart;
+        currentTime = nextStart;
+      }
     } catch (e) {
       reanalyzeError = e?.message ?? 'Re-analysis failed.';
     } finally {
@@ -435,32 +627,49 @@
 
   function handlePlay()  { isPlaying = true; }
   function handlePause() { isPlaying = false; }
-  function handleEnded() { isPlaying = false; currentTime = 0; }
+  function handleEnded() {
+    isPlaying = false;
+    currentTime = trimBounds.startSec;
+    if (audioEl) audioEl.currentTime = trimBounds.startSec;
+  }
 
   function handleTimeUpdate() {
     if (!audioEl) return;
     currentTime = audioEl.currentTime;
+    if (currentTime >= trimBounds.stopSec - 0.01 && trimBounds.stopSec < duration - 0.01) {
+      audioEl.pause();
+      audioEl.currentTime = trimBounds.startSec;
+      currentTime = trimBounds.startSec;
+    }
     applyAutoVolume();
   }
   function handleLoadedMetadata() {
-    if (audioEl) duration = audioEl.duration || entry.durationSec;
+    if (!audioEl) return;
+    duration = audioEl.duration || entry.durationSec;
+    audioEl.currentTime = trimBounds.startSec;
+    currentTime = trimBounds.startSec;
   }
 
   // ── Waveform click-to-seek ────────────────────────────────────────────────
 
   /** @param {MouseEvent & { currentTarget: SVGSVGElement }} e */
   async function handleWaveformClick(e) {
-    if (!audioEl || !duration) return;
+    if (!audioEl || !waveformDuration) return;
     const rect  = e.currentTarget.getBoundingClientRect();
     const ratio = (e.clientX - rect.left) / rect.width;
-    audioEl.currentTime = Math.max(0, Math.min(1, ratio)) * duration;
+    const requestedTime = waveformStartMs / 1000
+      + Math.max(0, Math.min(1, ratio)) * waveformDuration;
+    audioEl.currentTime = Math.max(
+      trimBounds.startSec,
+      Math.min(trimBounds.stopSec - 0.001, requestedTime),
+    );
   }
 
   /** @param {KeyboardEvent & { currentTarget: SVGSVGElement }} e */
   function handleWaveformKeydown(e) {
-    if (!audioEl || !duration) return;
-    if (e.key === 'ArrowRight') { e.preventDefault(); audioEl.currentTime = Math.min(duration, currentTime + 5); }
-    if (e.key === 'ArrowLeft' ) { e.preventDefault(); audioEl.currentTime = Math.max(0,        currentTime - 5); }
+    if (!audioEl || !visibleDuration) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); audioEl.currentTime = Math.min(trimBounds.stopSec, currentTime + 5); }
+    if (e.key === 'ArrowLeft' ) { e.preventDefault(); audioEl.currentTime = Math.max(trimBounds.startSec, currentTime - 5); }
     // Prevent browsers from firing a synthetic click on the SVG when space is
     // pressed while the waveform has focus.  That synthetic click would call
     // handleWaveformClick with clientX=0, seeking playback to position 0.
@@ -500,10 +709,11 @@
 
   // ── Helpers ───────────────────────────────────────────────────────────────
   const formattedDate  = $derived(formatDate(entry.date));
-  const formattedDur   = $derived(formatDuration(entry.durationSec));
-  const formattedCur   = $derived(formatDuration(currentTime));
-  const displayLabel   = $derived(formatAudioPanelTitle(entry, hitMetadata));
-  const analysisSummary = $derived(formatAudioPanelStats(hitMetadata, entry.durationSec ?? 0));
+  const formattedDur   = $derived(formatDuration(visibleDuration));
+  const formattedCur   = $derived(formatDuration(visibleCurrentTime));
+  const displayEntry = $derived({ ...entry, durationSec: visibleDuration });
+  const displayLabel   = $derived(formatAudioPanelTitle(displayEntry, visibleHitMetadata));
+  const analysisSummary = $derived(formatAudioPanelStats(visibleHitMetadata, visibleDuration));
   const analysisParameters = $derived(formatAudioPanelAnalysisParameters(hitMetadata));
   const audioSrc       = $derived(`${ASSET_BASE}/${entry.audioPath}`);
 </script>
@@ -611,6 +821,12 @@
     <p class="panel-analysis">{analysisSummary}</p>
   {/if}
 
+  {#if editingAccess && entry.waveformPath}
+    <div class="trim-status" class:error={Boolean(trimError)}>
+      {#if trimSaving}Saving trim…{:else if trimError}{trimError}{:else}Drag the waveform edge handles to set the visible range. Re-analysis fits it around newly found barks.{/if}
+    </div>
+  {/if}
+
   {#if commentError}
     <p class="comment-error" role="alert">{commentError}</p>
   {/if}
@@ -637,8 +853,8 @@
           tabindex="0"
           aria-label="Seek waveform. Current position: {formattedCur}"
           aria-valuemin="0"
-          aria-valuemax={duration}
-          aria-valuenow={currentTime}
+          aria-valuemax={waveformDuration}
+          aria-valuenow={waveformCurrentTime}
           onclick={handleWaveformClick}
           onkeydown={handleWaveformKeydown}
         >
@@ -653,12 +869,12 @@
              hx = end of the detection window (block_end_ts - clip_start_ts).
              A faint band extends back by window_s to show the uncertainty range
              — the bark happened somewhere inside the band, not necessarily at hx. -->
-        {#if hitMetadata && duration > 0}
-          {@const winPx = (hitMetadata.windowS / duration) * VW}
-          {#each hitMetadata.timestamps as ts, i}
-            {@const hx = (ts / duration) * VW}
-            {@const conf = hitMetadata.confidences[i]}
-            {@const loud = hitMetadata.loudnesses[i]}
+        {#if waveformHitMetadata && waveformDuration > 0}
+          {@const winPx = (waveformHitMetadata.windowS / waveformDuration) * VW}
+          {#each waveformHitMetadata.timestamps as ts, i}
+            {@const hx = (ts / waveformDuration) * VW}
+            {@const conf = waveformHitMetadata.confidences[i]}
+            {@const loud = waveformHitMetadata.loudnesses[i]}
             {@const tickAlpha = 0.45 + conf * 0.45}
             <g
               pointer-events="all"
@@ -711,14 +927,68 @@
                 fill="rgb(230, 120, 0)"
                 opacity={tickAlpha}
               >
-                <title>Hit {i + 1}/{hitMetadata.timestamps.length} · confidence {Math.round(conf * 100)}% · loudness {loud.toFixed(1)}× · bark is within the shaded band</title>
+                <title>Hit {i + 1}/{waveformHitMetadata.timestamps.length} · confidence {Math.round(conf * 100)}% · loudness {loud.toFixed(1)}× · bark is within the shaded band</title>
               </polygon>
             </g>
           {/each}
         {/if}
 
+        {#if editingAccess && waveformDuration > 0}
+          <!-- Editors retain the full source as context. Public/read-only
+               playback crops this same waveform to the persisted section. -->
+          <rect
+            class="trim-excluded"
+            x="0" y="0" width={Math.max(0, trimStartX)} height={VH}
+            pointer-events="none"
+          />
+          <rect
+            class="trim-excluded"
+            x={Math.min(VW, trimStopX)} y="0"
+            width={Math.max(0, VW - trimStopX)} height={VH}
+            pointer-events="none"
+          />
+          <g
+            class="trim-handle trim-handle-start"
+            class:dragging={trimDragging === 'start'}
+            role="slider"
+            tabindex="0"
+            aria-label="Trim start"
+            aria-valuemin={waveformStartMs}
+            aria-valuemax={Math.max(trimBounds.startMs, draftTrimStopMs - 1)}
+            aria-valuenow={draftTrimStartMs}
+            onpointerdown={(event) => handleTrimPointerDown('start', event)}
+            onpointermove={(event) => handleTrimPointerMove('start', event)}
+            onpointerup={(event) => handleTrimPointerUp('start', event)}
+            onpointercancel={handleTrimPointerCancel}
+            onkeydown={(event) => handleTrimKeydown('start', event)}
+            onclick={(event) => event.stopPropagation()}
+          >
+            <line x1={trimStartX} y1="0" x2={trimStartX} y2={VH} />
+            <path d={`M ${trimStartX} 6 L ${trimStartX + 18} 14 L ${trimStartX} 22 Z`} />
+          </g>
+          <g
+            class="trim-handle trim-handle-stop"
+            class:dragging={trimDragging === 'stop'}
+            role="slider"
+            tabindex="0"
+            aria-label="Trim end"
+            aria-valuemin={Math.min(trimBounds.stopMs, draftTrimStartMs + 1)}
+            aria-valuemax={waveformStopMs}
+            aria-valuenow={draftTrimStopMs}
+            onpointerdown={(event) => handleTrimPointerDown('stop', event)}
+            onpointermove={(event) => handleTrimPointerMove('stop', event)}
+            onpointerup={(event) => handleTrimPointerUp('stop', event)}
+            onpointercancel={handleTrimPointerCancel}
+            onkeydown={(event) => handleTrimKeydown('stop', event)}
+            onclick={(event) => event.stopPropagation()}
+          >
+            <line x1={trimStopX} y1="0" x2={trimStopX} y2={VH} />
+            <path d={`M ${trimStopX} 6 L ${trimStopX - 18} 14 L ${trimStopX} 22 Z`} />
+          </g>
+        {/if}
+
         <!-- Playhead line -->
-        {#if duration > 0}
+        {#if waveformDuration > 0}
           <line
             x1={playheadX} y1="0"
             x2={playheadX} y2={VH}
@@ -744,7 +1014,7 @@
       <div class="waveform-fallback">
         <div
           class="progress-bar-fill"
-          style="width: {duration > 0 ? (currentTime / duration) * 100 : 0}%"
+          style="width: {visibleDuration > 0 ? (visibleCurrentTime / visibleDuration) * 100 : 0}%"
         ></div>
       </div>
     {/if}
@@ -1204,6 +1474,35 @@
     background: transparent;
   }
   .player-waveform:focus { outline: 2px solid #4a7cdc; }
+
+  .trim-excluded { fill: rgba(20, 24, 32, 0.48); }
+  .trim-handle {
+    color: #fff;
+    cursor: ew-resize;
+    touch-action: none;
+  }
+  .trim-handle line {
+    stroke: currentColor;
+    stroke-width: 5;
+    vector-effect: non-scaling-stroke;
+  }
+  .trim-handle path {
+    fill: #2255bb;
+    stroke: #fff;
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+  .trim-handle:hover path,
+  .trim-handle.dragging path { fill: #153b86; }
+  .trim-handle:focus-visible { outline: none; }
+  .trim-handle:focus-visible path { stroke: #ffcf5c; stroke-width: 3; }
+
+  .trim-status {
+    min-height: 1rem;
+    color: #777;
+    font-size: 0.68rem;
+  }
+  .trim-status.error { color: #c0392b; }
 
   .waveform-loading {
     height: 80px;

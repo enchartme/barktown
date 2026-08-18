@@ -35,18 +35,15 @@ function hitMetadataStats(metadata, durationSec) {
 
   const maximumConfidence = confidences.length ? Math.max(...confidences) : 0;
   const maximumLoudness = loudnesses.length ? loudnesses[loudnesses.length - 1] : 0;
-  const middle = Math.floor(loudnesses.length / 2);
-  const medianLoudness = loudnesses.length === 0
-    ? 0
-    : loudnesses.length % 2
-      ? loudnesses[middle]
-      : (loudnesses[middle - 1] + loudnesses[middle]) / 2;
+  const meanLoudness = loudnesses.length
+    ? loudnesses.reduce((sum, loudness) => sum + loudness, 0) / loudnesses.length
+    : 0;
   // D is the rounded bark rate per minute.
   const density = Number.isFinite(durationSec) && durationSec > 0
     ? Math.round((hitCount / durationSec) * SECONDS_PER_MINUTE)
     : 0;
 
-  return { hitCount, maximumConfidence, maximumLoudness, medianLoudness, density };
+  return { hitCount, maximumConfidence, maximumLoudness, meanLoudness, density };
 }
 
 /**
@@ -56,13 +53,13 @@ function hitMetadataStats(metadata, durationSec) {
  * @param {number} durationSec
  */
 export function formatHitMetadataStats(metadata, durationSec) {
-  const { hitCount, maximumConfidence, maximumLoudness, medianLoudness, density } =
+  const { hitCount, maximumConfidence, maximumLoudness, meanLoudness, density } =
     hitMetadataStats(metadata, durationSec);
   const confidenceTag = maximumConfidence >= 0.995
     ? 'C1'
     : `C${maximumConfidence.toFixed(2)}`;
 
-  return `${confidenceTag} D${density} W${hitCount} La${maximumLoudness.toFixed(1)} Lm${medianLoudness.toFixed(1)}`;
+  return `${confidenceTag} D${density} W${hitCount} La${maximumLoudness.toFixed(1)} Lm${meanLoudness.toFixed(1)}`;
 }
 
 /** @param {{id?: string, filename?: string, sampleId?: string | null, label?: string, time?: string}} entry */
@@ -130,9 +127,9 @@ export function formatAudioPanelTitle(entry, metadata) {
 /** Expanded playback statistics without a filename/sample descriptor. */
 export function formatAudioPanelStats(metadata, durationSec) {
   if (!metadata) return '';
-  const { hitCount, maximumLoudness, medianLoudness, density } =
+  const { hitCount, maximumLoudness, meanLoudness, density } =
     hitMetadataStats(metadata, durationSec);
-  return `Barks: ${hitCount}, Density: ${density} bpm, Loudness Peak: ${maximumLoudness.toFixed(1)}x, Median: ${medianLoudness.toFixed(1)}x`;
+  return `Barks: ${hitCount}, Density: ${density} bpm, Loudness Peak: ${maximumLoudness.toFixed(1)}x, Mean: ${meanLoudness.toFixed(1)}x`;
 }
 
 /**

@@ -1,14 +1,18 @@
 <script>
   import { barcodeLines, barcodeWidth, hitLoudnessColor } from '$lib/report-barcode.js';
   import { formatDuration } from '$lib/utils.js';
+  import { diaryTrimBounds, trimHitMetadata } from '$lib/diary-trim.js';
 
-  let { durationSec = 0, metadata = null } = $props();
+  let { durationSec = 0, trimStartMs = null, trimStopMs = null, metadata = null } = $props();
 
   /** @type {HTMLCanvasElement | undefined} */
   let canvas = $state();
-  const width = $derived(barcodeWidth(durationSec));
-  const lines = $derived(barcodeLines(metadata, width));
-  const hitCount = $derived(Array.isArray(metadata?.timestamps) ? metadata.timestamps.length : 0);
+  const entry = $derived({ durationSec, trimStartMs, trimStopMs });
+  const trimBounds = $derived(diaryTrimBounds(entry));
+  const visibleMetadata = $derived(trimHitMetadata(metadata, entry));
+  const width = $derived(barcodeWidth(trimBounds.durationSec));
+  const lines = $derived(barcodeLines(visibleMetadata, width));
+  const hitCount = $derived(Array.isArray(visibleMetadata?.timestamps) ? visibleMetadata.timestamps.length : 0);
 
   $effect(() => {
     const element = canvas;
@@ -36,7 +40,7 @@
 <span
   class="barcode-figure"
   role="img"
-  aria-label={`${hitCount} detected ${hitCount === 1 ? 'bark' : 'barks'} over ${formatDuration(durationSec)}`}
+  aria-label={`${hitCount} detected ${hitCount === 1 ? 'bark' : 'barks'} over ${formatDuration(trimBounds.durationSec)}`}
 >
   <canvas
     bind:this={canvas}

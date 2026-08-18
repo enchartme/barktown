@@ -64,7 +64,7 @@ test('auto-detection label is rebuilt from current hit metadata', () => {
 
   assert.equal(
     formatAutoDetectionLabel('-A- C1 D6 W94 La11.0 Lm1.9', metadata, 10),
-    '-A- C0.98 D18 W3 La4.2 Lm2.2',
+    '-A- C0.98 D18 W3 La4.2 Lm2.6',
   );
 });
 
@@ -75,7 +75,7 @@ test('hit metadata stats can be formatted independently of the stored label', ()
       confidences: [0.91, 0.98, 0.94],
       loudnesses: [4.2, 1.4, 2.2],
     }, 10),
-    'C0.98 D18 W3 La4.2 Lm2.2',
+    'C0.98 D18 W3 La4.2 Lm2.6',
   );
 });
 
@@ -90,7 +90,7 @@ test('sample diary titles preserve SAMPLE and the comment before current stats',
       confidences: [0.91, 0.98, 0.94],
       loudnesses: [4.2, 1.4, 2.2],
     }),
-    'SAMPLE bark C0.98 D18 W3 La4.2 Lm2.2',
+    'SAMPLE bark C0.98 D18 W3 La4.2 Lm2.6',
   );
 });
 
@@ -105,7 +105,7 @@ test('audio panel title expands sample hit stats for display', () => {
       confidences: Array(9).fill(1),
       loudnesses: [2.1, 2.4, 2.8, 2.9, 3.0, 3.1, 3.2, 3.4, 3.6],
     }),
-    'SAMPLE bark: Barks: 9, Density: 18 bpm, Loudness Peak: 3.6x, Median: 3.0x',
+    'SAMPLE bark: Barks: 9, Density: 18 bpm, Loudness Peak: 3.6x, Mean: 2.9x',
   );
 });
 
@@ -116,7 +116,7 @@ test('audio panel stats can be shown without treating a filename descriptor as a
       confidences: [0.91, 0.99],
       loudnesses: [1.5, 2.5],
     }, 10),
-    'Barks: 2, Density: 12 bpm, Loudness Peak: 2.5x, Median: 2.0x',
+    'Barks: 2, Density: 12 bpm, Loudness Peak: 2.5x, Mean: 2.0x',
   );
 });
 
@@ -175,7 +175,7 @@ test('audio panel title expands auto-detected hit stats for display', () => {
       confidences: Array(67).fill(1),
       loudnesses: [...Array(66).fill(2.3), 5.3],
     }),
-    '-A-: Barks: 67, Density: 7 bpm, Loudness Peak: 5.3x, Median: 2.3x',
+    '-A-: Barks: 67, Density: 7 bpm, Loudness Peak: 5.3x, Mean: 2.3x',
   );
 });
 
@@ -201,7 +201,7 @@ test('diary titles retain their descriptor without metadata and refresh auto sta
   );
 });
 
-test('auto-detection label handles maximum confidence, even median, and no hits', () => {
+test('auto-detection label handles maximum confidence, mean loudness, and no hits', () => {
   assert.equal(
     formatAutoDetectionLabel('-A- old values', {
       timestamps: [1, 2, 3, 4],

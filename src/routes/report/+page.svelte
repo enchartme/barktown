@@ -238,6 +238,12 @@
     if (panelEntry?.id === entry.id) panelEntry = updated;
   }
 
+  function handleTrimChange(entry, trim) {
+    const updated = { ...entry, ...trim };
+    entries = entries.map(item => item.id === entry.id ? { ...item, ...trim } : item);
+    if (panelEntry?.id === entry.id) panelEntry = updated;
+  }
+
   async function deleteEntry(entry) {
     try {
       const response = await fetch(
@@ -456,6 +462,8 @@
                       <time datetime={entry.datetimeLocal}>{entry.time}</time>
                       <ReportBarcode
                         durationSec={entry.durationSec}
+                        trimStartMs={entry.trimStartMs}
+                        trimStopMs={entry.trimStopMs}
                         metadata={$hitMetadataById.get(entry.id) ?? null}
                       />
                       {#if noteLabels.length === 0 && needsPeriod}
@@ -490,6 +498,7 @@
       ondelete={deleteEntry}
       onmovesample={moveEntryToSamples}
       oncommentchange={handleCommentChange}
+      ontrimchange={handleTrimChange}
     />
   </div>
 {/if}

@@ -159,6 +159,14 @@
     if (panelEntry?.id === entry.id) panelEntry = updated;
   }
 
+  /** Refresh every projection of an entry after its persisted trim changes. */
+  function handleTrimChange(entry, trim) {
+    const updated = { ...entry, ...trim };
+    entries = entries.map(item => item.id === entry.id ? { ...item, ...trim } : item);
+    if (selectedEntry?.id === entry.id) selectedEntry = updated;
+    if (panelEntry?.id === entry.id) panelEntry = updated;
+  }
+
   /**
    * Delete a diary entry via the API, then remove it from the local list
    * and close the panel.
@@ -326,6 +334,7 @@
     ondelete={deleteEntry}
     onmovesample={moveEntryToSamples}
     oncommentchange={handleCommentChange}
+    ontrimchange={handleTrimChange}
   />
 {/if}
 

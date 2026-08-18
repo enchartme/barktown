@@ -104,7 +104,7 @@
       simple: 'The diary shows when a suspected event happened, and the report shows patterns across two weeks. Every result leads back to playable audio so a reviewer can check the system rather than trust a number on its own.',
       more: 'Recordings appear on a time-of-day timeline with waveforms, labels and notes. Weekly summaries count events and describe their distribution, while confidence and relative loudness help find recordings worth closer inspection. Reviewers can correct false positives and re-run archived material with the current model.',
       technical: [
-        'Each accepted hit can carry a timestamp, classifier confidence and loudness relative to below-threshold windows in the same clip. Event-level records include duration, peak and mean score, hit count, hit density and maximum/median loudness ratios. These are descriptive diagnostics; they are not sound-level-meter readings and should not be interpreted as calibrated decibels at a property boundary.',
+        'Each accepted hit can carry a timestamp, classifier confidence and loudness relative to below-threshold windows in the same clip. Event-level records include duration, peak and mean score, hit count, hit density and maximum/mean loudness ratios. These are descriptive diagnostics; they are not sound-level-meter readings and should not be interpreted as calibrated decibels at a property boundary.',
         'Offline re-analysis records model and settings provenance alongside its results, allowing a reviewer to distinguish the original detector output from a later model’s interpretation. The UI preserves the audio as the primary evidence and presents derived metrics as aids to navigation and quality control.'
       ],
       media: 'Diary and report screenshots',

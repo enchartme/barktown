@@ -1,3 +1,5 @@
+import { diaryTrimBounds, trimHitMetadata } from './diary-trim.js';
+
 /**
  * Summarize diary entries using the same hit-density calculation shown on
  * individual auto-detected recordings.
@@ -11,10 +13,8 @@ export function summarizeEntries(entries, metadataById = new Map()) {
   let worstDensityBpm = 0;
 
   for (const entry of entries) {
-    const durationSec = Number.isFinite(entry.durationSec) && entry.durationSec > 0
-      ? entry.durationSec
-      : 0;
-    const metadata = metadataById.get(entry.id);
+    const durationSec = diaryTrimBounds(entry).durationSec;
+    const metadata = trimHitMetadata(metadataById.get(entry.id), entry);
     const hitCount = Array.isArray(metadata?.timestamps) ? metadata.timestamps.length : 0;
     const densityBpm = durationSec > 0 ? Math.round((hitCount / durationSec) * 60) : 0;
 

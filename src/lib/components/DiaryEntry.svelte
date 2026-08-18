@@ -1,6 +1,7 @@
 <script>
   import { formatDiaryEntryTitle, hitMetadataById } from '$lib/hit-metadata.js';
   import { recordingComment } from '$lib/recording-comments.js';
+  import { diaryTrimBounds, trimHitMetadata } from '$lib/diary-trim.js';
 
   /**
    * @type {{
@@ -57,7 +58,12 @@
   // asynchronously by the page-level bulk loader; resizes only redraw the
   // canvas from this cache and never initiate another request.
   const hitMetadata = $derived($hitMetadataById.get(entry.id) ?? null);
-  const titleLabel = $derived(formatDiaryEntryTitle(entry, hitMetadata));
+  const trimBounds = $derived(diaryTrimBounds(entry));
+  const visibleHitMetadata = $derived(trimHitMetadata(hitMetadata, entry));
+  const titleLabel = $derived(formatDiaryEntryTitle(
+    { ...entry, durationSec: trimBounds.durationSec },
+    visibleHitMetadata,
+  ));
 
   // Matches the play-knob svg: left:0, top:0, 16x16, translateX(-50%).
   const KNOB_CENTER_X = 0;
@@ -69,14 +75,14 @@
 
   const outerRadius = $derived(
     INNER_RADIUS + MIN_EXTRA +
-    Math.max(0, Math.min(1, (entry.durationSec ?? 0) / MAX_DURATION)) * (MAX_EXTRA - MIN_EXTRA)
+    Math.max(0, Math.min(1, trimBounds.durationSec / MAX_DURATION)) * (MAX_EXTRA - MIN_EXTRA)
   );
 
   // Shorter clips stack on top: 1 at MAX_DURATION down to MAX_DURATION at 0s.
   // Never 0 — z-index:0 paints in the same bucket as unpositioned/z-index:auto
   // elements (e.g. other rows' track-bg), so document order could still win.
   const entryZIndex = $derived(
-    Math.max(1, Math.round(MAX_DURATION - Math.max(0, Math.min(MAX_DURATION, entry.durationSec ?? 0))))
+    Math.max(1, Math.round(MAX_DURATION - Math.max(0, Math.min(MAX_DURATION, trimBounds.durationSec))))
   );
 
   /** @type {HTMLCanvasElement | undefined} */
@@ -145,16 +151,16 @@
       ctx.stroke();
     }
 
-    if (!hitMetadata) return;
+    if (!visibleHitMetadata) return;
 
-    const dur = entry.durationSec || 1;
+    const dur = trimBounds.durationSec || 1;
     ctx.lineWidth = 1;
-    hitMetadata.timestamps.forEach((ts, i) => {
+    visibleHitMetadata.timestamps.forEach((ts, i) => {
       // 0 = vertical axis (up), increasing clockwise over the full clip duration.
       const angle = (ts / dur) * Math.PI * 2 - Math.PI / 2;
       const cos = Math.cos(angle), sin = Math.sin(angle);
-      const startRadius = radius - hitLengthFraction(hitMetadata.confidences[i]) * (radius - INNER_RADIUS);
-      ctx.strokeStyle = hitColor(hitMetadata.loudnesses[i]);
+      const startRadius = radius - hitLengthFraction(visibleHitMetadata.confidences[i]) * (radius - INNER_RADIUS);
+      ctx.strokeStyle = hitColor(visibleHitMetadata.loudnesses[i]);
       ctx.beginPath();
       ctx.moveTo(cx + startRadius * cos, cy + startRadius * sin);
       ctx.lineTo(cx + radius * cos, cy + radius * sin);

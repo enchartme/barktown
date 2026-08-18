@@ -26,6 +26,22 @@ test('report summaries aggregate disturbances, duration, hits, and worst density
   });
 });
 
+test('report summaries use only the trimmed duration and hits', () => {
+  const entries = [
+    { id: 'clip', durationSec: 120, trimStartMs: 30000, trimStopMs: 90000 },
+  ];
+  const metadata = new Map([
+    ['clip', { timestamps: [10, 30, 45, 89, 90], loudnesses: [1, 2, 3, 4, 5] }],
+  ]);
+
+  assert.deepEqual(summarizeEntries(entries, metadata), {
+    disturbances: 1,
+    totalDurationSec: 60,
+    barks: 3,
+    worstDensityBpm: 3,
+  });
+});
+
 test('disturbed time truncates seconds and uses hour/minute units', () => {
   assert.equal(formatDisturbedTime((3 * 60 * 60) + (45 * 60) + 59), '3 h 45 min');
   assert.equal(formatDisturbedTime(59 * 60 + 59), '59 min');
