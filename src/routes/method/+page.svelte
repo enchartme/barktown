@@ -89,7 +89,10 @@
       technical: [
         'Audio is mixed to mono, resampled to 16 kHz and passed through YAMNet. Its overlapping analysis windows are approximately 0.96 seconds long with a 0.48-second step, each producing a 1024-dimensional embedding. The custom part is that Barktown then trains a small classifier that combines 128 learned sound patterns and produces a single score for how bark-like the audio is. During training, some signals are randomly hidden to reduce memorisation. Training stops when performance on held-back audio no longer improves. The final cutoff balances detected barks against false alarms, favouring fewer false alarms when undecided.'
       ],
-      links: [{label: "YAMNet", href: "https://www.kaggle.com/models/google/yamnet"}],
+      links: [
+        {label: "YAMNet", href: "https://www.kaggle.com/models/google/yamnet"}, 
+        {label: "AudioSet", href: "https://research.google.com/audioset/"}
+      ],
       media: '/images/training-windows.png',
       mediaNote: 'Training quality diagram',
       mediaFullWidth: true,
@@ -151,7 +154,7 @@
         'Each accepted hit can carry a timestamp, classifier confidence and loudness relative to below-threshold windows in the same clip. Event-level records include duration, peak and mean score, hit count, hit density and maximum/mean loudness ratios. These are descriptive diagnostics; they are not sound-level-meter readings and should not be interpreted as calibrated decibels at a property boundary.',
         'Offline re-analysis records model and settings provenance alongside its results, allowing a reviewer to distinguish the original detector output from a later model’s interpretation. The UI preserves the audio as the primary evidence and presents derived metrics as aids to navigation and quality control.'
       ],
-      media: 'Diary and report screenshots',
+      media: '/images/diary-view.png',
       mediaNote: 'Suggested: one diary event beside its corresponding two-week summary.',
       mediaFullWidth: false,
       reverse: false
@@ -165,10 +168,10 @@
       technical: [
         'This is event-triggered sampling. It is efficient and privacy-conscious, but it has an important evidentiary limit: saved clips can confirm what the detector captured, while the absence of a clip does not by itself prove the absence of barking. Training fragments retain their parent recording and time bounds so their provenance can be traced.'
       ],
-      media: 'Diary and report screenshots',
+      media: '/images/report-view-wide.png',
       mediaNote: 'Suggested: one diary event beside its corresponding two-week summary.',
-      mediaFullWidth: false,
-      reverse: false
+      mediaFullWidth: true,
+      reverse: true
     }
   ];
 </script>
