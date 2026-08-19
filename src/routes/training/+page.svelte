@@ -10,7 +10,7 @@
     formatSampleDatetime,
     formatDate,
   } from '$lib/utils.js';
-  import { SAMPLE_LABELS as LABELS, SAMPLE_LABEL_GUIDELINES as LABEL_GUIDELINES, sampleLabelColor, sampleLabelShortcut, LABEL_BY_SHORTCUT } from '$lib/sample-labels.js';
+  import { SAMPLE_LABELS as LABELS, FRAGMENT_LABELS, SAMPLE_LABEL_GUIDELINES as LABEL_GUIDELINES, sampleLabelColor, sampleLabelShortcut, LABEL_BY_SHORTCUT } from '$lib/sample-labels.js';
   import { TRAINING_COLOR_ENCODINGS, TRAINING_COLOR_GUIDES } from '$lib/training-color-guides.js';
   import { probeEditingAccess } from '$lib/editing-access.js';
   import GoblinPiStatus from '$lib/components/GoblinPiStatus.svelte';
@@ -1414,7 +1414,7 @@
           <div class="pending-toolbar">
             <span class="pending-range">{formatDuration(pending.startSec)} – {formatDuration(pending.endSec)} selected</span>
             <div class="pending-labels">
-              {#each LABELS as lbl}
+              {#each FRAGMENT_LABELS as lbl}
                 {@const sc = sampleLabelShortcut(lbl)}
                 {@const idx = lbl.indexOf(sc)}
                 <button class="filter-pill" class:active={pendingLabel === lbl} onclick={() => (pendingLabel = lbl)}>{lbl.slice(0, idx)}<u>{sc}</u>{lbl.slice(idx + 1)}</button>
@@ -1435,7 +1435,7 @@
             <div class="selection-toolbar">
               <span class="ann-range">{formatDuration(ann.startSec)} – {formatDuration(ann.endSec)}</span>
               <div class="pending-labels">
-                {#each LABELS as lbl}
+                {#each FRAGMENT_LABELS as lbl}
                   {@const sc = sampleLabelShortcut(lbl)}
                   {@const idx = lbl.indexOf(sc)}
                   <button class="filter-pill" class:active={ann.label === lbl} onclick={() => relabelSelected(lbl)}>{lbl.slice(0, idx)}<u>{sc}</u>{lbl.slice(idx + 1)}</button>

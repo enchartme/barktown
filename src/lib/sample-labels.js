@@ -10,8 +10,22 @@ const SAMPLE_LABEL_DEFINITIONS = Object.freeze([
   { name: 'wrongdog',   color: '#8a8c00', shortcut: 'r', duration: '1–3 s', occupancy: '50–80 %' },
 ].map(Object.freeze));
 
+const REVIEW_FRAGMENT_DEFINITION = Object.freeze({
+  name: 'review', color: '#f1c40f', shortcut: 'v', duration: 'n/a', occupancy: 'n/a',
+});
+
+const FRAGMENT_LABEL_DEFINITIONS = Object.freeze([
+  ...SAMPLE_LABEL_DEFINITIONS,
+  REVIEW_FRAGMENT_DEFINITION,
+]);
+
 export const SAMPLE_LABELS = Object.freeze(
   SAMPLE_LABEL_DEFINITIONS.map(({ name }) => name),
+);
+
+/** Fragment-only review state plus the labels used by trainable samples. */
+export const FRAGMENT_LABELS = Object.freeze(
+  FRAGMENT_LABEL_DEFINITIONS.map(({ name }) => name),
 );
 
 export const SAMPLE_LABEL_GUIDELINES = Object.freeze(Object.fromEntries(
@@ -21,20 +35,20 @@ export const SAMPLE_LABEL_GUIDELINES = Object.freeze(Object.fromEntries(
   ]),
 ));
 
-const SAMPLE_LABEL_COLORS = new Map(
-  SAMPLE_LABEL_DEFINITIONS.map(({ name, color }) => [name, color]),
+const LABEL_COLORS = new Map(
+  FRAGMENT_LABEL_DEFINITIONS.map(({ name, color }) => [name, color]),
 );
 
 /** Map from shortcut key (single letter) to label name. */
 export const LABEL_BY_SHORTCUT = new Map(
-  SAMPLE_LABEL_DEFINITIONS.map(({ name, shortcut }) => [shortcut, name]),
+  FRAGMENT_LABEL_DEFINITIONS.map(({ name, shortcut }) => [shortcut, name]),
 );
 
 /** Return the single-letter keyboard shortcut for a label, or '' if none. */
 export function sampleLabelShortcut(label) {
-  return SAMPLE_LABEL_DEFINITIONS.find(d => d.name === label)?.shortcut ?? '';
+  return FRAGMENT_LABEL_DEFINITIONS.find(d => d.name === label)?.shortcut ?? '';
 }
 
 export function sampleLabelColor(label) {
-  return SAMPLE_LABEL_COLORS.get(label) ?? '#4a7cdc';
+  return LABEL_COLORS.get(label) ?? '#4a7cdc';
 }
