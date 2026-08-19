@@ -19,6 +19,7 @@
     hydrateRecordingCommentAnnotations,
     withRecordingCommentAnnotations,
   } from '$lib/recording-comments.js';
+  import { withLinkedTrainingSample } from '$lib/diary-samples.js';
 
   // Svelte 5 runes
   let { data } = $props();
@@ -205,9 +206,16 @@
       throw new Error(message);
     }
 
+    const moveResult = await res.json();
+
     if (!keepInDiary) {
       entries = entries.filter(e => e.id !== entry.id);
       closePanel();
+    } else {
+      const updated = withLinkedTrainingSample(entry, moveResult);
+      entries = entries.map(item => item.id === entry.id ? updated : item);
+      if (selectedEntry?.id === entry.id) selectedEntry = updated;
+      if (panelEntry?.id === entry.id) panelEntry = updated;
     }
   }
 

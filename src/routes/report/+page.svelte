@@ -13,6 +13,7 @@
   } from '$lib/recording-comments.js';
   import { formatPrintReportRange, reportBounds } from '$lib/report-range.js';
   import { formatDisturbedTime } from '$lib/report-summary.js';
+  import { withLinkedTrainingSample } from '$lib/diary-samples.js';
   import { DIARY_NIGHT_COLOR, isNighttimeRecording } from '$lib/sun-time.js';
   import {
     addDays,
@@ -313,10 +314,16 @@
       throw new Error(message);
     }
 
+    const moveResult = await response.json();
+
     if (!keepInDiary) {
       entries = entries.filter((item) => item.id !== entry.id);
       void refreshPeriodSummary();
       closePanel();
+    } else {
+      const updated = withLinkedTrainingSample(entry, moveResult);
+      entries = entries.map((item) => item.id === entry.id ? updated : item);
+      if (panelEntry?.id === entry.id) panelEntry = updated;
     }
   }
 
