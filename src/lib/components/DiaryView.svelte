@@ -63,13 +63,13 @@
   /** Toggle the overview bar-chart panel. */
   let showOverview = $state(true);
 
-  /** Visible time domain (hours). Controls which slice of the 24h track is shown. */
+  /** Time range scaled to fill the scrollable viewport. The track remains 24h. */
   let domain = $state({ startHour: 9, endHour: 20 });
 
   const ZOOM_LEVELS = [
-    { label: '24h',       startHour: 0,  endHour: 24 },
-    { label: '6 to 22',  startHour: 6,  endHour: 22 },
-    { label: '9 to 20', startHour: 9,  endHour: 20 },
+    { label: '24h',    startHour: 0, endHour: 24 },
+    { label: '6 to 22', startHour: 6, endHour: 22 },
+    { label: '9 to 20', startHour: 9, endHour: 20 },
   ];
 
   async function fetchDiary({ startDate, endDate } = {}) {

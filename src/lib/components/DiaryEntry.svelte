@@ -2,6 +2,7 @@
   import { formatDiaryEntryTitle, hitMetadataById } from '$lib/hit-metadata.js';
   import { recordingComment } from '$lib/recording-comments.js';
   import { diaryTrimBounds, trimHitMetadata } from '$lib/diary-trim.js';
+  import { durationAreaRadius } from '$lib/diary-entry-visual.js';
 
   /**
    * @type {{
@@ -70,12 +71,13 @@
   const KNOB_CENTER_Y = 8;
   const INNER_RADIUS  = 10; // play-knob radius
   const MIN_EXTRA     = 3;
-  const MAX_EXTRA     = 40; // configurable — max extra reach beyond inner radius
+  const MAX_EXTRA     = 30; // configurable — max extra reach beyond inner radius
   const MAX_DURATION  = 570; // seconds; domain end for outer-radius scaling
+  const MIN_RADIUS    = INNER_RADIUS + MIN_EXTRA;
+  const MAX_RADIUS    = INNER_RADIUS + MAX_EXTRA;
 
   const outerRadius = $derived(
-    INNER_RADIUS + MIN_EXTRA +
-    Math.max(0, Math.min(1, trimBounds.durationSec / MAX_DURATION)) * (MAX_EXTRA - MIN_EXTRA)
+    durationAreaRadius(trimBounds.durationSec, MIN_RADIUS, MAX_RADIUS, MAX_DURATION)
   );
 
   // Shorter clips stack on top: 1 at MAX_DURATION down to MAX_DURATION at 0s.

@@ -8,13 +8,11 @@
    * @type {{
    *   date: string;
    *   entries: import('$lib/types').Entry[];
-   *   startHour: number;
-   *   endHour: number;
    *   selectedId: string | null;
    *   onselect: (entry: import('$lib/types').Entry) => void;
    * }}
    */
-  let { date, entries, startHour, endHour, selectedId, onselect, sunEntry = null } = $props();
+  let { date, entries, selectedId, onselect, sunEntry = null } = $props();
 
   // ── Layout constants ───────────────────────────────────────────────────────
   const RULER_HEIGHT     = 22;  // px – the hour-tick ruler row
@@ -29,17 +27,11 @@
   const LANE_MARGIN      = 4;   // px
 
   // ── Domain ────────────────────────────────────────────────────────────────
-  const domainStartMin  = $derived(startHour * 60);
-  const domainEndMin    = $derived(endHour   * 60);
-  const domainWidthMin  = $derived(domainEndMin - domainStartMin);
-
-  // Only show entries whose start time falls within the visible domain.
-  const visibleEntries  = $derived(
-    entries.filter(e => {
-      const t = parseTimeToMinutes(e.time);
-      return t >= domainStartMin && t < domainEndMin;
-    })
-  );
+  // Every row always contains the complete day. The parent changes the pixel
+  // width and scroll position to make the selected time range fill its view.
+  const domainStartMin = 0;
+  const domainEndMin = 24 * 60;
+  const domainWidthMin = domainEndMin - domainStartMin;
 
   // ── Track width measurement (for responsive collision span) ───────────────
   let trackWidth = $state(0);  // bound below with bind:clientWidth
@@ -50,7 +42,7 @@
   );
 
   // ── Lane assignment ────────────────────────────────────────────────────────
-  const laned            = $derived(assignLanes(visibleEntries, labelSpanMins));
+  const laned            = $derived(assignLanes(entries, labelSpanMins));
   const entriesWithLanes = $derived(laned.entriesWithLanes);
   const laneCount        = $derived(laned.laneCount);
 
@@ -58,10 +50,8 @@
   const trackHeight = $derived(LANE_MARGIN + Math.max(2, laneCount) * FLAG_LANE_HEIGHT + LANE_MARGIN + 2);
 
   // ── Ruler ticks ────────────────────────────────────────────────────────────
-  // Every 2 hours, filtered to the visible domain.
-  const ticks = $derived(
-    Array.from({ length: 13 }, (_, i) => i * 2).filter(h => h >= startHour && h <= endHour)
-  );
+  // Every 2 hours across the complete day, including the 24:00 boundary.
+  const ticks = Array.from({ length: 13 }, (_, i) => i * 2);
 
   // ── Position helpers (all in %) ──────────────────────────────────────────
 
@@ -184,9 +174,10 @@
       <div
         class="tick"
         class:tick-midnight={hour === 0}
+        class:tick-day-end={hour === 24}
         style="left: {((hour * 60 - domainStartMin) / domainWidthMin) * 100}%; height: 100%;"
       >
-        {#if hour < 24 && hour !== endHour}
+        {#if hour < 24}
           <span class="tick-label"><span class="tick-hh">{String(hour).padStart(2, '0')}</span><span class="tick-mm">:00</span></span>
         {/if}
       </div>
@@ -241,7 +232,13 @@
     gap: 1px;
     align-self: stretch;
     justify-content: flex-start;
+    position: sticky;
+    left: 0;
+    z-index: 600;
+    background: #fff;
   }
+
+  .day-row:hover .date-label { background: #fafaf8; }
 
   .date-weekday {
     font-size: var(--font-size-tiny);
@@ -293,6 +290,7 @@
     user-select: none;
   }
   .tick-midnight { background: #ccc; }
+  .tick-day-end { transform: translateX(-1px); }
 
   .tick-label {
     position: absolute;
