@@ -1,12 +1,4 @@
 @font-face {
-  font-family: 'Barktown Arima';
-  src: url('/arima.woff2') format('woff2');
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-}
-
-@font-face {
   font-family: 'Barktown Cambria';
   src: url('/cambria-regular.woff2') format('woff2');
   font-style: normal;
@@ -21,12 +13,13 @@
 }
 
 :root {
-  --font-heading: 'Barktown Arima', sans-serif;
-  --font-heading-weight: 800;
   --font-body: 'Barktown Cambria', Cambria, Georgia, serif;
+  --font-heading: var(--font-body);
+  --font-heading-weight: 800;
+  --font-tiny: Verdana, Geneva, Tahoma, sans-serif;
   --font-data: 'Datatype', sans-serif;
   --font-monospace: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  --font-size-tiny: 0.75rem;
+  --font-size-tiny: 0.7rem;
   --font-size-small: 1rem;
   --font-size-medium: 1.2rem;
   --font-size-large: 1.5rem;
@@ -35,7 +28,7 @@
 
 @media (min-width: 48rem), print {
   :root {
-    --font-size-tiny: 0.8rem;
+    --font-size-tiny: 0.75rem;
     --font-size-small: 1.1rem;
     --font-size-medium: 1.2rem;
     --font-size-large: 2rem;

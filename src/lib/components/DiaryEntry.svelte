@@ -269,14 +269,14 @@
   }
 
   .flag-time {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 700;
     color: color-mix(in srgb, var(--c-base) 85%, black);
     line-height: 1.2;
   }
 
   .flag-label-text {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: color-mix(in srgb, var(--c-base) 85%, black);
     line-height: 1.2;
   }

@@ -1184,7 +1184,7 @@
   }
 
   .panel-kind {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 700;
     text-transform: uppercase;
     padding: 1px 6px;
@@ -1195,12 +1195,12 @@
   .panel-kind--empty { background: #ebebeb; color: #666; }
 
   .panel-datetime {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #666;
   }
 
   .panel-dur {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #999;
   }
 
@@ -1223,7 +1223,7 @@
   }
   .panel-comment:hover { color: #2255bb; }
   .panel-comment.empty { color: #888; font-weight: 500; }
-  .comment-edit-icon { color: #999; font-size: var(--font-size-tiny); }
+  .comment-edit-icon { color: #999; font-family: var(--font-tiny); font-size: var(--font-size-tiny); }
   .panel-comment-readonly {
     width: fit-content;
     max-width: 100%;
@@ -1256,7 +1256,7 @@
     color: #444;
     cursor: pointer;
     font: inherit;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
   }
   .comment-save { border-color: #2255bb; background: #2255bb; color: #fff; }
   .comment-save:disabled,
@@ -1264,12 +1264,12 @@
   .panel-analysis {
     margin: -0.45rem 0 0;
     color: #888;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
   }
   .comment-error {
     margin: -0.4rem 0 0;
     color: #c0392b;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
   }
 
   .close-btn {
@@ -1330,12 +1330,12 @@
     margin-left: auto;
     flex-shrink: 0;  }
   .delete-confirm-text {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #c0392b;
     font-weight: 600;
   }
   .delete-confirm-yes {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     padding: 0.15rem 0.5rem;
     background: #c0392b;
     color: #fff;
@@ -1345,7 +1345,7 @@
   }
   .delete-confirm-yes:hover { background: #a93226; }
   .delete-confirm-no {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     padding: 0.15rem 0.5rem;
     background: #f0f0ec;
     color: #333;
@@ -1425,7 +1425,7 @@
   .sample-picker-error {
     margin: 0.8rem 0 0;
     color: #c0392b;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
   }
 
   .keep-in-diary-label {
@@ -1498,7 +1498,7 @@
   .trim-status {
     min-height: 1rem;
     color: #777;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
   }
   .trim-status.error { color: #c0392b; }
 
@@ -1507,7 +1507,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #aaa;
     background: #f4f6fb;
     border-radius: 4px;
@@ -1531,7 +1531,7 @@
   .time-display {
     display: flex;
     gap: 0.25rem;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #888;
     font-variant-numeric: tabular-nums;
   }
@@ -1569,7 +1569,7 @@
   }
 
   .vol-label {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-variant-numeric: tabular-nums;
     color: #555;
     min-width: 5.5ch;
@@ -1588,7 +1588,7 @@
     display: flex;
     align-items: center;
     gap: 0.3rem;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #555;
     cursor: pointer;
     flex-shrink: 0;
@@ -1597,7 +1597,7 @@
   .auto-label input { cursor: pointer; accent-color: #1a1a1a; }
 
   .norm-label {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-variant-numeric: tabular-nums;
     color: #555;
     min-width: 7.5ch;
@@ -1642,7 +1642,7 @@
   .analysis-parameters {
     margin: 0 0 0;
     color: #888;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-variant-numeric: tabular-nums;
     overflow-wrap: anywhere;
   }

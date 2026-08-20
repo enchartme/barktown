@@ -590,7 +590,7 @@
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
     color: #555;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     text-decoration: none;
     white-space: nowrap;
   }
@@ -615,7 +615,7 @@
   .eyebrow {
     margin: 0 0 0.25rem;
     color: #8a3d20;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 750;
     text-transform: uppercase;
   }
@@ -673,7 +673,7 @@
     align-items: center;
     gap: 0.45rem;
     color: #777;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 650;
   }
 
@@ -693,7 +693,7 @@
     color: #777;
     cursor: pointer;
     font: inherit;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
   }
 
   .week-count-controls button:hover:not(:disabled) { background: #f0f0ec; color: #1a1a1a; }
@@ -703,7 +703,7 @@
   select {
     padding: 0.25rem 1.8rem 0.25rem 0.45rem;
     cursor: pointer;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
   }
 
   .report-days {
@@ -735,7 +735,7 @@
 
   .total-metric span {
     color: #777;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 650;
   }
 
@@ -770,7 +770,7 @@
     margin-top: 1.5rem;
     color: #777;
     font-family: var(--font-body);
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
   }
 
   .app.print-layout .recording-sentence { margin-right: 0; }
@@ -830,7 +830,7 @@
     gap: 0.35rem;
     color: #777;
     font-family: var(--font-body);
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 500;
   }
 
@@ -884,7 +884,7 @@
   time {
     margin-inline: 0.2rem;
     color: #5d514c;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-family: var(--font-monospace);
     font-size: var(--font-size-tiny);
     font-variant-numeric: tabular-nums;
   }

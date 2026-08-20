@@ -241,12 +241,12 @@
   .day-row:hover .date-label { background: #fafaf8; }
 
   .date-weekday {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 700;
     color: #1a1a1a;
   }
   .date-rest {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #777;
     white-space: nowrap;
     overflow: hidden;
@@ -296,7 +296,7 @@
     position: absolute;
     top: 3px;
     left: 3px;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #aaa;
     white-space: nowrap;
   }
@@ -321,8 +321,8 @@
   @media (max-width: 520px) {
     .date-label { width: 56px; padding: 6px 4px 6px 6px; }
     .date-rest        { display: none; }
-    .date-daym        { display: block; font-size: var(--font-size-tiny); color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .date-year-mobile { display: block; font-size: var(--font-size-tiny); color: #999; }
+    .date-daym        { display: block; font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .date-year-mobile { display: block; font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #999; }
     .tick-mm          { display: none; }
   }
 </style>

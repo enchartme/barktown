@@ -599,7 +599,7 @@
     gap: 1rem;
     margin-bottom: 0.7rem;
   }
-  .projection-heading p { margin: 0; color: #777; font-size: var(--font-size-tiny); line-height: 1.45; }
+  .projection-heading p { margin: 0; color: #777; font-family: var(--font-tiny); font-size: var(--font-size-tiny); line-height: 1.45; }
   .projection-copy { display: flex; align-items: center; gap: 0.45rem; min-width: 0; }
   .projection-switch {
     display: inline-flex;
@@ -616,14 +616,14 @@
     background: transparent;
     color: #777;
     font: inherit;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 700;
     cursor: pointer;
   }
   .projection-switch button:hover { color: #222; }
   .projection-switch button.active { background: #fff; color: #1a1a1a; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
   .projection-switch button:focus-visible { outline: 2px solid rgba(74, 124, 220, 0.35); outline-offset: 1px; }
-  .point-count { color: #999; font-size: var(--font-size-tiny); white-space: nowrap; padding-top: 0.15rem; }
+  .point-count { color: #999; font-family: var(--font-tiny); font-size: var(--font-size-tiny); white-space: nowrap; padding-top: 0.15rem; }
   .plot-controls-overlay {
     position: absolute;
     z-index: 3;
@@ -646,7 +646,7 @@
     align-items: center;
     gap: 0.35rem;
     color: #666;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     white-space: nowrap;
     cursor: pointer;
   }
@@ -678,9 +678,9 @@
     background: rgba(255, 255, 255, 0.96);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     pointer-events: none;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
   }
-  .plot-tooltip strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--font-size-tiny); }
+  .plot-tooltip strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-tiny); font-size: var(--font-size-tiny); }
   .tooltip-label {
     align-self: flex-start;
     padding: 0.08rem 0.38rem;
@@ -704,12 +704,12 @@
     grid-column: 1 / -1;
     display: block;
     color: #777;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 700;
     text-transform: uppercase;
   }
-  .quality-grid small { color: #888; font-size: var(--font-size-tiny); white-space: nowrap; }
-  .quality-grid b { font-size: var(--font-size-tiny); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .quality-grid small { color: #888; font-family: var(--font-tiny); font-size: var(--font-size-tiny); white-space: nowrap; }
+  .quality-grid b { font-family: var(--font-tiny); font-size: var(--font-size-tiny); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .plot-message {
     min-height: 180px;
     display: grid;
@@ -718,7 +718,7 @@
     border-radius: 6px;
     color: #999;
     background: #fff;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
   }
   .plot-error { color: #c0392b; min-height: auto; padding: 0.8rem; margin-top: 0.6rem; }
 

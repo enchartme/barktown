@@ -1497,7 +1497,7 @@
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
     color: #555;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     text-decoration: none;
     white-space: nowrap;
   }
@@ -1581,7 +1581,7 @@
   .encoding-title-control > span {
     width: 100%;
     color: #999;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 700;
     text-transform: uppercase;
   }
@@ -1596,7 +1596,7 @@
     font-size: var(--font-size-medium);
     font-weight: 700;
   }
-  .encoding-explanation code { padding: 0.08rem 0.3rem; border-radius: 3px; background: #f0f0ec; color: #666; font-size: var(--font-size-tiny); }
+  .encoding-explanation code { padding: 0.08rem 0.3rem; border-radius: 3px; background: #f0f0ec; color: #666; font-family: var(--font-monospace); font-size: var(--font-size-tiny); }
   .explanation-color-legend {
     width: 100%;
     display: grid;
@@ -1604,7 +1604,7 @@
     align-items: center;
     gap: 0.4rem;
     color: #777;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
   }
   .explanation-color-legend i {
     height: 9px;
@@ -1613,8 +1613,8 @@
   }
   .explanation-color-legend small { font-size: inherit; font-variant-numeric: tabular-nums; }
   .encoding-explanation section + section { margin-top: 0.85rem; padding-top: 0.75rem; border-top: 1px solid #ecece7; }
-  .encoding-explanation h2 { margin: 0 0 0.28rem; color: #777; font-size: var(--font-size-tiny); text-transform: uppercase; }
-  .encoding-explanation p { margin: 0; font-size: var(--font-size-tiny); line-height: 1.5; }
+  .encoding-explanation h2 { margin: 0 0 0.28rem; color: #777; font-family: var(--font-heading); font-size: var(--font-size-tiny); text-transform: uppercase; }
+  .encoding-explanation p { margin: 0; font-family: var(--font-tiny); font-size: var(--font-size-tiny); line-height: 1.5; }
   @container (max-width: 1100px) {
     .corpus-summary-layout {
       grid-template-columns: minmax(0, 1fr);
@@ -1633,7 +1633,7 @@
   .corpus-table { border-collapse: collapse; width: 100%; font-size: var(--font-size-small); }
   .corpus-table th {
     text-align: left;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     text-transform: uppercase;
     color: #999;
     padding: 0.3rem 0.5rem;
@@ -1643,7 +1643,7 @@
     display: block;
     margin-top: 0.2rem;
     color: #aaa;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 400;
     line-height: 1.25;
     text-transform: none;
@@ -1667,7 +1667,7 @@
   .corpus-mid  { color: #b8860b; }
   .corpus-good { color: #27ae60; }
 
-  .corpus-summary-legend { font-size: var(--font-size-tiny); color: #999; margin-top: 1rem; }
+  .corpus-summary-legend { font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #999; margin-top: 1rem; }
 
   .corpus-back-btn {
     display: block;
@@ -1727,7 +1727,7 @@
   .filter-pill.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
   .reload-pill { border-style: dashed; }
 
-  .samples-msg { padding: 1rem 0.9rem; font-size: var(--font-size-tiny); color: #999; }
+  .samples-msg { padding: 1rem 0.9rem; font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #999; }
   .samples-err { color: #c0392b; }
 
   .samples-list { padding-bottom: 0.5rem; overflow-y: auto; flex: 1; }
@@ -1752,7 +1752,7 @@
 
   .day-header {
     padding: 0.45rem 0.9rem 0.2rem;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 800;
     color: #222;
     text-transform: uppercase;
@@ -1793,7 +1793,7 @@
     gap: 0.05rem;
   }
   .sample-name-main {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #333;
     white-space: nowrap;
     overflow: hidden;
@@ -1801,19 +1801,19 @@
     font-variant-numeric: tabular-nums;
   }
   .sample-diary-icon {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     opacity: 0.6;
     margin-left: 0.25rem;
     vertical-align: middle;
   }
   .sample-note-preview {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #a8860a;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .sample-dur { font-size: var(--font-size-tiny); color: #aaa; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+  .sample-dur { font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #aaa; flex-shrink: 0; font-variant-numeric: tabular-nums; }
 
   /* ── Editor header ── */
   .editor-header {
@@ -1824,7 +1824,7 @@
     margin-bottom: 0.6rem;
   }
   .editor-title { font-size: var(--font-size-small); font-weight: 600; }
-  .editor-dur { font-size: var(--font-size-tiny); color: #888; font-variant-numeric: tabular-nums; }
+  .editor-dur { font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #888; font-variant-numeric: tabular-nums; }
   .cross-link-btn {
     font-size: var(--font-size-small); padding: 0.1rem 0.25rem; border-radius: 5px;
     text-decoration: none; color: inherit; border: 1px solid transparent;
@@ -1836,13 +1836,13 @@
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #666;
     margin-left: auto;
   }
   .category-control select {
     font-family: inherit;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     padding: 0.2rem 0.4rem;
     border: 1px solid #d0d0cc;
     border-radius: 4px;
@@ -1855,8 +1855,7 @@
     border: none;
     border-radius: 4px;
     padding: 0.32rem 0.75rem;
-    font-size: var(--font-size-tiny);
-    font-family: inherit;
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     cursor: pointer;
   }
   .danger-btn:hover { opacity: 0.85; }
@@ -1867,8 +1866,7 @@
     border: none;
     border-radius: 4px;
     padding: 0.32rem 0.75rem;
-    font-size: var(--font-size-tiny);
-    font-family: inherit;
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     cursor: pointer;
   }
   .action-btn:hover:not(:disabled) { opacity: 0.8; }
@@ -1882,14 +1880,14 @@
     border: 1px solid #f5c6c0;
     border-radius: 6px;
     padding: 0.5rem 0.7rem;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     margin-bottom: 0.7rem;
     flex-wrap: wrap;
   }
 
   .error-msg {
     color: #c0392b;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     margin: 0.4rem 0;
   }
 
@@ -1907,16 +1905,16 @@
     border-radius: 50%;
     width: 32px;
     height: 32px;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     cursor: pointer;
     flex-shrink: 0;
   }
   .play-pause-btn:hover { opacity: 0.8; }
-  .mini-time { font-size: var(--font-size-tiny); color: #666; font-variant-numeric: tabular-nums; flex-shrink: 0; }
-  .hint { font-size: var(--font-size-tiny); color: #aaa; }
-  .regen-label { font-size: var(--font-size-tiny); color: #aaa; margin-left: auto; }
+  .mini-time { font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #666; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+  .hint { font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #aaa; }
+  .regen-label { font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #aaa; margin-left: auto; }
   .regen-btn {
-    font-size: var(--font-size-tiny); padding: 0.1rem 0.35rem;
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny); padding: 0.1rem 0.35rem;
     border: 1px solid #c0c8d8; border-radius: 4px;
     background: #f4f6fa; color: #445; cursor: pointer;
     line-height: 1.4;
@@ -1988,7 +1986,7 @@
     border-radius: 6px;
     padding: 0.6rem 0.8rem;
     margin-top: 0.6rem;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
   }
 
   .pending-range, .ann-range { color: #666; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -1997,7 +1995,7 @@
   .note-row { display: flex; align-items: center; gap: 0.4rem; }
   .note-input {
     font-family: inherit;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     padding: 0.3rem 0.5rem;
     border: 1px solid #d0d0cc;
     border-radius: 4px;
@@ -2020,7 +2018,7 @@
     margin-bottom: 0.35rem;
   }
   .notes-panel-title {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 700;
     text-transform: uppercase;
     color: #999;
@@ -2036,7 +2034,7 @@
   .note-row-item.selected { background: #fdf6d8; }
   .note-row-item .note-input { flex: 1; min-width: 0; }
   .note-time {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #a8860a;
     font-variant-numeric: tabular-nums;
     flex-shrink: 0;
@@ -2049,7 +2047,7 @@
     background: none;
     border: none;
     font-family: inherit;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #1a1a1a;
     cursor: pointer;
     padding: 0.15rem 0.3rem;
@@ -2063,7 +2061,7 @@
     flex: 1;
     min-width: 0;
     padding: 0.15rem 0.3rem;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -2079,8 +2077,8 @@
     flex-shrink: 0;
   }
   .note-delete-btn:hover { opacity: 0.7; }
-  .notes-empty { font-size: var(--font-size-tiny); color: #aaa; padding: 0.2rem 0; }
-  .shortcuts-hint { font-size: var(--font-size-tiny); color: #aaa; margin-top: 0.6rem; line-height: 1.5; }
+  .notes-empty { font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #aaa; padding: 0.2rem 0; }
+  .shortcuts-hint { font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #aaa; margin-top: 0.6rem; line-height: 1.5; }
 
   /* ── Out-of-bounds fragments panel ── */
   .oob-panel {
@@ -2091,14 +2089,14 @@
     background: #fff8f8;
   }
   .oob-panel-header { margin-bottom: 0.4rem; }
-  .oob-panel-title { font-size: var(--font-size-tiny); font-weight: 600; color: #c0392b; margin-right: 0.5rem; }
-  .oob-panel-hint { font-size: var(--font-size-tiny); color: #a0402a; }
+  .oob-panel-title { font-family: var(--font-tiny); font-size: var(--font-size-tiny); font-weight: 600; color: #c0392b; margin-right: 0.5rem; }
+  .oob-panel-hint { font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #a0402a; }
   .oob-row {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     padding: 0.2rem 0;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
   }
   .oob-range { flex: 1; font-variant-numeric: tabular-nums; color: #555; }
 </style>

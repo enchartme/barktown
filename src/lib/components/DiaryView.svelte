@@ -386,7 +386,7 @@
 
   .subtitle {
     margin: 0;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #888;
     white-space: nowrap;
   }
@@ -419,7 +419,7 @@
     border: 1px solid #d0d0cc;
     border-radius: 4px;
     padding: 0.2rem 0.55rem;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     cursor: pointer;
     color: #555;
     transition: background 0.1s, color 0.1s;
@@ -428,7 +428,7 @@
   .zoom-btn.active  { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
 
   .nav-link {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #555;
     text-decoration: none;
     white-space: nowrap;
@@ -469,7 +469,7 @@
   .range-error {
     margin: -0.1rem 1rem 0.5rem;
     color: #c0392b;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     text-align: center;
   }
 

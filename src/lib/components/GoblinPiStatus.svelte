@@ -1215,7 +1215,7 @@
   }
 
   .popup-time {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #999;
     flex: 1;
   }
@@ -1225,12 +1225,11 @@
     background: none;
     border: none;
     cursor: pointer;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #aaa;
     padding: 0.1rem 0.35rem;
     border-radius: 3px;
     line-height: 1;
-    font-family: inherit;
   }
   .popup-close:hover { background: #eee; color: #333; }
 
@@ -1245,7 +1244,7 @@
     color: #888;
     font-size: var(--font-size-small);
   }
-  .empty-body code { font-size: var(--font-size-tiny); }
+  .empty-body code { font-family: var(--font-monospace); font-size: var(--font-size-tiny); }
 
   .retry-btn {
     margin-top: 0.5rem;
@@ -1254,9 +1253,8 @@
     border: none;
     border-radius: 4px;
     padding: 0.35rem 0.9rem;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     cursor: pointer;
-    font-family: inherit;
   }
   .retry-btn:hover { background: #333; }
 
@@ -1264,14 +1262,14 @@
   .status-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     table-layout: fixed;
   }
 
   .section-hdr td {
     background: #1a1a1a;
     color: #fff;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 700;
     text-transform: uppercase;
     padding: 0.3rem 0.9rem;
@@ -1296,7 +1294,7 @@
 
   .level-tag {
     margin-left: 0.4rem;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 400;
     color: #666;
     text-transform: uppercase;
@@ -1306,7 +1304,7 @@
   .td-hint {
     padding: 0.27rem 0.9rem 0.27rem 0.4rem;
     color: #bbb;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     line-height: 1.4;
     width: 50%;
     border-bottom: 1px solid #f0f0ec;
@@ -1382,7 +1380,7 @@
     border: 1px solid #b8c4c1;
     border-radius: 2px;
     color: #667b77;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: var(--font-monospace);
     font-size: var(--font-size-tiny);
     font-weight: 700;
   }
@@ -1390,7 +1388,7 @@
   .stage-title {
     flex: 1;
     color: #26312f;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 750;
     text-transform: uppercase;
   }
@@ -1416,7 +1414,7 @@
     margin-top: 0.5rem;
     overflow: hidden;
     color: #718480;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: var(--font-monospace);
     font-size: var(--font-size-tiny);
     font-weight: 700;
     text-overflow: ellipsis;
@@ -1434,7 +1432,7 @@
   .score-readout span,
   .instrument-label span {
     color: #6f7f7c;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
   }
 
   .score-readout strong {
@@ -1479,7 +1477,7 @@
 
   .instrument-label strong {
     color: #34413f;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: var(--font-monospace);
     font-size: var(--font-size-tiny);
     font-weight: 650;
     white-space: nowrap;
@@ -1512,7 +1510,7 @@
     border: 1px dashed #cbd3d0;
     background: #fafbf9;
     color: #899794;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     line-height: 1.5;
     text-align: center;
   }
@@ -1520,7 +1518,7 @@
 
   .queue-depth {
     color: #667b77;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: var(--font-monospace);
     font-size: var(--font-size-tiny);
   }
 
@@ -1546,14 +1544,14 @@
   .channel-copy strong { display: block; }
   .channel-copy small {
     color: #7c8c89;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     text-transform: uppercase;
   }
   .channel-copy strong {
     overflow: hidden;
     margin-top: 0.06rem;
     color: #34413f;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -1561,7 +1559,7 @@
     max-width: 42%;
     overflow: hidden;
     color: #7a8b88;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     text-align: right;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1583,10 +1581,10 @@
   .upload-counters span { display: block; }
   .upload-counters strong {
     color: #34413f;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: var(--font-monospace);
     font-size: var(--font-size-tiny);
   }
-  .upload-counters span { margin-top: 0.05rem; color: #7a8b88; font-size: var(--font-size-tiny); text-transform: uppercase; }
+  .upload-counters span { margin-top: 0.05rem; color: #7a8b88; font-family: var(--font-tiny); font-size: var(--font-size-tiny); text-transform: uppercase; }
   .upload-counters .counter-alert { border-color: #e2aaa5; background: #fff7f6; }
   .upload-counters .counter-alert strong { color: #b63f35; }
   .upload-counters .counter-warn { border-color: #dfc58e; background: #fffaf0; }
@@ -1627,7 +1625,7 @@
   .monitor-params-loading td {
     padding: 0.45rem 0.9rem;
     border-bottom: 1px solid #eee;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     line-height: 1.45;
   }
   .monitor-unreachable-row td {
@@ -1667,7 +1665,7 @@
     display: block;
     margin-top: 0.16rem;
     color: #aaa;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-monospace); font-size: var(--font-size-tiny);
     line-height: 1.2;
     overflow-wrap: anywhere;
   }
@@ -1689,8 +1687,7 @@
     background: #fff;
     color: #222;
     padding: 0.3rem 0.42rem;
-    font-family: inherit;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 600;
     line-height: 1.2;
     font-variant-numeric: tabular-nums;
@@ -1716,8 +1713,7 @@
     background: #1a1a1a;
     color: #fff;
     padding: 0.3rem 0.45rem;
-    font-family: inherit;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 600;
     cursor: pointer;
   }
@@ -1727,7 +1723,7 @@
   .param-sync,
   .param-message {
     margin-top: 0.25rem;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 500;
     line-height: 1.35;
   }
@@ -1747,7 +1743,7 @@
     display: block;
     margin-top: 0.2rem;
     color: #b2b2ac;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-variant-numeric: tabular-nums;
   }
 
@@ -1772,9 +1768,8 @@
     border: none;
     border-bottom: 2px solid transparent;
     padding: 0.45rem 0.8rem;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 600;
-    font-family: inherit;
     cursor: pointer;
     color: #aaa;
     transition: color 0.1s;
@@ -1806,7 +1801,7 @@
   }
 
   .manual-section-title {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 700;
     text-transform: uppercase;
     color: #999;
@@ -1837,7 +1832,7 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 600;
     color: #555;
   }
@@ -1852,7 +1847,7 @@
 
   .duration-select {
     font-family: inherit;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     padding: 0.3rem 0.5rem;
     border: 1px solid #d0d0cc;
     border-radius: 4px;
@@ -1866,8 +1861,7 @@
     border: none;
     border-radius: 4px;
     padding: 0.35rem 0.85rem;
-    font-size: var(--font-size-tiny);
-    font-family: inherit;
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     cursor: pointer;
     font-weight: 500;
     transition: opacity 0.15s;
@@ -1884,7 +1878,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-weight: 600;
     margin-bottom: 0.25rem;
   }
@@ -1908,7 +1902,7 @@
 
   /* ── Label grid ── */
   .label-prompt {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #555;
     margin: 0;
   }
@@ -1924,8 +1918,7 @@
     border: 1.5px solid transparent;
     border-radius: 4px;
     padding: 0.3rem 0.65rem;
-    font-size: var(--font-size-tiny);
-    font-family: var(--font-monospace);
+    font-family: var(--font-monospace); font-size: var(--font-size-tiny);
     cursor: pointer;
     color: #444;
     transition: background 0.1s, border-color 0.1s;
@@ -1939,14 +1932,14 @@
 
   /* ── Confirm prompt ── */
   .confirm-prompt {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #c0392b;
     font-weight: 600;
   }
 
   /* ── Feedback ── */
   .feedback-msg {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #555;
     padding: 0.25rem 0.5rem;
     background: #f7f7f5;
@@ -1962,14 +1955,14 @@
   }
 
   .recent-recordings-title {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     text-transform: uppercase;
     color: #999;
     margin-bottom: 0.35rem;
   }
 
   .recent-recordings-msg {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #999;
   }
   .recent-recordings-err { color: #c0392b; }
@@ -1995,7 +1988,7 @@
   }
   .recent-recording-time {
     flex: 1;
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #333;
     white-space: nowrap;
     overflow: hidden;
@@ -2004,7 +1997,7 @@
   }
 
   .recent-recording-dur {
-    font-size: var(--font-size-tiny);
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     color: #aaa;
     flex-shrink: 0;
     font-variant-numeric: tabular-nums;
