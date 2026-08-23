@@ -1,10 +1,13 @@
 <script>
+  import { page } from '$app/state';
   import { onMount } from 'svelte';
   import { fetchDiarySummary } from '$lib/diary-summary.js';
+  import { isEmbeddedLayout } from '$lib/embed.js';
   import { formatDisturbedTime } from '$lib/report-summary.js';
 
   let recentSummary = $state({ records: 0, disturbedTimeSec: 0, barks: 0 });
   let summaryState = $state('loading');
+  const embedded = $derived(isEmbeddedLayout(page.url.searchParams));
 
   function todayInStockholm() {
     return new Intl.DateTimeFormat('sv-SE', {
@@ -185,7 +188,7 @@
 </svelte:head>
 
 <div class="page-shell">
-  <header class="site-header">
+  {#if !embedded}<header class="site-header">
     <a class="brand" href="/">🐕 Barktown</a>
     <nav aria-label="Barktown views">
       <a href="/diary">Diary</a>
@@ -193,7 +196,7 @@
       <a href="/training">Training</a>
       <a class="current" aria-current="page" href="/method">Method</a>
     </nav>
-  </header>
+  </header>{/if}
 
   <main>
     <section class="hero" aria-labelledby="method-title">
@@ -301,7 +304,7 @@
       {/each}
     </div>
 
-    <section class="claim-boundary" aria-labelledby="claim-title">
+    {#if !embedded}<section class="claim-boundary" aria-labelledby="claim-title">
       <div>
         <p class="eyebrow">The honest boundary</p>
         <h2 id="claim-title">What the record can support</h2>
@@ -316,14 +319,14 @@
           <p>Which dog made a sound, where it was located, every bark that occurred, or whether the evidence meets a legal definition of nuisance.</p>
         </div>
       </div>
-    </section>
+    </section>{/if}
   </main>
 
-  <footer>
+  {#if !embedded}<footer>
     <a class="brand" href="/">🐕 Barktown</a>
     <p>Document the method. Preserve the recording. Keep the conclusion reviewable.</p>
     <a class="top-link" href="#method-title">Back to top ↑</a>
-  </footer>
+  </footer>{/if}
 </div>
 
 <style>

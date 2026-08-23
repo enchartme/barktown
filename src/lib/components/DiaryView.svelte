@@ -1,4 +1,6 @@
 <script>
+  import { browser } from '$app/environment';
+  import { page } from '$app/state';
   import { onMount } from 'svelte';
   import DiaryTimeline    from '$lib/components/DiaryTimeline.svelte';
   import AudioPlayerPanel from '$lib/components/AudioPlayerPanel.svelte';
@@ -20,6 +22,7 @@
     withRecordingCommentAnnotations,
   } from '$lib/recording-comments.js';
   import { withLinkedTrainingSample } from '$lib/diary-samples.js';
+  import { isEmbeddedLayout } from '$lib/embed.js';
 
   // Svelte 5 runes
   let { data } = $props();
@@ -36,6 +39,9 @@
   /** Entry kind filter. */
   let kindFilter = $state('both'); // 'text' | 'audio' | 'both'
   let showAllDays = $state(false);
+  // Diary is prerendered, so SvelteKit deliberately withholds URL query
+  // parameters during SSR. Resolve this mode after hydration in the browser.
+  const embedded = $derived(browser && isEmbeddedLayout(page.url.searchParams));
 
   const filteredEntries = $derived(
     kindFilter === 'both'  ? entries :
@@ -257,7 +263,7 @@
 </svelte:head>
 
 <div class="app">
-  <header class="site-header">
+  {#if !embedded}<header class="site-header">
     <h1>🐕 Barktown</h1>
     <button
       class="subtitle recordings-toggle"
@@ -297,22 +303,24 @@
     <a class="nav-link" href="/method">Method</a>
 
     <GoblinPiStatus />
-  </header>
+  </header>{/if}
 
   <main class="diary-main">
     {#if !loading && !loadError}
       <div class="diary-range-controls">
-        <span>{showAllDays ? 'showing all days with records starting from 2021' : 'showing records from the last 14 calendar days'}</span>
-        <button
-          disabled={rangeLoading}
-          onclick={showAllDays ? showRecentDiaryDays : showAllDiaryDays}
-        >
-          {#if rangeLoading}Loading…{:else if showAllDays}Show the last 14 calendar days{:else}Show all days starting from 2021{/if}
-        </button>
+        <span>{embedded ? 'showing records from the last 14 calendar days' : showAllDays ? 'showing all days with records starting from 2021' : 'showing records from the last 14 calendar days'}</span>
+        {#if !embedded}
+          <button
+            disabled={rangeLoading}
+            onclick={showAllDays ? showRecentDiaryDays : showAllDiaryDays}
+          >
+            {#if rangeLoading}Loading…{:else if showAllDays}Show the last 14 calendar days{:else}Show all days starting from 2021{/if}
+          </button>
+        {/if}
       </div>
       {#if rangeError}<p class="range-error" role="alert">{rangeError}</p>{/if}
     {/if}
-    {#if showOverview}
+    {#if showOverview && !embedded}
       <OverviewPanel entries={visibleEntries} />
     {/if}
     {#if loading}

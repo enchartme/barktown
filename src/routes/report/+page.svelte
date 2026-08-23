@@ -1,4 +1,5 @@
 <script>
+  import { page } from '$app/state';
   import { onMount } from 'svelte';
   import AudioPlayerPanel from '$lib/components/AudioPlayerPanel.svelte';
   import GoblinPiStatus from '$lib/components/GoblinPiStatus.svelte';
@@ -14,6 +15,7 @@
   import { formatPrintReportRange, reportBounds } from '$lib/report-range.js';
   import { formatDisturbedTime } from '$lib/report-summary.js';
   import { withLinkedTrainingSample } from '$lib/diary-samples.js';
+  import { isEmbeddedLayout } from '$lib/embed.js';
   import { DIARY_NIGHT_COLOR, isNighttimeRecording } from '$lib/sun-time.js';
   import {
     addDays,
@@ -47,6 +49,7 @@
   let recordingOrder = $state('asc');
   let rangeWeeks = $state(1);
   let printMode = $derived(data.initialPrintMode ?? false);
+  const embedded = $derived(isEmbeddedLayout(page.url.searchParams));
 
   /** @type {import('$lib/types').Entry | null} */
   let panelEntry = $state(null);
@@ -370,7 +373,7 @@
 </svelte:head>
 
 <div class="app" class:print-layout={printMode} style={`--diary-night: ${DIARY_NIGHT_COLOR}`}>
-  <header class="site-header screen-only">
+  {#if !embedded}<header class="site-header screen-only">
     <a class="brand" href="/">🐕 Barktown</a>
     <nav aria-label="Barktown views">
       <a href="/diary">Diary</a>
@@ -379,27 +382,31 @@
       <a href="/method">Method</a>
     </nav>
     <GoblinPiStatus />
-  </header>
+  </header>{/if}
 
   <main>
-    <header class="report-heading screen-only">
-      <div>
-        <p class="eyebrow">Sounds as text</p>
-        <h1>Report</h1>
-      </div>
+    <header class="report-heading screen-only" class:embedded-heading={embedded}>
+      {#if !embedded}
+        <div>
+          <p class="eyebrow">Sounds as text</p>
+          <h1>Report</h1>
+        </div>
+      {/if}
 
       {#if reportWeekStart}
         <div class="range-controls" aria-label="Report dates">
           <button disabled={loading} onclick={() => changeReportWeek(-1)}>← Earlier</button>
           <strong>{reportRangeLabel}</strong>
           <button disabled={loading} onclick={() => changeReportWeek(1)}>Later →</button>
-          <button disabled={loading} onclick={showLatestWeek}>Latest</button>
-          <button disabled={loading} onclick={showPrintLayout}>🖨️</button>
+          {#if !embedded}
+            <button disabled={loading} onclick={showLatestWeek}>Latest</button>
+            <button disabled={loading} onclick={showPrintLayout}>🖨️</button>
+          {/if}
         </div>
       {/if}
     </header>
 
-    <div class="ordering-controls screen-only" aria-label="Report ordering controls">
+    {#if !embedded}<div class="ordering-controls screen-only" aria-label="Report ordering controls">
       <div class="week-count-controls" role="group" aria-label="Report length">
         <button
           class:active={rangeWeeks === 1}
@@ -429,7 +436,7 @@
           <option value="desc">Latest on top</option>
         </select>
       </label>
-    </div>
+    </div>{/if}
 
     {#if loading}
       <p class="status">Loading recordings…</p>
@@ -610,6 +617,12 @@
     align-items: flex-end;
     justify-content: space-between;
     gap: 1.5rem;
+  }
+
+  .report-heading.embedded-heading {
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.1rem;
   }
 
   .eyebrow {

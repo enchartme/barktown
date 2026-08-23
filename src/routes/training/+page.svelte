@@ -1,4 +1,5 @@
 <script>
+  import { page } from '$app/state';
   import { onMount, tick } from 'svelte';
   import {
     ASSET_BASE,
@@ -15,6 +16,7 @@
   import { probeEditingAccess } from '$lib/editing-access.js';
   import GoblinPiStatus from '$lib/components/GoblinPiStatus.svelte';
   import TrainingProjectionScatterplot from '$lib/components/TrainingProjectionScatterplot.svelte';
+  import { isEmbeddedLayout } from '$lib/embed.js';
 
   // Sample and annotation reads use the anonymous public API. Mutations still
   // go directly to masmopi over Tailscale, using the same no-auth trust model
@@ -24,6 +26,7 @@
   // only — goblinpi just uploads to masmopi and has no ingest API of its own).
   const ALL_LABELS = ['all', ...LABELS, 'unmarked'];
   const NOTE_COLOR = '#f1c40f';
+  const embedded = $derived(isEmbeddedLayout(page.url.searchParams));
 
   /** Tailnet-only mutation controls appear after the private API responds. */
   let editingAccess = $state(false);
@@ -998,8 +1001,8 @@
 
 <svelte:window onmousemove={onWindowMouseMove} onmouseup={onWindowMouseUp} onkeydown={handleKeydown} onhashchange={handleHashChange} />
 
-<div class="app">
-  <header class="site-header">
+<div class="app" class:embedded>
+  {#if !embedded}<header class="site-header">
     <a class="brand" href="/">🐕 Barktown</a>
     <nav aria-label="Barktown views">
       <a href="/diary">Diary</a>
@@ -1008,10 +1011,10 @@
       <a href="/method">Method</a>
     </nav>
     <GoblinPiStatus />
-  </header>
+  </header>{/if}
 
   <div class="training-body">
-    <aside class="samples-pane">
+    {#if !embedded}<aside class="samples-pane">
       <div class="samples-filter">
         {#each ALL_LABELS as lbl}
           <button class="filter-pill" class:active={filterLabel === lbl} onclick={() => (filterLabel = lbl)}>{lbl}</button>
@@ -1070,7 +1073,7 @@
           {/each}
         </div>
       {/if}
-    </aside>
+    </aside>{/if}
 
     <main class="editor-pane">
       <h1 class="page-title">Training corpus summary</h1>
@@ -1511,6 +1514,10 @@
     display: flex;
     align-items: flex-start;
     min-height: calc(100dvh - 49px);
+  }
+
+  .app.embedded .training-body {
+    min-height: 100dvh;
   }
 
   .samples-pane {
