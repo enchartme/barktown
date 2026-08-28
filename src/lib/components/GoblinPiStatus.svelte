@@ -385,6 +385,10 @@
           {max:0.00001,level:'ok'},{max:0.001,level:'high'},{max:Infinity,level:'way_high'}]);
       case 'audio.xruns_last_hour':
         return value === 0 ? 'ok' : value <= 5 ? 'high' : 'way_high';
+      case 'audio.connection_state':
+        return value === 'open' ? 'ok'
+          : value === 'connecting' || value === 'reconnecting' ? 'high'
+          : 'way_high';
       case 'audio.sample_rate':
         return rangeLevel(value, [
           {max:8001,level:'way_low'},{max:16000,level:'low'},{max:48001,level:'ok'},
@@ -443,6 +447,9 @@
     'audio.peak_now':             '< 0.02 very low · 0.02–0.08 low · 0.08–0.5 ✓ · 0.5–0.85 high · > 0.85 danger',
     'audio.clip_rate_10s':        '0 – 0.00001 ✓ · 0.00001–0.001 high · > 0.001 danger',
     'audio.xruns_last_hour':      '0 ✓ · 1–5 high · > 5 danger',
+    'audio.xruns_total':          'capture interruptions since bark-monitor started',
+    'audio.connection_state':     'open ✓ · connecting/reconnecting notable · failed/closed danger',
+    'audio.last_error':           'most recent PortAudio/ALSA capture error',
     'audio.sample_rate':          '< 8 kHz very low · 16–48 kHz ✓ · > 96 kHz danger',
     'audio.streaming':            'false = stream dead · true ✓',
     'audio.usb_mic_present':      'false = mic missing · true ✓',
@@ -474,6 +481,8 @@
     { title: 'Audio', rows: [
       { path: 'audio.usb_mic_present',   label: 'USB mic',       fmt: v => v ? 'yes' : 'no' },
       { path: 'audio.streaming',         label: 'Streaming',     fmt: v => v ? 'yes' : 'no' },
+      { path: 'audio.connection_state',  label: 'Connection',    fmt: v => String(v) },
+      { path: 'audio.device_name',       label: 'Device',        fmt: v => String(v) },
       { path: 'audio.sample_rate',       label: 'Sample rate',   fmt: v => `${(v/1000).toFixed(0)} kHz` },
       { path: 'audio.rms_now',           label: 'RMS now',       fmt: v => v.toFixed(4) },
       { path: 'audio.rms_mean_10s',      label: 'RMS mean 10s',  fmt: v => v.toFixed(4) },
@@ -482,6 +491,8 @@
       { path: 'audio.peak_now',          label: 'Peak now',      fmt: v => v.toFixed(4) },
       { path: 'audio.clip_rate_10s',     label: 'Clip rate 10s', fmt: v => v.toFixed(6) },
       { path: 'audio.xruns_last_hour',   label: 'XRuns/hour',    fmt: v => String(v) },
+      { path: 'audio.xruns_total',       label: 'XRuns/session', fmt: v => String(v) },
+      { path: 'audio.last_error',        label: 'Last error',    fmt: v => String(v) },
     ]},
     { title: 'CPU', rows: [
       { path: 'cpu.percent_1s',       label: 'CPU % now',      fmt: v => `${v.toFixed(1)} %` },
