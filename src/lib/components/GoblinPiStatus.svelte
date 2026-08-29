@@ -34,6 +34,7 @@
   let selectedLabel   = $state('');
   let recordMessage   = $state('');
   let confirmAction   = $state(/** @type {'reboot'|'halt'|null} */ (null));
+  let showShutdownControl = $state(false);
   let controlMessage  = $state('');
   let recordPollId;
   let controlBusy     = $state(false);
@@ -687,8 +688,14 @@
     monitorBusy = false;
   }
 
+  function closePopup() {
+    showPopup = false;
+    confirmAction = null;
+    showShutdownControl = false;
+  }
+
   function handleKeydown(/** @type {KeyboardEvent} */ e) {
-    if (e.key === 'Escape' && showPopup) showPopup = false;
+    if (e.key === 'Escape' && showPopup) closePopup();
   }
 </script>
 
@@ -705,7 +712,7 @@
   <button
     class="status-backdrop"
     aria-label="Close Goblin status"
-    onclick={() => (showPopup = false)}
+    onclick={closePopup}
   ></button>
 
   <div class="status-popup" role="dialog" aria-modal="true" aria-label={`${HOST_LABEL} status`}>
@@ -716,7 +723,7 @@
       {:else}
         <span class="popup-time popup-error">unreachable — not on tailnet?</span>
       {/if}
-      <button class="popup-close" onclick={() => (showPopup = false)}>✕</button>
+      <button class="popup-close" onclick={closePopup}>✕</button>
     </div>
 
     <div class="tab-bar">
@@ -1139,10 +1146,27 @@
               <button class="action-btn" onclick={() => { confirmAction = 'reboot'; controlMessage = ''; }}>
                 Restart Goblin
               </button>
-              <button class="action-btn danger-btn" onclick={() => { confirmAction = 'halt'; controlMessage = ''; }}>
-                Shut down
-              </button>
             </div>
+            {#if showShutdownControl}
+              <div class="shutdown-command" id="shutdown-command">
+                <button class="action-btn danger-btn" onclick={() => { confirmAction = 'halt'; controlMessage = ''; showShutdownControl = false; }}>
+                  Shut down
+                </button>
+                <button
+                  class="shutdown-disclosure"
+                  aria-expanded="true"
+                  aria-controls="shutdown-command"
+                  onclick={() => (showShutdownControl = false)}
+                >Hide shutdown command</button>
+              </div>
+            {:else}
+              <button
+                class="shutdown-disclosure"
+                aria-expanded="false"
+                aria-controls="shutdown-command"
+                onclick={() => (showShutdownControl = true)}
+              >Show shutdown command</button>
+            {/if}
           {:else}
             <div class="confirm-prompt">
               {confirmAction === 'reboot' ? 'Reboot the Pi?' : 'Shut down the Pi?'}
@@ -1887,6 +1911,31 @@
   .stop-btn    { background: #e74c3c; }
   .danger-btn  { background: #c0392b; }
   .discard-btn { background: #888; }
+
+  .shutdown-command {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.35rem;
+  }
+
+  .shutdown-disclosure {
+    display: block;
+    width: max-content;
+    margin-top: 0.3rem;
+    padding: 0.05rem 0.1rem;
+    border: 0;
+    background: transparent;
+    color: #aaa;
+    font-family: var(--font-tiny);
+    font-size: 0.625rem;
+    line-height: 1.2;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+  }
+  .shutdown-command .shutdown-disclosure { margin-top: 0; }
+  .shutdown-disclosure:hover { color: #777; }
 
   /* ── Recording live indicator ── */
   .recording-live {
