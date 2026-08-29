@@ -1,5 +1,7 @@
 <script>
+  import { env } from '$env/dynamic/public';
   import { onMount, onDestroy } from 'svelte';
+  import { goblinHostLabel, resolveGoblinBaseUrl } from '$lib/goblin-config.js';
   import { PRIVATE_API_BASE, PUBLIC_API_BASE, formatDuration, formatSampleDatetime } from '$lib/utils.js';
   import { SAMPLE_LABELS as LABELS, sampleLabelColor } from '$lib/sample-labels.js';
   import {
@@ -9,7 +11,9 @@
     saveMonitorParamAndRefresh,
   } from '$lib/monitor-params.js';
 
-  const BASE_URL       = 'https://goblinpi.tail523149.ts.net';
+  const BASE_URL       = resolveGoblinBaseUrl(env.PUBLIC_GOBLIN_BASE_URL);
+  const HOSTNAME       = new URL(BASE_URL).hostname;
+  const HOST_LABEL     = goblinHostLabel(BASE_URL);
   const STATUS_URL     = `${BASE_URL}/status`;
   const SAMPLES_URL    = `${PUBLIC_API_BASE}/api/samples`;
   const POLL_OPEN_MS   = 1_000;
@@ -320,11 +324,11 @@
   );
 
   const DOT_TITLES = {
-    unavailable: 'goblinpi — unreachable (not on tailnet?)',
-    inactive:    'goblinpi — alive but audio stream is off',
-    red:         'goblinpi — inference active right now',
-    orange:      'goblinpi — hardware warning (CPU / RAM / disk)',
-    green:       'goblinpi — all good',
+    unavailable: `${HOST_LABEL} — unreachable (not on tailnet?)`,
+    inactive:    `${HOST_LABEL} — alive but audio stream is off`,
+    red:         `${HOST_LABEL} — inference active right now`,
+    orange:      `${HOST_LABEL} — hardware warning (CPU / RAM / disk)`,
+    green:       `${HOST_LABEL} — all good`,
   };
 
   // ── Threshold helpers ──────────────────────────────────────────────────────
@@ -596,14 +600,14 @@
       const data = await res.json();
       if (!data.ok) recordMessage = data.error ?? 'Failed to start';
       else await fetchRecordStatus();
-    } catch (_e) { recordMessage = 'Could not reach goblinpi'; }
+    } catch (_e) { recordMessage = `Could not reach ${HOST_LABEL}`; }
   }
 
   async function stopRecording() {
     try {
       await fetch(`${BASE_URL}/record/stop`, { method: 'POST', signal: AbortSignal.timeout(5000) });
       await fetchRecordStatus();
-    } catch (_e) { recordMessage = 'Could not reach goblinpi'; }
+    } catch (_e) { recordMessage = `Could not reach ${HOST_LABEL}`; }
   }
 
   async function labelRecording() {
@@ -631,7 +635,7 @@
         await fetchRecordStatus();
       }
     } catch (err) {
-      recordMessage = err?.name === 'TimeoutError' ? 'Request timed out' : 'Could not reach goblinpi';
+      recordMessage = err?.name === 'TimeoutError' ? 'Request timed out' : `Could not reach ${HOST_LABEL}`;
     }
   }
 
@@ -641,7 +645,7 @@
       recordMessage = '';
       selectedLabel = '';
       await fetchRecordStatus();
-    } catch (_e) { recordMessage = 'Could not reach goblinpi'; }
+    } catch (_e) { recordMessage = `Could not reach ${HOST_LABEL}`; }
   }
 
   async function executeControl() {
@@ -661,7 +665,7 @@
       controlMessage = data.ok
         ? (action === 'reboot' ? 'Rebooting… (back in ~30 s)' : 'Shutting down…')
         : (data.error ?? 'Failed');
-    } catch (_e) { controlMessage = 'Could not reach goblinpi'; }
+    } catch (_e) { controlMessage = `Could not reach ${HOST_LABEL}`; }
     controlBusy = false;
   }
 
@@ -678,7 +682,7 @@
       if (!data.ok) monitorMessage = data.error ?? 'Failed';
       await fetchStatus();
     } catch (_e) {
-      monitorMessage = 'Could not reach goblinpi';
+      monitorMessage = `Could not reach ${HOST_LABEL}`;
     }
     monitorBusy = false;
   }
@@ -694,7 +698,7 @@
   class="status-dot dot-{dotState}"
   onclick={() => (showPopup = !showPopup)}
   title={DOT_TITLES[dotState]}
-  aria-label="goblinpi status"
+  aria-label={`${HOST_LABEL} status`}
 ></button>
 
 {#if showPopup}
@@ -704,9 +708,9 @@
     onclick={() => (showPopup = false)}
   ></button>
 
-  <div class="status-popup" role="dialog" aria-modal="true" aria-label="goblinpi status">
+  <div class="status-popup" role="dialog" aria-modal="true" aria-label={`${HOST_LABEL} status`}>
     <div class="popup-header">
-      <span class="popup-title">goblinpi</span>
+      <span class="popup-title">{HOST_LABEL}</span>
       {#if status}
         <span class="popup-time">as of {new Date(status.now).toLocaleTimeString()}</span>
       {:else}
@@ -748,7 +752,7 @@
         </div>
       {:else}
         <div class="popup-body empty-body">
-          <p>Could not reach <code>goblinpi.tail523149.ts.net</code>.</p>
+          <p>Could not reach <code>{HOSTNAME}</code>.</p>
           <p>Are you connected to Tailscale?</p>
           <button class="retry-btn" onclick={fetchStatus}>Retry now</button>
         </div>

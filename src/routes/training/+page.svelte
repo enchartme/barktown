@@ -22,8 +22,8 @@
   // go directly to masmopi over Tailscale, using the same no-auth trust model
   // as GoblinPiStatus.svelte. Audio/waveform bytes remain on ASSET_BASE.
   //
-  // masmopi (Pi 5, ingestion + API host), NOT goblinpi (Pi 3B+, mic capture
-  // only — goblinpi just uploads to masmopi and has no ingest API of its own).
+  // masmopi (Pi 5, ingestion + API host), NOT gawblen (Pi 3B+, mic capture
+  // only — gawblen just uploads to masmopi and has no ingest API of its own).
   const ALL_LABELS = ['all', ...LABELS, 'unmarked'];
   const NOTE_COLOR = '#f1c40f';
   const embedded = $derived(isEmbeddedLayout(page.url.searchParams));

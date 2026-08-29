@@ -1,6 +1,6 @@
-Here is goblinpi status JSON output example
+Here is gawblen status JSON output example
 It is accessible on tailnet
-endpoint: https://goblinpi.tail523149.ts.net/status
+endpoint: `${PUBLIC_GOBLIN_BASE_URL}/status` (see `.env.example`)
 
 ```
 {"alive":true,"audio":{"clip_rate_10s":0.0,"peak_now":0.0013,"rms_dbfs_mean_10s":-63.4,"rms_dbfs_now":-68.3,"rms_mean_10s":0.0007,"rms_now":0.0004,"sample_rate":48000,"streaming":true,"usb_mic_present":true,"xruns_last_hour":0},"boot_time":"2026-06-05T19:49:57Z","counts_24h":{"bark_candidates":0,"bark_events":0,"evidence_clips":0,"uploads_failed":0,"uploads_ok":0,"uploads_retried":0},"cpu":{"percent_1s":0.0,"percent_peak_60s":100.0,"temp_c":52.1,"throttled_bits":"0x50000"},"disk":{"sd_free_mb":9104.7},"heartbeat_seq":20,"net":{"last_upload_probe":"2026-06-05T20:09:11.901136Z","local_ip":"192.168.1.151","masmopi_ok":true,"online":true,"tailscale_ip":"100.72.156.21"},"now":"2026-06-05T20:09:11.611627Z","pipeline":{"last_inference_ts":null,"model_version":null,"state":"IDLE"},"ram":{"peak_60s_mb":286.2,"used_mb":258.3},"uptime_s":1154}

@@ -127,10 +127,17 @@ This writes `index.json` and `waveforms/YYYY/MM/*.json` (upload both to S3).
 ### 5 — Develop
 
 ```bash
+cp .env.example .env
+# Optionally change PUBLIC_GOBLIN_BASE_URL in .env for a different Goblin host.
 npm run dev
 ```
 
 Opens a hot-reloading dev server at `http://localhost:5173`.
+
+`PUBLIC_GOBLIN_BASE_URL` is an absolute HTTP(S) URL used for Goblin status,
+recording, monitor, and machine-control requests. Set it in `.env` for local
+development or as a public runtime variable in the Cloudflare Worker. When it
+is unset, the Gawblen Tailnet URL remains the default.
 
 ### 6 — Build
 
