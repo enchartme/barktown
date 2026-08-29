@@ -2,11 +2,13 @@
   import { page } from '$app/state';
   import { onMount } from 'svelte';
   import { fetchDiarySummary } from '$lib/diary-summary.js';
+  import { probeEditingAccess } from '$lib/editing-access.js';
   import { isEmbeddedLayout } from '$lib/embed.js';
   import { formatDisturbedTime } from '$lib/report-summary.js';
 
   let recentSummary = $state({ records: 0, disturbedTimeSec: 0, barks: 0 });
   let summaryState = $state('loading');
+  let operatorAccess = $state(false);
   const embedded = $derived(isEmbeddedLayout(page.url.searchParams));
 
   function todayInStockholm() {
@@ -31,6 +33,14 @@
       console.error('Failed to load recent Barktown summary:', error);
       summaryState = 'error';
     }
+  });
+
+  onMount(() => {
+    let disposed = false;
+    void probeEditingAccess().then((available) => {
+      if (!disposed) operatorAccess = available;
+    });
+    return () => { disposed = true; };
   });
 
   const sections = [
@@ -194,6 +204,7 @@
       <a href="/diary">Diary</a>
       <a href="/report">Report</a>
       <a href="/training">Training</a>
+      {#if operatorAccess}<a href="/quality">Quality</a>{/if}
       <a class="current" aria-current="page" href="/method">Method</a>
     </nav>
   </header>{/if}

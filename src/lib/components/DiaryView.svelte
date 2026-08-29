@@ -22,6 +22,7 @@
     withRecordingCommentAnnotations,
   } from '$lib/recording-comments.js';
   import { withLinkedTrainingSample } from '$lib/diary-samples.js';
+  import { probeEditingAccess } from '$lib/editing-access.js';
   import { isEmbeddedLayout } from '$lib/embed.js';
 
   // Svelte 5 runes
@@ -35,6 +36,7 @@
   let loadError = $state(null);
   let rangeLoading = $state(false);
   let rangeError = $state('');
+  let operatorAccess = $state(false);
 
   /** Entry kind filter. */
   let kindFilter = $state('both'); // 'text' | 'audio' | 'both'
@@ -256,6 +258,14 @@
       }
     }
   });
+
+  onMount(() => {
+    let disposed = false;
+    void probeEditingAccess().then((available) => {
+      if (!disposed) operatorAccess = available;
+    });
+    return () => { disposed = true; };
+  });
 </script>
 
 <svelte:head>
@@ -300,6 +310,7 @@
     <a class="nav-link current" aria-current="page" href="/diary">Diary</a>
     <a class="nav-link" href="/report">Report</a>
     <a class="nav-link" href="/training">Training</a>
+    {#if operatorAccess}<a class="nav-link" href="/quality">Quality</a>{/if}
     <a class="nav-link" href="/method">Method</a>
 
     <GoblinPiStatus />

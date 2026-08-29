@@ -1008,6 +1008,7 @@
       <a href="/diary">Diary</a>
       <a href="/report">Report</a>
       <a class="current" aria-current="page" href="/training">Training</a>
+      {#if editingAccess}<a href="/quality">Quality</a>{/if}
       <a href="/method">Method</a>
     </nav>
     <GoblinPiStatus />

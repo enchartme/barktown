@@ -15,6 +15,7 @@
   import { formatPrintReportRange, reportBounds } from '$lib/report-range.js';
   import { formatDisturbedTime } from '$lib/report-summary.js';
   import { withLinkedTrainingSample } from '$lib/diary-samples.js';
+  import { probeEditingAccess } from '$lib/editing-access.js';
   import { isEmbeddedLayout } from '$lib/embed.js';
   import { DIARY_NIGHT_COLOR, isNighttimeRecording } from '$lib/sun-time.js';
   import {
@@ -44,6 +45,7 @@
   /** @type {string | null} */
   let reportWeekStart = $state(null);
   let reportRequestId = 0;
+  let operatorAccess = $state(false);
 
   let dayOrder = $state('asc');
   let recordingOrder = $state('asc');
@@ -365,6 +367,14 @@
       showPanel = true;
     }
   });
+
+  onMount(() => {
+    let disposed = false;
+    void probeEditingAccess().then((available) => {
+      if (!disposed) operatorAccess = available;
+    });
+    return () => { disposed = true; };
+  });
 </script>
 
 <svelte:head>
@@ -379,6 +389,7 @@
       <a href="/diary">Diary</a>
       <a class="current" aria-current="page" href="/report">Report</a>
       <a href="/training">Training</a>
+      {#if operatorAccess}<a href="/quality">Quality</a>{/if}
       <a href="/method">Method</a>
     </nav>
     <GoblinPiStatus />
