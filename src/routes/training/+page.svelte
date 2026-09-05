@@ -321,6 +321,7 @@
   let renameError   = $state('');
   let reanalyzeConfirm   = $state(false);
   let reanalyzeBusy      = $state(false);
+  let reanalyzeThreshold = $state(0.9);
   let reanalyzeError     = $state('');
 
   const playheadX = $derived(duration > 0 ? (currentTime / duration) * VW : 0);
@@ -537,6 +538,7 @@
     dragMode       = null;
     mutationError  = '';
     reanalyzeConfirm = false;
+    reanalyzeThreshold = 0.9;
     reanalyzeError = '';
     waveData       = null;
     annotations    = [];
@@ -569,6 +571,7 @@
     mutationError    = '';
     waveData         = null;
     reanalyzeConfirm = false;
+    reanalyzeThreshold = 0.9;
     reanalyzeError = '';
     annotations      = [];
     history.replaceState(null, '', location.pathname + location.search);
@@ -953,6 +956,8 @@
         `${PRIVATE_API_BASE}/api/samples/${encodeURIComponent(sample.id)}/reanalyze`,
         {
           method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ candidateThreshold: reanalyzeThreshold }),
         },
       );
       const data = await res.json().catch(() => null);
@@ -1339,6 +1344,18 @@
         {:else if editingAccess && reanalyzeConfirm}
           <div class="confirm-bar reanalyze-confirm-bar">
             <span>Replace every bark, review, and yap fragment using the current detector settings?</span>
+            <label class="reanalyze-threshold">
+              <span>Threshold override: {reanalyzeThreshold.toFixed(2)}</span>
+              <input
+                type="range"
+                min="0.9"
+                max="1"
+                step="0.01"
+                bind:value={reanalyzeThreshold}
+                disabled={reanalyzeBusy}
+                aria-label="Re-analysis confidence threshold override"
+              />
+            </label>
             <button class="action-btn" disabled={reanalyzeBusy} onclick={confirmReanalyzeSample}>Run</button>
             <button class="action-btn" disabled={reanalyzeBusy} onclick={cancelReanalyze}>Cancel</button>
           </div>
@@ -2064,6 +2081,20 @@
   }
 
   .confirm-bar.reanalyze-confirm-bar { background: #eef5ff; border-color: #bfd3f3; }
+  .reanalyze-threshold {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-width: 15rem;
+    color: #31517c;
+    font-variant-numeric: tabular-nums;
+  }
+  .reanalyze-threshold span { min-width: 10rem; font-weight: 700; }
+  .reanalyze-threshold input {
+    width: 7rem;
+    accent-color: #2255bb;
+    cursor: pointer;
+  }
 
   .error-msg {
     color: #c0392b;
