@@ -17,6 +17,7 @@
    *   onmovesample?: (entry: import('$lib/types').Entry, label: string, keepInDiary: boolean) => Promise<void>;
    *   oncommentchange?: (entry: import('$lib/types').Entry, annotations: Record<string, unknown>[]) => void;
    *   ontrimchange?: (entry: import('$lib/types').Entry, trim: {trimStartMs: number|null, trimStopMs: number|null}) => void;
+   *   onapprovalchange?: (entry: import('$lib/types').Entry, approved: string|null) => void;
    *   onprevious?: () => void;
    *   onnext?: () => void;
    * }}
@@ -29,12 +30,20 @@
     onmovesample,
     oncommentchange,
     ontrimchange,
+    onapprovalchange,
     onprevious,
     onnext,
   } = $props();
 
   /** Tailnet-only mutation controls appear after the private API responds. */
   let editingAccess = $state(false);
+  let approvalSaving = $state(false);
+  let approvalError = $state('');
+
+  $effect(() => {
+    void entry.id;
+    approvalError = '';
+  });
 
   // ── Audio element reference ────────────────────────────────────────────────
   /** @type {HTMLAudioElement | null} */
@@ -487,6 +496,34 @@
     }
   }
 
+  async function toggleApproval() {
+    if (!editingAccess || approvalSaving) return;
+    const shouldApprove = !entry.approved;
+    approvalSaving = true;
+    approvalError = '';
+    try {
+      const res = await fetch(`${PRIVATE_API_BASE}/api/diary/${encodeURIComponent(entry.id)}/approved`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ approved: shouldApprove }),
+        signal: AbortSignal.timeout(8000),
+      });
+      const saved = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(saved?.error ?? `HTTP ${res.status}`);
+      if (shouldApprove && typeof saved?.approved !== 'string') {
+        throw new Error('Approval response has an invalid timestamp');
+      }
+      if (!shouldApprove && saved?.approved !== null) {
+        throw new Error('Approval response has an invalid shape');
+      }
+      onapprovalchange?.(entry, saved.approved);
+    } catch (e) {
+      approvalError = e?.message ?? 'Could not update approval.';
+    } finally {
+      approvalSaving = false;
+    }
+  }
+
   function trimPointerMilliseconds(event) {
     const svg = event.currentTarget.ownerSVGElement;
     if (!svg || waveformDurationMs <= 0) return waveformStartMs;
@@ -716,6 +753,19 @@
       else onprevious?.();
       return;
     }
+    if (
+      editingAccess
+      && !samplePickerOpen
+      && !inField
+      && !e.ctrlKey
+      && !e.metaKey
+      && !e.altKey
+      && key === 'p'
+    ) {
+      e.preventDefault();
+      if (!e.repeat) void toggleApproval();
+      return;
+    }
     if (e.key === ' ') {
       // Don't hijack space when the user is typing in a text field, or when
       // a panel button has focus (the button handles space natively via
@@ -794,6 +844,17 @@
         <button class="delete-confirm-no"  onclick={handleDeleteCancel} aria-label="Cancel delete">No</button>
       </span>
     {:else}
+      {#if editingAccess}
+        <button
+          class="approval-btn"
+          class:approved={Boolean(entry.approved)}
+          onclick={toggleApproval}
+          disabled={approvalSaving}
+          aria-label={entry.approved ? 'Remove recording approval' : 'Approve recording'}
+          aria-pressed={Boolean(entry.approved)}
+          title={entry.approved ? 'Remove approval (P)' : 'Approve recording (P)'}
+        >{entry.approved ? '✅' : '👍'}</button>
+      {/if}
       {#if editingAccess && onmovesample && !entry.sampleId}
         <button class="false-positive-btn" onclick={handleFalsePositiveClick} aria-label="Mark as false positive" title="Move this false positive to training samples">👎</button>
       {/if}
@@ -876,6 +937,10 @@
 
   {#if reanalyzeError}
     <p class="reanalyze-error">{reanalyzeError}</p>
+  {/if}
+
+  {#if approvalError}
+    <p class="approval-error" role="alert">{approvalError}</p>
   {/if}
 
   <!-- ── Waveform area ── -->
@@ -1332,6 +1397,7 @@
 
   .download-btn,
   .delete-btn,
+  .approval-btn,
   .false-positive-btn,
   .reanalyze-btn {
     flex-shrink: 0;
@@ -1345,6 +1411,9 @@
     line-height: 1;
   }
   .false-positive-btn { margin-left: 0; }
+  .approval-btn:hover { background: #eaf7ec; color: #247a35; }
+  .approval-btn.approved { color: #247a35; }
+  .approval-btn:disabled { cursor: wait; opacity: 0.5; }
   .reanalyze-btn:hover { background: #e8f4ff; color: #2255bb; }
   .reanalyze-btn:disabled { opacity: 0.35; cursor: not-allowed; filter: grayscale(1); }
   .reanalyze-btn:disabled:hover { background: none; color: #aaa; }
@@ -1361,7 +1430,8 @@
   .delete-btn:hover { background: #fdecea; color: #c0392b; }
   .false-positive-btn:hover { background: #fff3cd; color: #6f5900; }
 
-  .reanalyze-error {
+  .reanalyze-error,
+  .approval-error {
     margin: 0 1rem 0.5rem;
     font-size: var(--font-size-small);
     color: #c0392b;

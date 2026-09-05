@@ -176,6 +176,14 @@
     if (panelEntry?.id === entry.id) panelEntry = updated;
   }
 
+  /** Refresh every projection after an approval is set or cleared. */
+  function handleApprovalChange(entry, approved) {
+    const updated = { ...entry, approved };
+    entries = entries.map(item => item.id === entry.id ? { ...item, approved } : item);
+    if (selectedEntry?.id === entry.id) selectedEntry = updated;
+    if (panelEntry?.id === entry.id) panelEntry = updated;
+  }
+
   /**
    * Delete a diary entry via the API, then remove it from the local list
    * and close the panel.
@@ -362,6 +370,7 @@
     onmovesample={moveEntryToSamples}
     oncommentchange={handleCommentChange}
     ontrimchange={handleTrimChange}
+    onapprovalchange={handleApprovalChange}
   />
 {/if}
 

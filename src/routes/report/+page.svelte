@@ -294,6 +294,12 @@
     void refreshPeriodSummary();
   }
 
+  function handleApprovalChange(entry, approved) {
+    const updated = { ...entry, approved };
+    entries = entries.map(item => item.id === entry.id ? { ...item, approved } : item);
+    if (panelEntry?.id === entry.id) panelEntry = updated;
+  }
+
   async function deleteEntry(entry) {
     try {
       const response = await fetch(
@@ -517,6 +523,7 @@
                   <span
                     class="recording-sentence"
                     class:nighttime={isNighttimeRecording(entry.time, sunByDate[day.date])}
+                    class:pending-approval={operatorAccess && !entry.approved}
                   >
                     <span class="recording-lead">
                       <button
@@ -570,6 +577,7 @@
       onmovesample={moveEntryToSamples}
       oncommentchange={handleCommentChange}
       ontrimchange={handleTrimChange}
+      onapprovalchange={handleApprovalChange}
       onprevious={() => selectAdjacentEntry(-1)}
       onnext={() => selectAdjacentEntry(1)}
     />
@@ -885,6 +893,8 @@
     display: inline;
     margin-right: 0.55rem;
   }
+
+  .recording-sentence.pending-approval { opacity: 0.4; }
 
   .recording-sentence.nighttime {
     padding: 0.08em 0.3em;
