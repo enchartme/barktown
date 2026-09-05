@@ -465,10 +465,12 @@
   let reanalyzeLoading = $state(false);
   let reanalyzeError   = $state('');
   let reanalyzeThreshold = $state(0.9);
+  let reanalyzeConfirm = $state(false);
 
   $effect(() => {
     void entry.id;
     reanalyzeThreshold = 0.9;
+    reanalyzeConfirm = false;
     reanalyzeError = '';
   });
 
@@ -682,7 +684,28 @@
     }
   }
 
-  async function handleReanalyzeClick() {
+  function handleReanalyzeClick() {
+    if (!editingAccess || reanalyzeLoading || !entry.reanalyzable) return;
+    if (reportShortcutsEnabled) {
+      deleteConfirm = false;
+      reanalyzeConfirm = true;
+      return;
+    }
+    void runReanalysis();
+  }
+
+  function handleReanalyzeCancel() {
+    if (reanalyzeLoading) return;
+    reanalyzeConfirm = false;
+  }
+
+  async function handleReanalyzeConfirm() {
+    if (!reanalyzeConfirm || reanalyzeLoading) return;
+    reanalyzeConfirm = false;
+    await runReanalysis();
+  }
+
+  async function runReanalysis() {
     if (!editingAccess || reanalyzeLoading || !entry.reanalyzable) return;
     reanalyzeLoading = true;
     reanalyzeError = '';
@@ -775,6 +798,7 @@
     if (e.key === 'Escape') {
       if (shortcutHelpOpen) void closeShortcutHelp();
       else if (samplePickerOpen) closeSamplePicker();
+      else if (reanalyzeConfirm) handleReanalyzeCancel();
       else if (deleteConfirm) handleDeleteCancel();
       else handleClose();
       return;
@@ -787,6 +811,14 @@
 
     // An open child dialog owns the keyboard until it is dismissed.
     if (shortcutHelpOpen || samplePickerOpen) return;
+
+    if (reanalyzeConfirm) {
+      if (tag !== 'BUTTON' && !inField && withoutCommandModifier && key === 'enter') {
+        e.preventDefault();
+        if (!e.repeat) void handleReanalyzeConfirm();
+      }
+      return;
+    }
 
     if (deleteConfirm) {
       if (!inField && withoutCommandModifier && key === 'enter') {
@@ -928,6 +960,25 @@
         <button class="delete-confirm-yes" onclick={handleDeleteConfirm} aria-label="Confirm delete">Yes</button>
         <button class="delete-confirm-no"  onclick={handleDeleteCancel} aria-label="Cancel delete">No</button>
       </span>
+    {:else if editingAccess && reportShortcutsEnabled && reanalyzeConfirm}
+      <span class="delete-confirm reanalyze-confirm">
+        <label
+          class="reanalyze-threshold"
+          title="Classifier threshold for this re-analysis only"
+        >
+          <span>t {reanalyzeThreshold.toFixed(2)}</span>
+          <input
+            type="range"
+            min="0.9"
+            max="1"
+            step="0.01"
+            bind:value={reanalyzeThreshold}
+            aria-label="Re-analysis classifier threshold"
+          />
+        </label>
+        <button class="reanalyze-confirm-run" onclick={handleReanalyzeConfirm} aria-label="Start re-analysis">Run</button>
+        <button class="delete-confirm-no" onclick={handleReanalyzeCancel} aria-label="Cancel re-analysis">Cancel</button>
+      </span>
     {:else}
       {#if editingAccess}
         <button
@@ -944,23 +995,6 @@
         <button class="false-positive-btn" onclick={handleFalsePositiveClick} aria-label="Mark as false positive" title="Move this false positive to training samples">👎</button>
       {/if}
       {#if editingAccess}
-        {#if reportShortcutsEnabled}
-          <label
-            class="reanalyze-threshold"
-            title="Classifier threshold for this re-analysis only"
-          >
-            <span>t {reanalyzeThreshold.toFixed(2)}</span>
-            <input
-              type="range"
-              min="0.9"
-              max="1"
-              step="0.01"
-              bind:value={reanalyzeThreshold}
-              disabled={reanalyzeLoading || !entry.reanalyzable}
-              aria-label="Re-analysis classifier threshold"
-            />
-          </label>
-        {/if}
         <button
           class="reanalyze-btn"
           onclick={handleReanalyzeClick}
@@ -1612,6 +1646,17 @@
     cursor: pointer;
   }
   .reanalyze-threshold input:disabled { cursor: not-allowed; opacity: 0.4; }
+  .reanalyze-confirm-run {
+    border: 0;
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    background: #2255bb;
+    color: #fff;
+    cursor: pointer;
+    font-family: var(--font-tiny);
+    font-size: var(--font-size-tiny);
+  }
+  .reanalyze-confirm-run:hover { background: #194493; }
   .reanalyze-btn:hover { background: #e8f4ff; color: #2255bb; }
   .reanalyze-btn:disabled { opacity: 0.35; cursor: not-allowed; filter: grayscale(1); }
   .reanalyze-btn:disabled:hover { background: none; color: #aaa; }
