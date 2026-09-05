@@ -44,6 +44,17 @@ export const LABEL_BY_SHORTCUT = new Map(
   FRAGMENT_LABEL_DEFINITIONS.map(({ name, shortcut }) => [shortcut, name]),
 );
 
+/** Shortcut map limited to labels accepted for whole training samples. */
+export const SAMPLE_LABEL_BY_SHORTCUT = new Map(
+  SAMPLE_LABEL_DEFINITIONS.map(({ name, shortcut }) => [shortcut, name]),
+);
+
+/** Resolve a whole-sample label hotkey and its diary-retention modifier. */
+export function sampleMoveForShortcut(key, shiftKey = false) {
+  const label = SAMPLE_LABEL_BY_SHORTCUT.get(String(key).toLowerCase());
+  return label ? { label, keepInDiary: !shiftKey } : null;
+}
+
 /** Return the single-letter keyboard shortcut for a label, or '' if none. */
 export function sampleLabelShortcut(label) {
   return FRAGMENT_LABEL_DEFINITIONS.find(d => d.name === label)?.shortcut ?? '';

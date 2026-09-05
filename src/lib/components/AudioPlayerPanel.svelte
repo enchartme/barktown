@@ -1,11 +1,16 @@
 <script>
-  import { onMount }       from 'svelte';
+  import { onMount, tick } from 'svelte';
   import { formatDuration, formatDate, downsampleWaveform, waveformNorm, ASSET_BASE, PRIVATE_API_BASE } from '$lib/utils.js';
   import { formatAudioPanelAnalysisParameters, formatAudioPanelStats, formatAudioPanelTitle, hitMetadataById, setHitMetadata } from '$lib/hit-metadata.js';
   import { recordingComment } from '$lib/recording-comments.js';
   import { diaryTrimBounds, trimHitMetadata } from '$lib/diary-trim.js';
   import { probeEditingAccess } from '$lib/editing-access.js';
-  import { SAMPLE_LABELS, sampleLabelColor } from '$lib/sample-labels.js';
+  import {
+    SAMPLE_LABELS,
+    sampleLabelColor,
+    sampleLabelShortcut,
+    sampleMoveForShortcut,
+  } from '$lib/sample-labels.js';
   import { fly }           from 'svelte/transition';
 
   /**
@@ -50,6 +55,13 @@
   let audioEl = $state(null);
   /** @type {HTMLDivElement | null} */
   let playerPanelEl = $state(null);
+  /** @type {HTMLButtonElement | null} */
+  let shortcutHelpButtonEl = $state(null);
+  /** @type {HTMLButtonElement | null} */
+  let shortcutHelpCloseEl = $state(null);
+
+  const reportShortcutsEnabled = $derived(Boolean(onprevious || onnext));
+  let shortcutHelpOpen = $state(false);
 
   // ── Playback state ─────────────────────────────────────────────────────────
   let isPlaying   = $state(false);
@@ -376,6 +388,19 @@
     deleteConfirm = false;
   }
 
+  async function openShortcutHelp() {
+    deleteConfirm = false;
+    shortcutHelpOpen = true;
+    await tick();
+    shortcutHelpCloseEl?.focus({ preventScroll: true });
+  }
+
+  async function closeShortcutHelp() {
+    shortcutHelpOpen = false;
+    await tick();
+    shortcutHelpButtonEl?.focus({ preventScroll: true });
+  }
+
   // Download: fetch as blob (audio is cross-origin, so <a download> alone won't work).
   let downloadLoading = $state(false);
   async function handleDownload() {
@@ -418,15 +443,15 @@
     if (movingLabel) return;
     samplePickerOpen = false;
     moveError = '';
-    keepInDiary = false;
+    keepInDiary = true;
   }
 
-  async function handleMoveToSample(label) {
+  async function handleMoveToSample(label, shouldKeepInDiary = keepInDiary) {
     if (!onmovesample || movingLabel) return;
     movingLabel = label;
     moveError = '';
     try {
-      await onmovesample(entry, label, keepInDiary);
+      await onmovesample(entry, label, shouldKeepInDiary);
       samplePickerOpen = false;
       keepInDiary = true;
     } catch (e) {
@@ -439,6 +464,13 @@
   // ── Re-analyze: re-score the archived source with YAMNet + classifier ────
   let reanalyzeLoading = $state(false);
   let reanalyzeError   = $state('');
+  let reanalyzeThreshold = $state(0.9);
+
+  $effect(() => {
+    void entry.id;
+    reanalyzeThreshold = 0.9;
+    reanalyzeError = '';
+  });
 
   // ── Non-destructive trim ──────────────────────────────────────────────────
   let draftTrimStartMs = $state(0);
@@ -655,7 +687,17 @@
     reanalyzeLoading = true;
     reanalyzeError = '';
     try {
-      const res = await fetch(`${PRIVATE_API_BASE}/api/diary/${entry.id}/reanalyze`, { method: 'POST' });
+      const request = reportShortcutsEnabled
+        ? {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ candidateThreshold: reanalyzeThreshold }),
+          }
+        : { method: 'POST' };
+      const res = await fetch(
+        `${PRIVATE_API_BASE}/api/diary/${encodeURIComponent(entry.id)}/reanalyze`,
+        request,
+      );
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error ?? `HTTP ${res.status}`);
       setHitMetadata(entry.id, data);
@@ -728,10 +770,12 @@
     if (e.key === ' ')          { e.preventDefault(); }
   }
 
-  // ── Close on Escape ───────────────────────────────────────────────────────
+  // ── Keyboard shortcuts ────────────────────────────────────────────────────
   function handleGlobalKeydown(e) {
     if (e.key === 'Escape') {
-      if (samplePickerOpen) closeSamplePicker();
+      if (shortcutHelpOpen) void closeShortcutHelp();
+      else if (samplePickerOpen) closeSamplePicker();
+      else if (deleteConfirm) handleDeleteCancel();
       else handleClose();
       return;
     }
@@ -739,12 +783,22 @@
     const tag = target?.tagName;
     const inField = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target?.isContentEditable;
     const key = e.key.toLowerCase();
+    const withoutCommandModifier = !e.ctrlKey && !e.metaKey && !e.altKey;
+
+    // An open child dialog owns the keyboard until it is dismissed.
+    if (shortcutHelpOpen || samplePickerOpen) return;
+
+    if (deleteConfirm) {
+      if (!inField && withoutCommandModifier && key === 'enter') {
+        e.preventDefault();
+        if (!e.repeat) handleDeleteConfirm();
+      }
+      return;
+    }
+
     if (
-      !samplePickerOpen
-      && !inField
-      && !e.ctrlKey
-      && !e.metaKey
-      && !e.altKey
+      !inField
+      && withoutCommandModifier
       && (key === 'arrowup' || key === 'arrowdown' || key === 'q' || key === 'w')
       && (onprevious || onnext)
     ) {
@@ -753,13 +807,44 @@
       else onprevious?.();
       return;
     }
+
+    if (
+      reportShortcutsEnabled
+      && editingAccess
+      && ondelete
+      && !inField
+      && withoutCommandModifier
+      && (key === 'delete' || key === 'backspace')
+    ) {
+      e.preventDefault();
+      if (!e.repeat) handleDeleteClick();
+      return;
+    }
+
+    const sampleMove = sampleMoveForShortcut(e.key, e.shiftKey);
+    if (
+      reportShortcutsEnabled
+      && editingAccess
+      && onmovesample
+      && !entry.sampleId
+      && !movingLabel
+      && !inField
+      && withoutCommandModifier
+      && sampleMove
+    ) {
+      e.preventDefault();
+      if (!e.repeat) {
+        if (audioEl && isPlaying) audioEl.pause();
+        void handleMoveToSample(sampleMove.label, sampleMove.keepInDiary);
+      }
+      return;
+    }
+
     if (
       editingAccess
-      && !samplePickerOpen
       && !inField
-      && !e.ctrlKey
-      && !e.metaKey
-      && !e.altKey
+      && withoutCommandModifier
+      && !e.shiftKey
       && key === 'p'
     ) {
       e.preventDefault();
@@ -859,6 +944,23 @@
         <button class="false-positive-btn" onclick={handleFalsePositiveClick} aria-label="Mark as false positive" title="Move this false positive to training samples">👎</button>
       {/if}
       {#if editingAccess}
+        {#if reportShortcutsEnabled}
+          <label
+            class="reanalyze-threshold"
+            title="Classifier threshold for this re-analysis only"
+          >
+            <span>t {reanalyzeThreshold.toFixed(2)}</span>
+            <input
+              type="range"
+              min="0.9"
+              max="1"
+              step="0.01"
+              bind:value={reanalyzeThreshold}
+              disabled={reanalyzeLoading || !entry.reanalyzable}
+              aria-label="Re-analysis classifier threshold"
+            />
+          </label>
+        {/if}
         <button
           class="reanalyze-btn"
           onclick={handleReanalyzeClick}
@@ -883,6 +985,17 @@
       aria-label="Download recording"
       title="Download audio file"
     >{downloadLoading ? '⏳' : '📥'}</button>
+    {#if reportShortcutsEnabled}
+      <button
+        bind:this={shortcutHelpButtonEl}
+        class="shortcut-help-btn"
+        onclick={openShortcutHelp}
+        aria-label="Show keyboard shortcuts"
+        aria-haspopup="dialog"
+        aria-expanded={shortcutHelpOpen}
+        title="Keyboard shortcuts"
+      >ℹ️</button>
+    {/if}
     <button class="close-btn" onclick={handleClose} aria-label="Close player">✕</button>
   </div>
 
@@ -937,6 +1050,12 @@
 
   {#if reanalyzeError}
     <p class="reanalyze-error">{reanalyzeError}</p>
+  {/if}
+
+  {#if movingLabel && !samplePickerOpen}
+    <p class="move-status">Moving to {movingLabel} samples…</p>
+  {:else if moveError && !samplePickerOpen}
+    <p class="move-error" role="alert">{moveError}</p>
   {/if}
 
   {#if approvalError}
@@ -1217,6 +1336,66 @@
   ></audio>
 </div>
 
+{#if shortcutHelpOpen}
+  <button
+    class="shortcut-help-backdrop"
+    onclick={() => void closeShortcutHelp()}
+    aria-label="Close keyboard shortcuts"
+  ></button>
+  <div
+    class="shortcut-help-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="shortcut-help-title"
+  >
+    <header class="shortcut-help-header">
+      <div>
+        <h2 id="shortcut-help-title">Keyboard shortcuts</h2>
+        <p>Available while a report recording is open.</p>
+      </div>
+      <button
+        bind:this={shortcutHelpCloseEl}
+        class="shortcut-help-close"
+        onclick={() => void closeShortcutHelp()}
+        aria-label="Close keyboard shortcuts"
+      >✕</button>
+    </header>
+
+    <dl class="shortcut-list">
+      <div><dt><kbd>Space</kbd></dt><dd>Play or pause</dd></div>
+      <div><dt><kbd>Esc</kbd></dt><dd>Close this sheet, another dialog, or the player</dd></div>
+      <div><dt><kbd>↑</kbd> <span>or</span> <kbd>Q</kbd></dt><dd>Previous recording</dd></div>
+      <div><dt><kbd>↓</kbd> <span>or</span> <kbd>W</kbd></dt><dd>Next recording</dd></div>
+      <div><dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Seek 5 seconds when the waveform is focused</dd></div>
+    </dl>
+
+    <section class="shortcut-help-section">
+      <h3>Operator actions</h3>
+      <p class="shortcut-help-note">Available with private editing access.</p>
+      <dl class="shortcut-list">
+        <div><dt><kbd>P</kbd></dt><dd>Toggle approval</dd></div>
+        <div><dt><kbd>Del</kbd> <span>or</span> <kbd>Backspace</kbd></dt><dd>Ask to delete recording</dd></div>
+        <div><dt><kbd>Enter</kbd></dt><dd>Confirm deletion</dd></div>
+        <div><dt><kbd>label</kbd></dt><dd>Move to training samples and keep in diary</dd></div>
+        <div><dt><kbd>Shift</kbd> + <kbd>label</kbd></dt><dd>Move to training samples and remove from diary</dd></div>
+      </dl>
+    </section>
+
+    <section class="shortcut-help-section">
+      <h3>Training-sample labels</h3>
+      <div class="shortcut-labels">
+        {#each SAMPLE_LABELS as label}
+          <div>
+            <kbd>{sampleLabelShortcut(label).toUpperCase()}</kbd>
+            <span class="shortcut-label-dot" style:background={sampleLabelColor(label)}></span>
+            <span>{label}</span>
+          </div>
+        {/each}
+      </div>
+    </section>
+  </div>
+{/if}
+
 {#if samplePickerOpen}
   <button
     class="sample-picker-backdrop"
@@ -1399,7 +1578,8 @@
   .delete-btn,
   .approval-btn,
   .false-positive-btn,
-  .reanalyze-btn {
+  .reanalyze-btn,
+  .shortcut-help-btn {
     flex-shrink: 0;
     background: none;
     border: none;
@@ -1414,6 +1594,24 @@
   .approval-btn:hover { background: #eaf7ec; color: #247a35; }
   .approval-btn.approved { color: #247a35; }
   .approval-btn:disabled { cursor: wait; opacity: 0.5; }
+  .reanalyze-threshold {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    flex-shrink: 0;
+    color: #777;
+    font-family: var(--font-tiny);
+    font-size: var(--font-size-tiny);
+    white-space: nowrap;
+  }
+  .reanalyze-threshold span { min-width: 2.85rem; text-align: right; }
+  .reanalyze-threshold input {
+    width: 3.75rem;
+    margin: 0;
+    accent-color: #2255bb;
+    cursor: pointer;
+  }
+  .reanalyze-threshold input:disabled { cursor: not-allowed; opacity: 0.4; }
   .reanalyze-btn:hover { background: #e8f4ff; color: #2255bb; }
   .reanalyze-btn:disabled { opacity: 0.35; cursor: not-allowed; filter: grayscale(1); }
   .reanalyze-btn:disabled:hover { background: none; color: #aaa; }
@@ -1427,15 +1625,23 @@
   .download-btn { margin-left: auto; }
   .download-btn:hover { background: #e8f4ff; color: #2255bb; }
   .download-btn:disabled { opacity: 0.5; cursor: default; }
+  .shortcut-help-btn:hover { background: #eef1f5; color: #2255bb; }
   .delete-btn:hover { background: #fdecea; color: #c0392b; }
   .false-positive-btn:hover { background: #fff3cd; color: #6f5900; }
 
   .reanalyze-error,
-  .approval-error {
+  .approval-error,
+  .move-error,
+  .move-status {
     margin: 0 1rem 0.5rem;
     font-size: var(--font-size-small);
+  }
+  .reanalyze-error,
+  .approval-error,
+  .move-error {
     color: #c0392b;
   }
+  .move-status { color: #666; }
 
   .delete-confirm {
     display: flex;
@@ -1468,6 +1674,131 @@
     cursor: pointer;
   }
   .delete-confirm-no:hover { background: #e0e0dc; }
+
+  /* ── Keyboard-shortcut cheatsheet ── */
+  .shortcut-help-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 604;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: rgba(0,0,0,0.38);
+    cursor: default;
+  }
+
+  .shortcut-help-dialog {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 605;
+    width: min(92vw, 620px);
+    max-height: min(86vh, 720px);
+    overflow-y: auto;
+    transform: translate(-50%, -50%);
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 12px 44px rgba(0,0,0,0.26);
+    padding: 1.1rem;
+  }
+
+  .shortcut-help-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .shortcut-help-header h2 {
+    margin: 0;
+    font-size: var(--font-size-large);
+  }
+  .shortcut-help-header p,
+  .shortcut-help-note {
+    margin: 0.25rem 0 0;
+    color: #777;
+    font-family: var(--font-tiny);
+    font-size: var(--font-size-tiny);
+  }
+  .shortcut-help-close {
+    flex: 0 0 auto;
+    border: 0;
+    border-radius: 4px;
+    padding: 0.25rem 0.4rem;
+    background: transparent;
+    color: #777;
+    cursor: pointer;
+    font-size: var(--font-size-medium);
+  }
+  .shortcut-help-close:hover { background: #f0f0ec; color: #222; }
+
+  .shortcut-help-section {
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid #e7e7e2;
+  }
+  .shortcut-help-section h3 {
+    margin: 0;
+    font-size: var(--font-size-small);
+  }
+  .shortcut-list {
+    margin: 0.9rem 0 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+  .shortcut-list > div {
+    display: grid;
+    grid-template-columns: minmax(9.5rem, 0.8fr) minmax(0, 1.5fr);
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .shortcut-list dt,
+  .shortcut-list dd { margin: 0; }
+  .shortcut-list dt {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: #777;
+    font-family: var(--font-tiny);
+    font-size: var(--font-size-tiny);
+  }
+  .shortcut-list dd { font-size: var(--font-size-small); }
+
+  .shortcut-help-dialog kbd {
+    min-width: 1.8rem;
+    padding: 0.16rem 0.38rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #c8c8c3;
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    background: #f7f7f5;
+    color: #333;
+    font-family: var(--font-monospace);
+    font-size: var(--font-size-tiny);
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .shortcut-labels {
+    margin-top: 0.75rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem 0.8rem;
+  }
+  .shortcut-labels > div {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: auto 0.55rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--font-size-small);
+  }
+  .shortcut-label-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+  }
 
   /* ── False-positive label picker ── */
   .sample-picker-backdrop {
@@ -1759,5 +2090,14 @@
     font-family: var(--font-tiny); font-size: var(--font-size-tiny);
     font-variant-numeric: tabular-nums;
     overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 560px) {
+    .shortcut-help-dialog { padding: 0.9rem; }
+    .shortcut-list > div {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+    }
+    .shortcut-labels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 </style>
