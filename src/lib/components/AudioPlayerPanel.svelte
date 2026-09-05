@@ -724,10 +724,13 @@
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error ?? `HTTP ${res.status}`);
       setHitMetadata(entry.id, data);
-      ontrimchange?.(entry, {
+      const savedTrim = {
         trimStartMs: data?.trimStartMs ?? null,
         trimStopMs: data?.trimStopMs ?? null,
-      });
+      };
+      const updatedEntry = { ...entry, ...savedTrim, approved: data?.approved ?? null };
+      ontrimchange?.(updatedEntry, savedTrim);
+      onapprovalchange?.(updatedEntry, updatedEntry.approved);
       if (audioEl) {
         audioEl.pause();
         const nextStart = Number.isInteger(data?.trimStartMs) ? data.trimStartMs / 1000 : 0;
