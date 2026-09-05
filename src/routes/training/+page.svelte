@@ -319,6 +319,9 @@
   let deleteBusy    = $state(false);
   let renameBusy    = $state(false);
   let renameError   = $state('');
+  let reanalyzeConfirm   = $state(false);
+  let reanalyzeBusy      = $state(false);
+  let reanalyzeError     = $state('');
 
   const playheadX = $derived(duration > 0 ? (currentTime / duration) * VW : 0);
 
@@ -479,7 +482,7 @@
   }
 
   async function handleRegenWaveform(pps) {
-    if (!editingAccess || !selected || regenLoading) return;
+    if (!editingAccess || !selected || regenLoading || reanalyzeBusy) return;
     regenLoading = true;
     try {
       const res = await fetch(
@@ -518,6 +521,7 @@
   }
 
   async function selectSample(sample, seekSec = null) {
+    if (reanalyzeBusy) return;
     if (audioEl && isPlaying) audioEl.pause();
     isPlaying      = false;
     currentTime    = 0;
@@ -532,6 +536,8 @@
     pending        = null;
     dragMode       = null;
     mutationError  = '';
+    reanalyzeConfirm = false;
+    reanalyzeError = '';
     waveData       = null;
     annotations    = [];
     history.replaceState(null, '', '#' + sample.id);
@@ -546,6 +552,7 @@
   }
 
   function deselectSample() {
+    if (reanalyzeBusy) return;
     if (audioEl && isPlaying) audioEl.pause();
     isPlaying        = false;
     currentTime      = 0;
@@ -561,6 +568,8 @@
     dragMode         = null;
     mutationError    = '';
     waveData         = null;
+    reanalyzeConfirm = false;
+    reanalyzeError = '';
     annotations      = [];
     history.replaceState(null, '', location.pathname + location.search);
   }
@@ -595,7 +604,7 @@
    * if nothing is focused yet, right picks the first fragment and left
    * picks the last. */
   function selectAdjacentFragment(delta) {
-    if (!editingAccess) return;
+    if (!editingAccess || reanalyzeBusy) return;
     const list = sortedFragments;
     if (!list.length) return;
     const idx = list.findIndex(f => f.id === selectedAnnId);
@@ -651,7 +660,7 @@
   function onWaveMouseDown(e) {
     if (!selected || !duration) return;
     const sec  = svgFraction(e.clientX) * duration;
-    if (!editingAccess) {
+    if (!editingAccess || reanalyzeBusy) {
       if (audioEl) audioEl.currentTime = sec;
       currentTime = sec;
       return;
@@ -728,7 +737,7 @@
   // ── Annotation mutations ────────────────────────────────────────────────────
 
   async function commitAnnotationBounds(ann, startSec, endSec) {
-    if (!editingAccess) return;
+    if (!editingAccess || reanalyzeBusy) return;
     mutationError = '';
     try {
       const res = await fetch(`${PRIVATE_API_BASE}/api/annotations/${ann.id}`, {
@@ -747,7 +756,7 @@
   }
 
   async function commitFragment() {
-    if (!editingAccess || !pending || !selected) return;
+    if (!editingAccess || reanalyzeBusy || !pending || !selected) return;
     mutationError = '';
     try {
       const res = await fetch(`${PRIVATE_API_BASE}/api/samples/${encodeURIComponent(selected.id)}/annotations`, {
@@ -767,7 +776,7 @@
   }
 
   async function commitNote() {
-    if (!editingAccess || !pending || !selected || !pendingNoteText.trim()) return;
+    if (!editingAccess || reanalyzeBusy || !pending || !selected || !pendingNoteText.trim()) return;
     mutationError = '';
     try {
       const res = await fetch(`${PRIVATE_API_BASE}/api/samples/${encodeURIComponent(selected.id)}/annotations`, {
@@ -800,7 +809,7 @@
   }
 
   async function relabelSelected(newLabel) {
-    if (!editingAccess) return;
+    if (!editingAccess || reanalyzeBusy) return;
     const ann = annotations.find(a => a.id === selectedAnnId);
     if (!ann) return;
     mutationError = '';
@@ -823,14 +832,14 @@
   // ── Note editing (inline, in the notes panel) ──────────────────────────────
 
   function startEditNote(ann) {
-    if (!editingAccess) return;
+    if (!editingAccess || reanalyzeBusy) return;
     selectedAnnId = ann.id;
     editingNoteId = ann.id;
     editLabel     = ann.label;
   }
 
   async function saveNoteLabel(annId, text) {
-    if (!editingAccess) return;
+    if (!editingAccess || reanalyzeBusy) return;
     const ann     = annotations.find(a => a.id === annId);
     editingNoteId = null;
     const trimmed = text.trim();
@@ -855,7 +864,7 @@
   // ── Sample-wide note (time code 0ms) — no fragment/selection needed ───────
 
   function startSampleWideNote() {
-    if (!editingAccess || hasSampleWideNote || addingSampleNote || !selected) return;
+    if (!editingAccess || reanalyzeBusy || hasSampleWideNote || addingSampleNote || !selected) return;
     addingSampleNote  = true;
     newSampleNoteText = '';
   }
@@ -866,7 +875,7 @@
   }
 
   async function commitSampleWideNote() {
-    if (!editingAccess || !addingSampleNote) return;
+    if (!editingAccess || reanalyzeBusy || !addingSampleNote) return;
     const text = newSampleNoteText.trim();
     addingSampleNote = false;
     if (!text || !selected) return;
@@ -890,7 +899,7 @@
   // ── Deletion (any annotation, by id) ───────────────────────────────────────
 
   async function deleteAnnotationById(annId) {
-    if (!editingAccess) return;
+    if (!editingAccess || reanalyzeBusy) return;
     const ann = annotations.find(a => a.id === annId);
     if (!ann) return;
     mutationError = '';
@@ -915,8 +924,53 @@
 
   // ── Sample-level mutations ─────────────────────────────────────────────────
 
+  function openReanalyzeConfirm() {
+    if (!editingAccess || !selected || reanalyzeBusy) return;
+    deleteConfirm = false;
+    reanalyzeError = '';
+    reanalyzeConfirm = true;
+  }
+
+  function cancelReanalyze() {
+    if (reanalyzeBusy) return;
+    reanalyzeConfirm = false;
+  }
+
+  async function confirmReanalyzeSample() {
+    if (!editingAccess || !selected || !reanalyzeConfirm || reanalyzeBusy) return;
+    const sample = selected;
+    reanalyzeConfirm = false;
+    reanalyzeBusy = true;
+    reanalyzeError = '';
+    pending = null;
+    selectedAnnId = null;
+    hoveredAnnId = null;
+    editingNoteId = null;
+    addingSampleNote = false;
+    dragMode = null;
+    try {
+      const res = await fetch(
+        `${PRIVATE_API_BASE}/api/samples/${encodeURIComponent(sample.id)}/reanalyze`,
+        {
+          method: 'POST',
+        },
+      );
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error ?? `HTTP ${res.status}`);
+      if (!Array.isArray(data?.annotations)) throw new Error('Re-analysis response has invalid annotations');
+      if (selected?.id === sample.id) {
+        annotations = data.annotations;
+        syncSampleFragmentsFromAnnotations();
+      }
+    } catch (e) {
+      reanalyzeError = e?.message ?? 'Failed to re-analyze sample';
+    } finally {
+      reanalyzeBusy = false;
+    }
+  }
+
   async function confirmDeleteSample() {
-    if (!editingAccess || !selected) return;
+    if (!editingAccess || reanalyzeBusy || !selected) return;
     deleteBusy = true;
     try {
       const res = await fetch(`${PRIVATE_API_BASE}/api/samples/${encodeURIComponent(selected.id)}`, {
@@ -934,7 +988,7 @@
   }
 
   async function changeCategory(newLabel) {
-    if (!editingAccess || !selected || newLabel === selected.label) return;
+    if (!editingAccess || reanalyzeBusy || !selected || newLabel === selected.label) return;
     renameBusy  = true;
     renameError = '';
     try {
@@ -979,9 +1033,11 @@
     }
 
     if (editingAccess && e.key === 'Escape') {
+      if (reanalyzeConfirm) { reanalyzeConfirm = false; return; }
       if (pending) { pending = null; return; }
       if (selectedAnnId != null) { selectedAnnId = null; return; }
     }
+    if (reanalyzeConfirm || reanalyzeBusy) return;
     if (editingAccess && !inField && (e.key === 'Delete' || e.key === 'Backspace') && selectedAnnId != null) {
       e.preventDefault();
       deleteSelectedAnnotation();
@@ -1247,18 +1303,30 @@
           {#if editingAccess}
             <label class="category-control">
               <span>Category</span>
-              <select value={selected.label} disabled={renameBusy} onchange={(e) => changeCategory(e.currentTarget.value)}>
+              <select value={selected.label} disabled={renameBusy || reanalyzeBusy} onchange={(e) => changeCategory(e.currentTarget.value)}>
                 {#each LABELS as lbl}
                   <option value={lbl}>{lbl}</option>
                 {/each}
               </select>
             </label>
 
-            <button class="danger-btn" onclick={() => (deleteConfirm = true)}>Delete sample</button>
+            <button
+              class="reanalyze-btn"
+              disabled={reanalyzeBusy || renameBusy || deleteBusy}
+              onclick={openReanalyzeConfirm}
+              title="Replace bark, review, and yap fragments using the current classifier"
+            >{reanalyzeBusy ? 'Analyzing…' : 'Re-analyze'}</button>
+
+            <button
+              class="danger-btn"
+              disabled={reanalyzeBusy}
+              onclick={() => { reanalyzeConfirm = false; deleteConfirm = true; }}
+            >Delete sample</button>
           {/if}
         </div>
 
         {#if editingAccess && renameError}<div class="error-msg">{renameError}</div>{/if}
+        {#if editingAccess && reanalyzeError}<div class="error-msg">{reanalyzeError}</div>{/if}
 
         {#if editingAccess && deleteConfirm}
           <div class="confirm-bar">
@@ -1267,6 +1335,12 @@
               {deleteBusy ? 'Deleting…' : 'Confirm delete'}
             </button>
             <button class="action-btn" onclick={() => (deleteConfirm = false)}>Cancel</button>
+          </div>
+        {:else if editingAccess && reanalyzeConfirm}
+          <div class="confirm-bar reanalyze-confirm-bar">
+            <span>Replace every bark, review, and yap fragment using the current detector settings?</span>
+            <button class="action-btn" disabled={reanalyzeBusy} onclick={confirmReanalyzeSample}>Run</button>
+            <button class="action-btn" disabled={reanalyzeBusy} onclick={cancelReanalyze}>Cancel</button>
           </div>
         {/if}
 
@@ -1296,9 +1370,9 @@
             {#if editingAccess && selected}
               <div class="wave-resolution-controls" role="group" aria-label="Waveform source resolution">
                 <span class="regen-label">Resolution:</span>
-                <button class="regen-btn" onclick={() => handleRegenWaveform(20)}  disabled={regenLoading} title="20 px/s (default)">20/s</button>
-                <button class="regen-btn" onclick={() => handleRegenWaveform(50)}  disabled={regenLoading} title="50 px/s">50/s</button>
-                <button class="regen-btn" onclick={() => handleRegenWaveform(100)} disabled={regenLoading} title="100 px/s">100/s</button>
+                <button class="regen-btn" onclick={() => handleRegenWaveform(20)}  disabled={regenLoading || reanalyzeBusy} title="20 px/s (default)">20/s</button>
+                <button class="regen-btn" onclick={() => handleRegenWaveform(50)}  disabled={regenLoading || reanalyzeBusy} title="50 px/s">50/s</button>
+                <button class="regen-btn" onclick={() => handleRegenWaveform(100)} disabled={regenLoading || reanalyzeBusy} title="100 px/s">100/s</button>
               </div>
             {/if}
             <div class="wave-zoom-controls" role="group" aria-label="Horizontal waveform zoom">
@@ -1340,13 +1414,13 @@
           <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
           <svg
             class="wave-editor"
-            class:readonly={!editingAccess}
+            class:readonly={!editingAccess || reanalyzeBusy}
             viewBox="0 0 {VW} {VH}"
             preserveAspectRatio="none"
             bind:this={waveSvgEl}
             onmousedown={onWaveMouseDown}
             role="img"
-            aria-label={editingAccess ? 'Waveform editor — drag to select a fragment' : 'Audio waveform — click to seek'}
+            aria-label={editingAccess && !reanalyzeBusy ? 'Waveform editor — drag to select a fragment' : 'Audio waveform — click to seek'}
           >
             {#if !waveData}
               <line x1="0" y1={VH / 2} x2={VW} y2={VH / 2} stroke={waveLoading ? '#c0d0f0' : '#e0e0e0'} stroke-width="1" />
@@ -1360,13 +1434,13 @@
                 x={x} y="0" width={w} height={VH}
                 fill={sampleLabelColor(ann.label)}
                 opacity={selectedAnnId === ann.id ? 0.5 : hoveredAnnId === ann.id ? 0.4 : 0.3}
-                data-role={editingAccess ? 'fragment-body' : undefined}
-                data-ann-id={editingAccess ? ann.id : undefined}
+                data-role={editingAccess && !reanalyzeBusy ? 'fragment-body' : undefined}
+                data-ann-id={editingAccess && !reanalyzeBusy ? ann.id : undefined}
                 role="presentation"
                 onmouseenter={() => (hoveredAnnId = ann.id)}
                 onmouseleave={() => (hoveredAnnId = null)}
               ></rect>
-              {#if editingAccess && selectedAnnId === ann.id}
+              {#if editingAccess && !reanalyzeBusy && selectedAnnId === ann.id}
                 <rect class="frag-handle" x={x - 3} y={VH * (2 / 3)} width="6" height={VH / 3} data-role="handle-start" data-ann-id={ann.id}></rect>
                 <rect class="frag-handle" x={x + w - 3} y={VH * (2 / 3)} width="6" height={VH / 3} data-role="handle-end" data-ann-id={ann.id}></rect>
               {/if}
@@ -1949,6 +2023,21 @@
   }
   .danger-btn:hover { opacity: 0.85; }
 
+  .reanalyze-btn {
+    background: #e8f4ff;
+    color: #2255bb;
+    border: 1px solid #b0d0f0;
+    border-radius: 4px;
+    padding: 0.32rem 0.75rem;
+    font-family: var(--font-tiny); font-size: var(--font-size-tiny);
+    cursor: pointer;
+  }
+  .reanalyze-btn:hover:not(:disabled) { background: #d8eaff; }
+  .danger-btn:disabled,
+  .reanalyze-btn:disabled {
+    opacity: 0.4; cursor: default;
+  }
+
   .action-btn {
     background: #1a1a1a;
     color: #fff;
@@ -1973,6 +2062,8 @@
     margin-bottom: 0.7rem;
     flex-wrap: wrap;
   }
+
+  .confirm-bar.reanalyze-confirm-bar { background: #eef5ff; border-color: #bfd3f3; }
 
   .error-msg {
     color: #c0392b;
