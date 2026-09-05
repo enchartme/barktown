@@ -17,9 +17,21 @@
    *   onmovesample?: (entry: import('$lib/types').Entry, label: string, keepInDiary: boolean) => Promise<void>;
    *   oncommentchange?: (entry: import('$lib/types').Entry, annotations: Record<string, unknown>[]) => void;
    *   ontrimchange?: (entry: import('$lib/types').Entry, trim: {trimStartMs: number|null, trimStopMs: number|null}) => void;
+   *   onprevious?: () => void;
+   *   onnext?: () => void;
    * }}
    */
-  let { entry, onclose, onclosed, ondelete, onmovesample, oncommentchange, ontrimchange } = $props();
+  let {
+    entry,
+    onclose,
+    onclosed,
+    ondelete,
+    onmovesample,
+    oncommentchange,
+    ontrimchange,
+    onprevious,
+    onnext,
+  } = $props();
 
   /** Tailnet-only mutation controls appear after the private API responds. */
   let editingAccess = $state(false);
@@ -27,6 +39,8 @@
   // ── Audio element reference ────────────────────────────────────────────────
   /** @type {HTMLAudioElement | null} */
   let audioEl = $state(null);
+  /** @type {HTMLDivElement | null} */
+  let playerPanelEl = $state(null);
 
   // ── Playback state ─────────────────────────────────────────────────────────
   let isPlaying   = $state(false);
@@ -684,12 +698,34 @@
       else handleClose();
       return;
     }
+    const target = /** @type {HTMLElement | null} */ (e.target);
+    const tag = target?.tagName;
+    const inField = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target?.isContentEditable;
+    const key = e.key.toLowerCase();
+    if (
+      !samplePickerOpen
+      && !inField
+      && !e.ctrlKey
+      && !e.metaKey
+      && !e.altKey
+      && (key === 'arrowup' || key === 'arrowdown' || key === 'q' || key === 'w')
+      && (onprevious || onnext)
+    ) {
+      e.preventDefault();
+      if (key === 'arrowdown' || key === 'w') onnext?.();
+      else onprevious?.();
+      return;
+    }
     if (e.key === ' ') {
-      const tag = /** @type {HTMLElement} */ (e.target)?.tagName;
       // Don't hijack space when the user is typing in a text field, or when
-      // a <button> has focus (the button handles space natively via onclick;
-      // firing togglePlay here too would double-toggle immediately).
-      if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT' && tag !== 'BUTTON') {
+      // a panel button has focus (the button handles space natively via
+      // onclick; firing togglePlay here too would double-toggle immediately).
+      // Buttons behind the modal must not retain Space: that would re-open the
+      // current entry instead of starting playback.
+      const panelButton = tag === 'BUTTON' && (
+        playerPanelEl?.contains(target) || target?.closest('.sample-picker')
+      );
+      if (!inField && !panelButton) {
         e.preventDefault(); // prevent page scroll
         togglePlay();
       }
@@ -697,6 +733,10 @@
   }
   onMount(() => {
     let disposed = false;
+    const previouslyFocused = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+    playerPanelEl?.focus({ preventScroll: true });
     void probeEditingAccess().then((available) => {
       if (!disposed) editingAccess = available;
     });
@@ -704,6 +744,7 @@
     return () => {
       disposed = true;
       document.removeEventListener('keydown', handleGlobalKeydown);
+      if (previouslyFocused?.isConnected) previouslyFocused.focus({ preventScroll: true });
     };
   });
 
@@ -730,8 +771,10 @@
 </div>
 
 <div
+  bind:this={playerPanelEl}
   class="player-panel"
   role="dialog"
+  tabindex="-1"
   aria-label="Audio player: {visibleComment || displayLabel}"
   aria-modal="true"
   transition:fly={{ y: 200, duration: 220 }}
@@ -1167,6 +1210,7 @@
     flex-direction: column;
     gap: 0.75rem;
   }
+  .player-panel:focus { outline: none; }
 
   /* ── Header ── */
   .panel-header {

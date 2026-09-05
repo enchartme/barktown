@@ -157,7 +157,7 @@ export function formatAudioPanelAnalysisParameters(metadata) {
     .filter(([, value]) => value !== null && value !== undefined && value !== '')
     .map(([name, value]) => `${name}: ${String(value)}`)
     .join(' · ');
-  return details ? `Model info · ${details}` : '';
+  return details ? `${details}` : '';
 }
 
 function formatSeconds(value) {

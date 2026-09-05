@@ -13,6 +13,7 @@
     withRecordingCommentAnnotations,
   } from '$lib/recording-comments.js';
   import { formatPrintReportRange, reportBounds } from '$lib/report-range.js';
+  import { adjacentReportEntry } from '$lib/report-navigation.js';
   import { formatDisturbedTime } from '$lib/report-summary.js';
   import { withLinkedTrainingSample } from '$lib/diary-samples.js';
   import { probeEditingAccess } from '$lib/editing-access.js';
@@ -96,6 +97,7 @@
     totalDurationSec: periodSummary.totals.disturbedTimeSec,
     barks: periodSummary.totals.barks,
   });
+  const orderedReportEntries = $derived(days.flatMap((day) => day.entries));
 
   function todayInStockholm() {
     return new Intl.DateTimeFormat('sv-SE', {
@@ -254,6 +256,16 @@
     const url = new URL(window.location.href);
     url.hash = entry.id;
     history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+  }
+
+  /**
+   * Open the previous or next recording in the order currently shown.
+   * @param {-1 | 1} direction
+   */
+  function selectAdjacentEntry(direction) {
+    if (!panelEntry) return;
+    const adjacent = adjacentReportEntry(orderedReportEntries, panelEntry.id, direction);
+    if (adjacent) selectEntry(adjacent);
   }
 
   function closePanel() {
@@ -558,6 +570,8 @@
       onmovesample={moveEntryToSamples}
       oncommentchange={handleCommentChange}
       ontrimchange={handleTrimChange}
+      onprevious={() => selectAdjacentEntry(-1)}
+      onnext={() => selectAdjacentEntry(1)}
     />
   </div>
 {/if}

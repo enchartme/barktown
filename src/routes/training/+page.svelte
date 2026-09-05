@@ -13,6 +13,11 @@
   } from '$lib/utils.js';
   import { SAMPLE_LABELS as LABELS, FRAGMENT_LABELS, SAMPLE_LABEL_GUIDELINES as LABEL_GUIDELINES, sampleLabelColor, sampleLabelShortcut, LABEL_BY_SHORTCUT } from '$lib/sample-labels.js';
   import { TRAINING_COLOR_ENCODINGS, TRAINING_COLOR_GUIDES } from '$lib/training-color-guides.js';
+  import {
+    WAVEFORM_ZOOM_LEVELS,
+    centeredWaveformScrollLeft,
+    stepWaveformZoom,
+  } from '$lib/training-waveform-zoom.js';
   import { probeEditingAccess } from '$lib/editing-access.js';
   import GoblinPiStatus from '$lib/components/GoblinPiStatus.svelte';
   import TrainingProjectionScatterplot from '$lib/components/TrainingProjectionScatterplot.svelte';
@@ -35,6 +40,7 @@
   const VW = 1000;
   const VH = 140;
   const BARS = 500;
+  const MAX_CANVAS_DIMENSION = 16384;
   // Drags shorter than this (in seconds) are treated as a plain seek click
   // rather than a fragment brush-selection.
   const BRUSH_MIN_SEC = 0.05;
@@ -264,6 +270,9 @@
   let waveCanvasEl     = $state(null);
   /** @type {HTMLDivElement|null} */
   let waveWrapEl       = $state(null);
+  /** @type {HTMLDivElement|null} */
+  let waveScrollEl     = $state(null);
+  let waveZoom         = $state(1);
   // Fragment currently hovered (label shown even when not the focused/selected one).
   let hoveredAnnId     = $state(/** @type {number|null} */ (null));
 
@@ -350,7 +359,9 @@
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
     const dpr  = window.devicePixelRatio || 1;
-    const w    = Math.max(1, Math.round(rect.width * dpr));
+    // Very wide zoomed timelines can exceed the browser's canvas dimension
+    // limit. CSS still stretches this backing bitmap across the full timeline.
+    const w    = Math.min(MAX_CANVAS_DIMENSION, Math.max(1, Math.round(rect.width * dpr)));
     const h    = Math.max(1, Math.round(rect.height * dpr));
     if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
     const ctx = canvas.getContext('2d');
@@ -375,6 +386,30 @@
     ro.observe(waveWrapEl);
     return () => ro.disconnect();
   });
+
+  async function setWaveZoom(nextZoom) {
+    if (nextZoom === waveZoom) return;
+
+    const scrollEl = waveScrollEl;
+    const oldScrollLeft = scrollEl?.scrollLeft ?? 0;
+    const viewportWidth = scrollEl?.clientWidth ?? 0;
+    const oldContentWidth = scrollEl?.scrollWidth ?? viewportWidth;
+
+    waveZoom = nextZoom;
+    await tick();
+
+    if (!scrollEl) return;
+    scrollEl.scrollLeft = centeredWaveformScrollLeft(
+      oldScrollLeft,
+      viewportWidth,
+      oldContentWidth,
+      scrollEl.scrollWidth,
+    );
+  }
+
+  function changeWaveZoom(direction) {
+    void setWaveZoom(stepWaveformZoom(waveZoom, direction));
+  }
 
   /** Live preview of an annotation's bounds while it's being dragged. */
   function previewBounds(ann) {
@@ -930,6 +965,19 @@
   function handleKeydown(e) {
     const inField = e.target?.tagName === 'INPUT' || e.target?.tagName === 'SELECT' || e.target?.tagName === 'TEXTAREA';
 
+    if (selected && !inField && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      if (e.key === '+' || e.key === '=') {
+        e.preventDefault();
+        changeWaveZoom(1);
+      } else if (e.key === '-') {
+        e.preventDefault();
+        changeWaveZoom(-1);
+      } else if (e.key === '0') {
+        e.preventDefault();
+        void setWaveZoom(1);
+      }
+    }
+
     if (editingAccess && e.key === 'Escape') {
       if (pending) { pending = null; return; }
       if (selectedAnnId != null) { selectedAnnId = null; return; }
@@ -1244,15 +1292,47 @@
           {#if editingAccess}
             <span class="hint">Drag on the waveform to select a fragment · click a fragment to edit it · Delete removes the selection</span>
           {/if}
-          {#if editingAccess && selected}
-            <span class="regen-label">Resolution:</span>
-            <button class="regen-btn" onclick={() => handleRegenWaveform(20)}  disabled={regenLoading} title="20 px/s (default)">20/s</button>
-            <button class="regen-btn" onclick={() => handleRegenWaveform(50)}  disabled={regenLoading} title="50 px/s">50/s</button>
-            <button class="regen-btn" onclick={() => handleRegenWaveform(100)} disabled={regenLoading} title="100 px/s">100/s</button>
-          {/if}
+          <div class="player-tool-controls">
+            {#if editingAccess && selected}
+              <div class="wave-resolution-controls" role="group" aria-label="Waveform source resolution">
+                <span class="regen-label">Resolution:</span>
+                <button class="regen-btn" onclick={() => handleRegenWaveform(20)}  disabled={regenLoading} title="20 px/s (default)">20/s</button>
+                <button class="regen-btn" onclick={() => handleRegenWaveform(50)}  disabled={regenLoading} title="50 px/s">50/s</button>
+                <button class="regen-btn" onclick={() => handleRegenWaveform(100)} disabled={regenLoading} title="100 px/s">100/s</button>
+              </div>
+            {/if}
+            <div class="wave-zoom-controls" role="group" aria-label="Horizontal waveform zoom">
+              <span class="zoom-label">Zoom</span>
+              <button
+                class="zoom-btn"
+                type="button"
+                disabled={waveZoom === WAVEFORM_ZOOM_LEVELS[0]}
+                title="Zoom out (−)"
+                aria-label="Zoom waveform out"
+                onclick={() => changeWaveZoom(-1)}
+              >−</button>
+              <button
+                class="zoom-reset-btn"
+                type="button"
+                disabled={waveZoom === 1}
+                title="Reset zoom (0)"
+                aria-label="Reset waveform zoom"
+                onclick={() => setWaveZoom(1)}
+              >{waveZoom * 100}%</button>
+              <button
+                class="zoom-btn"
+                type="button"
+                disabled={waveZoom === WAVEFORM_ZOOM_LEVELS.at(-1)}
+                title="Zoom in (+)"
+                aria-label="Zoom waveform in"
+                onclick={() => changeWaveZoom(1)}
+              >+</button>
+            </div>
+          </div>
         </div>
 
-        <div class="wave-editor-wrap" bind:this={waveWrapEl}>
+        <div class="wave-editor-scroll" bind:this={waveScrollEl}>
+        <div class="wave-editor-wrap" bind:this={waveWrapEl} style:width="{waveZoom * 100}%">
           <!-- Waveform bars are painted here at native pixel resolution
                instead of as hundreds of SVG <rect> nodes (see drawWaveCanvas). -->
           <canvas class="wave-canvas" bind:this={waveCanvasEl}></canvas>
@@ -1327,6 +1407,7 @@
               {/if}
             {/each}
           </div>
+        </div>
         </div>
 
         {#if mutationError}<div class="error-msg">{mutationError}</div>{/if}
@@ -1411,7 +1492,7 @@
         {/if}
 
         {#if editingAccess}
-          <div class="shortcuts-hint">Use shortcuts! [Space] Play/Pause · [Delete] Remove fragment · [↑][↓] or [Q][W] Navigate · [←][→] Focus fragment · [Enter] Apply · see also the hotkeys for every label</div>
+          <div class="shortcuts-hint">Use shortcuts! [Space] Play/Pause · [+][−][0] Zoom · [Delete] Remove fragment · [↑][↓] or [Q][W] Navigate · [←][→] Focus fragment · [Enter] Apply · see also the hotkeys for every label</div>
         {/if}
 
         {#if editingAccess && pending}
@@ -1904,6 +1985,7 @@
     display: flex;
     align-items: center;
     gap: 0.6rem;
+    flex-wrap: wrap;
     margin-bottom: 0.4rem;
   }
   .play-pause-btn {
@@ -1919,8 +2001,20 @@
   }
   .play-pause-btn:hover { opacity: 0.8; }
   .mini-time { font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #666; font-variant-numeric: tabular-nums; flex-shrink: 0; }
-  .hint { font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #aaa; }
-  .regen-label { font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #aaa; margin-left: auto; }
+  .hint { flex: 1 1 18rem; font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #aaa; }
+  .player-tool-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-left: auto;
+  }
+  .wave-resolution-controls,
+  .wave-zoom-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+  .regen-label { font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #aaa; }
   .regen-btn {
     font-family: var(--font-tiny); font-size: var(--font-size-tiny); padding: 0.1rem 0.35rem;
     border: 1px solid #c0c8d8; border-radius: 4px;
@@ -1930,11 +2024,37 @@
   .regen-btn:hover:not(:disabled) { background: #e0e8f8; }
   .regen-btn:disabled { opacity: 0.5; cursor: default; }
 
+  .zoom-label { font-family: var(--font-tiny); font-size: var(--font-size-tiny); color: #aaa; }
+  .zoom-btn,
+  .zoom-reset-btn {
+    height: 24px;
+    border: 1px solid #c0c8d8;
+    background: #f4f6fa;
+    color: #445;
+    font-family: var(--font-tiny);
+    font-size: var(--font-size-tiny);
+    line-height: 1;
+    cursor: pointer;
+  }
+  .zoom-btn { width: 24px; padding: 0; border-radius: 4px; }
+  .zoom-reset-btn { min-width: 3.5rem; padding: 0 0.35rem; border-radius: 4px; font-variant-numeric: tabular-nums; }
+  .zoom-btn:hover:not(:disabled),
+  .zoom-reset-btn:hover:not(:disabled) { background: #e0e8f8; }
+  .zoom-btn:disabled,
+  .zoom-reset-btn:disabled { opacity: 0.45; cursor: default; }
+
+  .wave-editor-scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-radius: 4px;
+    background: #f4f6fb;
+  }
+
   .wave-editor-wrap {
     position: relative;
-    width: 100%;
+    min-width: 100%;
     height: 160px;
-    border-radius: 4px;
     overflow: hidden;
     background: #f4f6fb;
   }
