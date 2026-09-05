@@ -17,6 +17,8 @@
     WAVEFORM_ZOOM_LEVELS,
     centeredWaveformScrollLeft,
     stepWaveformZoom,
+    waveformBarBackingWidth,
+    zoomInvariantSvgWidth,
   } from '$lib/training-waveform-zoom.js';
   import { probeEditingAccess } from '$lib/editing-access.js';
   import GoblinPiStatus from '$lib/components/GoblinPiStatus.svelte';
@@ -348,10 +350,7 @@
       const yTop   = cy - (hi / norm) * yScale * cy;
       const yBot   = cy - (lo / norm) * yScale * cy;
       const barSec = (i / count) * duration;
-      return {
-        x: i * barW, y: yTop, w: Math.max(0.5, barW - 0.5), h: Math.max(1, yBot - yTop),
-        played: barSec <= currentTime,
-      };
+      return { x: i * barW, y: yTop, h: Math.max(1, yBot - yTop), played: barSec <= currentTime };
     });
   });
 
@@ -373,9 +372,10 @@
     ctx.clearRect(0, 0, w, h);
     const scaleX = w / VW;
     const scaleY = h / VH;
+    const barWidth = waveformBarBackingWidth(w, rect.width);
     for (const bar of bars()) {
       ctx.fillStyle = bar.played ? '#2255bb' : '#a0b8e8';
-      ctx.fillRect(bar.x * scaleX, bar.y * scaleY, Math.max(1, bar.w * scaleX), Math.max(1, bar.h * scaleY));
+      ctx.fillRect(bar.x * scaleX, bar.y * scaleY, barWidth, Math.max(1, bar.h * scaleY));
     }
   }
 
@@ -1445,7 +1445,7 @@
 
             {#each renderFragments as ann (ann.id)}
               {@const x = secToX(ann.startSec)}
-              {@const w = Math.max(2, secToX(ann.endSec) - x)}
+              {@const w = Math.max(zoomInvariantSvgWidth(2, waveZoom), secToX(ann.endSec) - x)}
               <rect
                 class="fragment-band"
                 x={x} y="0" width={w} height={VH}
@@ -1458,29 +1458,30 @@
                 onmouseleave={() => (hoveredAnnId = null)}
               ></rect>
               {#if editingAccess && !reanalyzeBusy && selectedAnnId === ann.id}
-                <rect class="frag-handle" x={x - 3} y={VH * (2 / 3)} width="6" height={VH / 3} data-role="handle-start" data-ann-id={ann.id}></rect>
-                <rect class="frag-handle" x={x + w - 3} y={VH * (2 / 3)} width="6" height={VH / 3} data-role="handle-end" data-ann-id={ann.id}></rect>
+                {@const handleWidth = zoomInvariantSvgWidth(6, waveZoom)}
+                <rect class="frag-handle" x={x - handleWidth / 2} y={VH * (2 / 3)} width={handleWidth} height={VH / 3} data-role="handle-start" data-ann-id={ann.id}></rect>
+                <rect class="frag-handle" x={x + w - handleWidth / 2} y={VH * (2 / 3)} width={handleWidth} height={VH / 3} data-role="handle-end" data-ann-id={ann.id}></rect>
               {/if}
             {/each}
 
           {#each renderNotes as ann (ann.id)}
             {@const x = secToX(ann.startSec)}
-            <line x1={x} y1="0" x2={x} y2={VH} stroke={NOTE_COLOR} stroke-width={selectedAnnId === ann.id ? 3 : 2} data-role="note-marker" data-ann-id={ann.id}></line>
-            <circle cx={x} cy="7" r="5" fill={NOTE_COLOR} data-role="note-marker" data-ann-id={ann.id}></circle>
+            <line class="fixed-svg-stroke" x1={x} y1="0" x2={x} y2={VH} stroke={NOTE_COLOR} stroke-width={selectedAnnId === ann.id ? 3 : 2} data-role="note-marker" data-ann-id={ann.id}></line>
+            <ellipse cx={x} cy="7" rx={zoomInvariantSvgWidth(5, waveZoom)} ry="5" fill={NOTE_COLOR} data-role="note-marker" data-ann-id={ann.id}></ellipse>
           {/each}
 
           {#if pending}
             {@const x = secToX(pending.startSec)}
-            {@const w = Math.max(1, secToX(pending.endSec) - x)}
+            {@const w = Math.max(zoomInvariantSvgWidth(1, waveZoom), secToX(pending.endSec) - x)}
             <rect x={x} y="0" width={w} height={VH} fill="#1a1a1a" opacity="0.15"></rect>
           {/if}
           {#if dragMode === 'brush'}
             {@const x = secToX(Math.min(dragStartSec, dragCurrentSec))}
-            {@const w = Math.max(1, secToX(Math.max(dragStartSec, dragCurrentSec)) - x)}
+            {@const w = Math.max(zoomInvariantSvgWidth(1, waveZoom), secToX(Math.max(dragStartSec, dragCurrentSec)) - x)}
             <rect x={x} y="0" width={w} height={VH} fill="#1a1a1a" opacity="0.12"></rect>
           {/if}
 
-            <line x1={playheadX} y1="0" x2={playheadX} y2={VH} stroke="#1a1a1a" stroke-width="1.5"></line>
+            <line class="fixed-svg-stroke" x1={playheadX} y1="0" x2={playheadX} y2={VH} stroke="#1a1a1a" stroke-width="1.5"></line>
           </svg>
 
           <!-- Fragment labels as an HTML overlay, not SVG <text>: stays a
@@ -2202,6 +2203,7 @@
   .fragment-band { cursor: pointer; }
   .wave-editor.readonly .fragment-band { cursor: inherit; }
   .frag-handle { fill: #1a1a1a; opacity: 0.35; cursor: ew-resize; }
+  .fixed-svg-stroke { vector-effect: non-scaling-stroke; }
 
   /* HTML overlay for fragment labels — a fixed font-size here always renders
      at true pixel size, unlike SVG <text> which gets stretched by the

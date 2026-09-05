@@ -24,3 +24,18 @@ export function centeredWaveformScrollLeft(scrollLeft, viewportWidth, oldContent
   const nextScrollLeft = centreFraction * newContentWidth - viewportWidth / 2;
   return Math.max(0, Math.min(newContentWidth - viewportWidth, nextScrollLeft));
 }
+
+/** Keep a horizontal SVG measurement visually unchanged as its timeline zooms. */
+export function zoomInvariantSvgWidth(baseWidth, zoom) {
+  return baseWidth / Math.max(1, zoom);
+}
+
+/**
+ * Convert one displayed CSS pixel to the canvas backing-store width. When a
+ * capped canvas has less than one backing pixel per CSS pixel, use the
+ * thinnest drawable width instead of stretching bars with the timeline.
+ */
+export function waveformBarBackingWidth(canvasWidth, displayWidth) {
+  if (canvasWidth <= 0 || displayWidth <= 0) return 1;
+  return Math.max(1, canvasWidth / displayWidth);
+}
