@@ -1082,6 +1082,10 @@
     }
   }
 
+  function handleKeyup(e) {
+    if (e.key === 'Shift') hoveredSidebarSampleId = null;
+  }
+
   onMount(() => {
     let disposed = false;
     void probeEditingAccess().then((available) => {
@@ -1108,7 +1112,7 @@
   <title>Training corpus summary · Barktown</title>
 </svelte:head>
 
-<svelte:window onmousemove={onWindowMouseMove} onmouseup={onWindowMouseUp} onkeydown={handleKeydown} onhashchange={handleHashChange} />
+<svelte:window onmousemove={onWindowMouseMove} onmouseup={onWindowMouseUp} onkeydown={handleKeydown} onkeyup={handleKeyup} onhashchange={handleHashChange} />
 
 <div class="app" class:embedded>
   {#if !embedded}<header class="site-header">
@@ -1154,7 +1158,9 @@
             <button
               class="sample-row"
               class:playing={selected?.id === sample.id}
-              onpointerenter={() => (hoveredSidebarSampleId = sample.id)}
+              onpointerenter={(event) => {
+                if (event.shiftKey) hoveredSidebarSampleId = sample.id;
+              }}
               onpointerleave={() => {
                 if (hoveredSidebarSampleId === sample.id) hoveredSidebarSampleId = null;
               }}

@@ -1015,14 +1015,16 @@
         <button class="delete-btn" onclick={handleDeleteClick} aria-label="Delete entry" title="Delete this recording">🗑</button>
       {/if}
     {/if}
-    <button
-      class="download-btn"
-      onclick={handleDownload}
-      disabled={downloadLoading}
-      aria-label="Download recording"
-      title="Download audio file"
-    >{downloadLoading ? '⏳' : '📥'}</button>
-    {#if reportShortcutsEnabled}
+    {#if editingAccess}
+      <button
+        class="download-btn"
+        onclick={handleDownload}
+        disabled={downloadLoading}
+        aria-label="Download recording"
+        title="Download audio file"
+      >{downloadLoading ? '⏳' : '📥'}</button>
+    {/if}
+    {#if editingAccess && reportShortcutsEnabled}
       <button
         bind:this={shortcutHelpButtonEl}
         class="shortcut-help-btn"
@@ -1033,7 +1035,7 @@
         title="Keyboard shortcuts"
       >ℹ️</button>
     {/if}
-    <button class="close-btn" onclick={handleClose} aria-label="Close player">✕</button>
+    <button class="close-btn" class:admin-controls-hidden={!editingAccess} onclick={handleClose} aria-label="Close player">✕</button>
   </div>
 
   {#if editingAccess && commentEditing}
@@ -1292,7 +1294,7 @@
       </div>
 
       
-      {#if analysisParameters}
+      {#if editingAccess && analysisParameters}
         <div class="analysis-parameters">{analysisParameters}</div>
       {/if}
     </div>
@@ -1610,6 +1612,7 @@
     margin-left: 0.15rem;
   }
   .close-btn:hover { background: #f0f0ec; color: #333; }
+  .close-btn.admin-controls-hidden { margin-left: auto; }
 
   .download-btn,
   .delete-btn,
